@@ -238,7 +238,7 @@ setInterval(sleepLabel, 20000);
 
 /* sheet */
 function openSheet() { if (!P.cur) { toggle(); return; } const s = $("#sheet"), c = $("#scrim"); if (!s.hidden) return; s.hidden = c.hidden = false;
-  history.pushState({ sheet: 1 }, "", location.hash || "#radio"); requestAnimationFrame(() => { s.classList.add("show"); c.classList.add("show"); }); paint(P.state); }
+  history.pushState({ sheet: 1 }, "", location.hash || "#radio"); void s.offsetHeight; s.classList.add("show"); c.classList.add("show"); paint(P.state); }
 function closeSheet(fromPop) { const s = $("#sheet"), c = $("#scrim"); if (s.hidden) return;
   if (fromPop !== true && history.state && history.state.sheet) { history.back(); return; } s.classList.remove("show"); c.classList.remove("show"); setTimeout(() => { s.hidden = c.hidden = true; }, 380); }
 $("#capOpen").onclick = openSheet; $("#sheetClose").onclick = () => closeSheet(); $("#scrim").onclick = () => closeSheet();
@@ -313,7 +313,8 @@ async function loadRadios() {
 }
 function renderRadios() {
   const q = norm($("#radSearch").value);
-  const list = q ? RADIOS.filter(r => matches(q, r.name)) : RADIOS;
+  const qt = q.replace(/\s+/g, "");
+  const list = q ? RADIOS.filter(r => matches(q, r.name)).sort((a, b) => tight(b.name).startsWith(qt) - tight(a.name).startsWith(qt)) : RADIOS;
   const shown = list.slice(0, radShown);
   $("#radList").innerHTML = shown.length ? shown.map(r => `
     <button class="item" data-key="rad:${r.id}" data-rad="${r.id}">
@@ -398,7 +399,7 @@ function openReciter(id, moshafId) {
   const r = RECITERS.find(x => x.id === id); if (!r) return;
   curRec = r;
   const ms = rwSel === "all" ? r.moshaf : r.moshaf.filter(m => m.rw === rwSel);
-  const pool = ms.length ? ms : r.moshaf;
+  const pool = (ms.length ? ms : r.moshaf).slice().sort((a, b) => (b.list.length - a.list.length) || ((b.type === "مرتل") - (a.type === "مرتل")));
   curMoshaf = pool.find(m => m.id === moshafId) || pool[0];
   $("#qPick").hidden = true; $("#qReciter").hidden = false; store.set("quranOpen", true);
   if (!(history.state && history.state.rec)) history.pushState({ rec: id }, "", "#quran");
