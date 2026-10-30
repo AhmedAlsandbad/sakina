@@ -495,3 +495,28 @@ body::after{opacity:calc(var(--pat) * .45);background-size:100px 100px}
 .dedication-names small{color:var(--gold);font:400 .76rem/1.7 var(--f-body)}
 .dedication-names li span{font:500 clamp(1rem,3.5vw,1.15rem)/1.7 var(--f-body);letter-spacing:0}
 @media(max-width:380px){.dedication-names{gap:0 8px}.dedication-names li span{font-size:.96rem}}
+
+/* Memorial card and header */
+header.top{background:color-mix(in srgb,var(--night) 96%,transparent);border-bottom:1px solid var(--rule)}
+header.top .wrap{min-height:68px;padding-block:6px;gap:12px}
+.logo{gap:0;flex:none}
+.logo span{display:none}
+.logo img{display:block;width:58px;height:58px;object-fit:contain;border-radius:12px;background:#faf9f3}
+.hd{gap:8px}
+.icon-btn{width:42px;height:42px;background:var(--panel);color:var(--ink)}
+.next-prayer{min-height:40px;display:flex;align-items:center;gap:5px;background:var(--panel);padding:6px 12px}
+.dedication{max-width:690px;padding:0;margin:26px auto 0;border-radius:22px;background:var(--panel);border:1px solid var(--rule);box-shadow:var(--shadow)}
+.dedication-frame{padding:26px clamp(18px,5vw,42px);border:0;border-radius:inherit}
+.dedication-eyebrow{margin:0 0 4px;font:500 .85rem/1.6 var(--f-body);color:var(--dim);gap:8px}
+.dedication-eyebrow span{display:none}
+.dedication h2{font:700 clamp(1.9rem,5vw,2.25rem)/1.4 var(--f-naskh);margin:0;color:var(--gold)}
+.dedication-sub{font:400 1rem/1.7 var(--f-body);color:var(--ink);margin:2px 0 0}
+.dedication-divider{height:1px;max-width:80px;background:var(--gold);opacity:.5;margin:14px auto}
+.dedication-divider:before,.dedication-divider:after{content:none}
+.dedication-names{gap:0;max-width:490px;margin:auto}
+.dedication-names li{padding:12px 8px;line-height:1.5}
+.dedication-names small{font:400 .75rem/1.6 var(--f-body);color:var(--dim)}
+.dedication-names li span{font:500 clamp(1rem,3.7vw,1.15rem)/1.65 var(--f-body);color:var(--ink)}
+.dedication-prayer{font:400 1.13rem/1.9 var(--f-naskh);max-width:34ch;margin:16px auto 8px}
+.dedication-details summary{background:var(--panel-2);border:1px solid var(--rule);padding:9px 20px}
+@media(max-width:480px){header.top .wrap{min-height:60px}.logo img{width:48px;height:48px;border-radius:10px}.next-prayer{font-size:.75rem}.dedication-frame{padding:22px 14px}.dedication-names li{padding:10px 4px}.dedication-names li span{font-size:1rem}}
