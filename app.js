@@ -533,12 +533,19 @@ EXTRA_ADHKAR.prayer.push(
  {id:"prayer-takbir",c:33,src:"صحيح مسلم ٥٩٧",m:"اللَّهُ أَكْبَرُ"},
  {id:"prayer-tahlil",c:1,src:"صحيح مسلم ٥٩٧",m:"لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ"}
 );
+const sleepQuran = [
+  {id:"sleep-kursi",title:"آية الكرسي",c:1,src:"البقرة ٢٥٥ · صحيح البخاري ٥٠١٠",q:true,m:RUQYAH_TEXT[1].q},
+  {id:"sleep-baqara",title:"آخر آيتين من سورة البقرة",c:1,src:"البقرة ٢٨٥–٢٨٦ · صحيح مسلم ٨٠٧",q:true,m:RUQYAH_TEXT[2].q},
+  ...[3,4,5].map((i) => ({id:"sleep-sura-"+i,title:RUQYAH_TEXT[i].h,c:3,src:"صحيح البخاري ٥٠١٧",q:true,m:RUQYAH_TEXT[i].q}))
+];
+EXTRA_ADHKAR.sleep.unshift(...sleepQuran);
 const adhLabels = { m: "أذكار الصباح", e: "أذكار المساء", sleep: "أذكار النوم", prayer: "أذكار بعد الصلاة" };
 function adhItems() { return EXTRA_ADHKAR[period] || ADHKAR.filter(d => !d.only || d.only === period); }
 function setPeriod(p) {
   period = p;
   $$("#v-adhkar .seg button").forEach(b => b.setAttribute("aria-selected", b.dataset.period === p));
   $("#adhTitle").textContent = adhLabels[p];
+  $("#sleepAudio").hidden = p !== "sleep";
   renderAdhkar();
 }
 function renderAdhkar() {
@@ -548,7 +555,7 @@ function renderAdhkar() {
     return `<button class="dhikr${n >= d.c ? " done" : ""}" data-dh="${d.id}">
       ${d.title ? `<span class="ttl">${d.title}</span>` : ""}
       <p class="${d.q ? "q" : "q naskh"}">${txt}</p>
-      <span class="dt"><span class="src">${d.q ? "قرآن كريم" : d.src}${d.c > 1 ? ` · ${ard(d.c)} ${d.c >= 11 ? "مرة" : "مرات"}` : ""}</span>
+      <span class="dt"><span class="src">${d.q ? "القرآن الكريم · " + d.src : d.src}${d.c > 1 ? ` · ${ard(d.c)} ${d.c >= 11 ? "مرة" : "مرات"}` : ""}</span>
       <span class="ring" style="--p:${n / d.c * 100}"><span>${n >= d.c ? "✓" : ard(d.c - n)}</span></span></span></button>`;
   }).join("");
   adhProgress(st);
@@ -578,6 +585,12 @@ $("#adhList").onclick = e => {
   adhProgress(st);
 };
 $$("#v-adhkar .seg button").forEach(b => b.onclick = () => { $("#adhContent").hidden = false; setPeriod(b.dataset.period); });
+$("#sleepReader").innerHTML = RUQYAH_RECITERS.map(r => `<option value="${esc(r.id)}">${esc(r.name)}</option>`).join("");
+$("#sleepPlay").onclick = () => {
+  const r = RUQYAH_RECITERS.find(x => x.id === $("#sleepReader").value); if (!r) return;
+  const q = [112,113,114].map((n,i) => ({kind:"file", key:"sleep:"+n, title:["سورة الإخلاص","سورة الفلق","سورة الناس"][i], sub:r.name, eyebrow:"قبل النوم", url:r.base + String(n).padStart(3,"0") + ".mp3"}));
+  play(q[0], q, 0); const mins = +$("#sleepTimer").value; setSleep(mins);
+};
 $("#adhReset").onclick = () => { store.del(adhKey()); renderAdhkar(); toast("تم تصفير العدّاد"); };
 
 $("#dockToggle").onclick = () => { const compact = $("#dock").classList.toggle("compact"); $("#dockToggle").setAttribute("aria-expanded", String(!compact)); $("#dockToggle").setAttribute("aria-label", compact ? "إظهار المشغل" : "تصغير المشغل"); $("#dockToggle").textContent = compact ? "⌃" : "⌄"; };
