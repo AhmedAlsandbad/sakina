@@ -63,6 +63,7 @@ const audio = $("#audio");
 const P = { cur: null, queue: [], qi: 0, loop: false, want: false, retries: 0, stallT: null, state: "idle", onEnd: null, sleepEnd: 0, sleepT: null, sleepAtEnd: false };
 
 function setMeta(it) {
+  if (it.key && it.key.startsWith("rad:")) it.title = (it.title || "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
   $("#capTitle").textContent = it.title;
   $("#capSub").textContent = it.sub;
   $("#shEyebrow").textContent = it.eyebrow || "";
@@ -340,7 +341,7 @@ $("#radMore").onclick = () => { radShown += 60; renderRadios(); };
 $("#radList").onclick = e => { const b = e.target.closest("[data-rad]"); if (!b) return;
   const r = RADIOS.find(x => String(x.id) === b.dataset.rad);
   if (P.cur && P.cur.key === "rad:" + r.id) { toggle(); return; }
-  play({ kind: "live", key: "rad:" + r.id, title: "إذاعة " + r.name, sub: "إذاعة متواصلة", eyebrow: "إذاعات القرّاء", url: r.url }); };
+  play({ kind: "live", key: "rad:" + r.id, title: "إذاعة " + r.name, sub: "إذاعة متواصلة", eyebrow: "الإذاعات والقرّاء", url: r.url }); };
 
 /* =========================================================
    QURAN
