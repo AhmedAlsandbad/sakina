@@ -16,6 +16,15 @@ const fmt = s => { if (!isFinite(s) || s < 0) s = 0; s = Math.floor(s);
   const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
   return ard((h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(x).padStart(2, "0")); };
 const norm = s => (s || "").replace(/[ً-ٰٟـ]/g, "").replace(/[أإآٱ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").replace(/\s+/g, " ").trim().toLowerCase();
+const tight = s => norm(s).replace(/\s+/g, "");
+/* search: every word must appear; spaces and leading "ال" are ignored ("عبدالباسط" = "عبد الباسط") */
+function matches(q, hay) {
+  if (!q) return true;
+  const n = norm(hay), t = n.replace(/\s+/g, "");
+  if (t.includes(q.replace(/\s+/g, ""))) return true;
+  return q.split(" ").every(w => n.includes(w) || t.includes(w) || (w.startsWith("ال") && w.length > 3 && t.includes(w.slice(2))));
+}
+const sortKey = name => tight(name).replace(/^ال/, "");
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const debounce = (f, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => f(...a), ms); }; };
 const idle = f => ("requestIdleCallback" in window ? requestIdleCallback(f, { timeout: 2500 }) : setTimeout(f, 800));
@@ -296,14 +305,15 @@ async function loadRadios() {
   try {
     const d = await getJSON(API + "radios?language=ar", "c:radios", 24);
     const featured = new Set(STATIONS.map(s => s.url));
-    RADIOS = d.radios.filter(r => !featured.has(r.url)).map(r => ({ id: r.id, name: r.name.trim(), url: r.url, n: norm(r.name) }));
+    RADIOS = d.radios.filter(r => !featured.has(r.url)).map(r => ({ id: r.id, name: r.name.replace(/\s+/g, " ").trim(), url: r.url }))
+      .sort((a, b) => sortKey(a.name).localeCompare(sortKey(b.name), "ar"));
     $("#radCount").textContent = ard(RADIOS.length) + " إذاعة";
     renderRadios();
   } catch (e) { $("#radList").innerHTML = `<div class="empty">تعذّر تحميل الإذاعات. <button class="link-btn" id="radRetry">إعادة المحاولة</button></div>`; $("#radRetry").onclick = loadRadios; }
 }
 function renderRadios() {
   const q = norm($("#radSearch").value);
-  const list = q ? RADIOS.filter(r => r.n.includes(q)) : RADIOS;
+  const list = q ? RADIOS.filter(r => matches(q, r.name)) : RADIOS;
   const shown = list.slice(0, radShown);
   $("#radList").innerHTML = shown.length ? shown.map(r => `
     <button class="item" data-key="rad:${r.id}" data-rad="${r.id}">
@@ -323,6 +333,10 @@ $("#radList").onclick = e => { const b = e.target.closest("[data-rad]"); if (!b)
 /* =========================================================
    QURAN
    ========================================================= */
+/* best-known reciters shown first, in this order (matched on name words) */
+const FAMOUS = [["عبدالباسط"], ["الحصري"], ["المنشاوي"], ["مصطفي", "اسماعيل"], ["البنا"], ["الطبلاوي"], ["العفاسي"], ["المعيقلي"], ["السديس"], ["الشريم"],
+  ["الغامدي"], ["ياسر", "الدوسري"], ["العجمي"], ["فارس", "عباد"], ["القطامي"], ["الشاطري"], ["الحذيفي"], ["محمد", "ايوب"], ["خالد", "الجليل"], ["محمد", "جبريل"], ["البلوشي"], ["ادريس", "ابكر"]]
+  .map(a => a.map(w => w.replace(/[أإآ]/g, "ا").replace(/ى/g, "ي")));
 let RECITERS = [], SUWAR = {}, RW = [], rwSel = store.get("rw", "حفص عن عاصم"), recShown = 40, curRec = null, curMoshaf = null;
 const rwKey = name => name.split(" - ")[0].replace(/^برواية\s+/, "").replace(/\s+/g, " ").replace(/\s*-[^-]*-\s*$/, "").trim();
 const mType = name => (name.split(" - ")[1] || "").trim();
@@ -332,11 +346,13 @@ INIT.quran = async () => {
     s.suwar.forEach(x => SUWAR[x.id] = x.name);
     RECITERS = r.reciters.map(x => ({ id: x.id, name: x.name.trim(), n: norm(x.name),
       moshaf: x.moshaf.map(m => ({ id: m.id, rw: rwKey(m.name), type: mType(m.name), server: m.server, list: m.surah_list.split(",").map(Number) })) }))
-      .filter(x => x.moshaf.length).sort((a, b) => a.name.localeCompare(b.name, "ar"));
+      .filter(x => x.moshaf.length).sort((a, b) => sortKey(a.name).localeCompare(sortKey(b.name), "ar"));
+    RECITERS.forEach(r => { r.name = r.name.replace(/\s+/g, " "); const t = tight(r.name); r.fam = FAMOUS.findIndex(f => f.every(w => t.includes(w))); r.letter = sortKey(r.name)[0] || ""; });
     const cnt = {}; RECITERS.forEach(x => new Set(x.moshaf.map(m => m.rw)).forEach(k => cnt[k] = (cnt[k] || 0) + 1));
     RW = Object.entries(cnt).sort((a, b) => b[1] - a[1]);
     if (rwSel !== "all" && !cnt[rwSel]) rwSel = "حفص عن عاصم";
     $("#recCount").textContent = ard(RECITERS.length) + " قارئ";
+    $("#recSearch").placeholder = "ابحث عن قارئ (مثال: عبدالباسط، المنشاوي)";
     renderRw(); renderRecs();
     const last = store.get("lastRec", null);
     if (location.hash === "#quran" && last && store.get("quranOpen", false)) openReciter(last.rec, last.moshaf);
@@ -353,21 +369,31 @@ function renderRw() {
 $("#rwChips").onclick = e => { const b = e.target.closest("[data-rw]"); if (!b) return; rwSel = b.dataset.rw; store.set("rw", rwSel); recShown = 40; renderRw(); renderRecs(); };
 function renderRecs() {
   const q = norm($("#recSearch").value);
-  let list = RECITERS.filter(r => (rwSel === "all" || r.moshaf.some(m => m.rw === rwSel)) && (!q || r.n.includes(q)));
+  let list = RECITERS.filter(r => (rwSel === "all" || r.moshaf.some(m => m.rw === rwSel)) && matches(q, r.name));
+  let fam = [];
+  if (q) list.sort((a, b) => (tight(b.name).startsWith(q.replace(/\s+/g, "")) - tight(a.name).startsWith(q.replace(/\s+/g, ""))) || ((a.fam < 0 ? 99 : a.fam) - (b.fam < 0 ? 99 : b.fam)));
+  else { fam = list.filter(r => r.fam >= 0).sort((a, b) => a.fam - b.fam); list = list.filter(r => r.fam < 0); }
   const shown = list.slice(0, recShown);
-  $("#recList").innerHTML = shown.length ? shown.map(r => {
+  const row = r => {
     const ms = rwSel === "all" ? r.moshaf : r.moshaf.filter(m => m.rw === rwSel);
     const types = [...new Set(ms.map(m => m.type).filter(Boolean))].join(" · ");
     const rws = rwSel === "all" ? [...new Set(r.moshaf.map(m => m.rw))].length : 0;
     return `<button class="item" data-rec="${r.id}">
       <span class="medal">${esc(r.name.replace(/^(ال)/, "").trim()[0] || "")}</span>
       <span class="t"><b>${esc(r.name)}</b><small>${esc(types || "تلاوة")}${rws > 1 ? ` · ${ard(rws)} روايات` : ""}</small></span>${IC.arrow}</button>`;
-  }).join("") : `<div class="empty">لا يوجد قارئ بهذا الاسم في هذه الرواية</div>`;
+  };
+  let html = "";
+  if (fam.length) html += `<div class="group-h">الأشهر</div>` + fam.map(row).join("") + `<div class="group-h">كل القرّاء أبجديًا</div>`;
+  let lastL = "";
+  html += shown.map(r => { let h = ""; if (!q && r.letter !== lastL) { lastL = r.letter; h = `<div class="letter">${esc(r.letter)}</div>`; } return h + row(r); }).join("");
+  $("#recList").innerHTML = (fam.length || shown.length) ? html : `<div class="empty">لا يوجد قارئ بهذا الاسم${rwSel !== "all" ? ` في رواية ${esc(rwSel)}. <button class="link-btn" data-rw="all">ابحث في كل الروايات</button>` : ""}</div>`;
   $("#recMore").hidden = list.length <= recShown;
 }
 $("#recSearch").addEventListener("input", debounce(() => { recShown = 40; renderRecs(); }, 150));
 $("#recMore").onclick = () => { recShown += 60; renderRecs(); };
-$("#recList").onclick = e => { const b = e.target.closest("[data-rec]"); if (b) openReciter(+b.dataset.rec); };
+$("#recList").onclick = e => {
+  const a = e.target.closest("[data-rw]"); if (a) { rwSel = "all"; store.set("rw", rwSel); renderRw(); renderRecs(); return; }
+  const b = e.target.closest("[data-rec]"); if (b) openReciter(+b.dataset.rec); };
 function openReciter(id, moshafId) {
   const r = RECITERS.find(x => x.id === id); if (!r) return;
   curRec = r;

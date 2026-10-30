@@ -19,9 +19,11 @@
 <link rel="preconnect" href="https://mp3quran.net" crossorigin>
 <link rel="preconnect" href="https://cdn.mp3quran.net">
 <link rel="preconnect" href="https://stream.radiojar.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="styles.css?v=7">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="styles.css?v=8">
 <script>try{var t=localStorage.getItem("sakina:theme");if(t)document.documentElement.dataset.theme=JSON.parse(t)}catch(e){}</script>
 </head>
 <body>
@@ -184,7 +186,15 @@
 
 <footer><div class="wrap">
   <p class="foot-sadaqa">صدقة جارية على أرواح فؤاد مراد، ومحاسن الشرقاوي، ونادية القوصي، وأحمد السيد. رحمهم الله.</p>
-  <p>  البث المباشر من إذاعات القرآن الكريم في القاهرة والرياض والشارقة · التلاوات والإذاعات من <a href="https://mp3quran.net" target="_blank" rel="noopener">mp3quran.net</a> · المواقيت من <a href="https://aladhan.com" target="_blank" rel="noopener">aladhan.com</a></p>
+  <div class="credit">
+    <span class="by">أعدّه <b dir="ltr">Ahmed Gamal</b></span>
+    <nav class="social" aria-label="حسابات Ahmed Gamal">
+      <a href="https://www.facebook.com/Ahmed.Alsandbad7" target="_blank" rel="noopener">فيسبوك</a>
+      <a href="https://www.instagram.com/ahmedalsandbad" target="_blank" rel="noopener">إنستجرام</a>
+      <a href="https://www.linkedin.com/in/ahmeddakhly/" target="_blank" rel="noopener">لينكدإن</a>
+      <a href="https://twitter.com/AhmedAlsandbad" target="_blank" rel="noopener">إكس</a>
+    </nav>
+  </div>
 </div></footer>
 
 <!-- mini player -->
@@ -232,7 +242,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <audio id="audio" preload="none" playsinline></audio>
 
-<script src="data.js?v=7"></script>
-<script src="app.js?v=7"></script>
+<script src="data.js?v=8" defer></script>
+<script src="app.js?v=8" defer></script>
 </body>
 </html>

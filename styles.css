@@ -149,6 +149,9 @@ select.chip{appearance:none;-webkit-appearance:none;padding-inline-end:32px;
 .item .ic{color:var(--gold);width:22px;height:22px;flex:none}
 .item .arrow{color:var(--dim);width:18px;height:18px;flex:none}
 .tag{font-size:.72rem;border:1px solid var(--rule);border-radius:999px;padding:0 8px;color:var(--gold);white-space:nowrap}
+.group-h{font-size:var(--fs-sm);font-weight:500;color:var(--gold);margin:10px 4px 2px}
+.group-h:first-child{margin-top:0}
+.letter{font-family:var(--f-display);font-size:var(--fs-lg);color:var(--dim);margin:8px 6px 0;line-height:1}
 .more{display:block;margin:12px auto 0;border:1px solid var(--rule);border-radius:999px;padding:8px 22px;color:var(--gold);background:var(--panel)}
 .empty{text-align:center;color:var(--dim);padding:24px 8px}
 .sk{height:62px;border-radius:14px;background:linear-gradient(90deg,var(--panel) 25%,var(--panel-2) 50%,var(--panel) 75%);background-size:200% 100%;animation:sh 1.2s infinite linear}
@@ -197,7 +200,7 @@ select.chip{appearance:none;-webkit-appearance:none;padding-inline-end:32px;
 .fs button{width:34px;height:34px;border-radius:50%;border:1px solid var(--rule);color:var(--gold);font-weight:500;background:var(--panel)}
 .part{padding-block:16px;border-bottom:1px dashed var(--rule)}
 .part:last-child{border-bottom:0}
-.part h3{display:flex;justify-content:space-between;gap:8px;margin:0 0 6px;font-weight:600;font-size:var(--fs-md);color:var(--gold)}
+.part h3{display:flex;justify-content:space-between;gap:8px;margin:0 0 6px;font-weight:500;font-size:var(--fs-md);color:var(--gold)}
 .part h3 span{color:var(--dim);font-size:.82rem;font-weight:300}
 .q{font-family:var(--f-quran);font-size:calc(var(--qs,1.7) * 1rem);line-height:2.3;margin:0;text-align:justify}
 .note{color:var(--dim);font-size:var(--fs-sm);text-align:center;margin-top:16px}
@@ -237,6 +240,12 @@ select.chip{appearance:none;-webkit-appearance:none;padding-inline-end:32px;
 
 footer .wrap{color:var(--dim);font-size:var(--fs-xs);padding-block:32px 8px;text-align:center}
 footer p{margin:0 0 6px}
+.credit{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--rule)}
+.credit .by{font-size:var(--fs-sm);color:var(--dim)}
+.credit .by b{color:var(--ink);font-weight:500}
+.social{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.social a{text-decoration:none;color:var(--ink);border:1px solid var(--rule);background:var(--panel);border-radius:var(--r-pill);padding:5px 14px;font-size:var(--fs-sm);transition:border-color .2s,color .2s}
+.social a:hover{border-color:var(--gold);color:var(--gold)}
 .foot-sadaqa{font-family:var(--f-naskh);font-size:var(--fs-sm);color:var(--gold)}
 
 /* sadaqa jariya dedication */
