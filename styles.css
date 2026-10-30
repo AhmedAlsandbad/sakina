@@ -352,3 +352,19 @@ footer p{margin:0 0 6px}
 .social a{display:inline-grid;place-items:center;min-width:44px;min-height:44px;padding:10px}
 .social a svg{width:19px;height:19px;fill:currentColor}
 .social a:focus-visible,.sadaqa summary:focus-visible,.adh-disclosure summary:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* A visible, restrained dedication */
+.dedication{padding:20px clamp(16px,4vw,30px);text-align:center;overflow:hidden}
+.dedication-head{display:flex;align-items:center;justify-content:center;gap:18px}
+.dedication-ornament{color:var(--gold);font-size:1rem;opacity:.75}
+.dedication-eyebrow{margin:0;color:var(--dim);font-size:.78rem}
+.dedication h2{font-size:clamp(1.5rem,4vw,2rem);line-height:1.4;margin:0;color:var(--gold)}
+.dedication-sub{margin:0 0 12px;color:var(--dim);font-size:.9rem}
+.dedication-names{list-style:none;display:flex;justify-content:center;flex-wrap:wrap;gap:6px 12px;margin:0 auto;padding:0;max-width:600px}
+.dedication-names li{font-family:var(--f-naskh);font-size:1.1rem;font-weight:700;color:var(--ink)}
+.dedication-names li:not(:last-child)::after{content:" ·";color:var(--gold);margin-inline-start:10px}
+.dedication-prayer{font-family:var(--f-naskh);font-size:1rem;margin:10px 0;color:var(--dim)}
+.dedication-details summary{display:inline-flex;gap:8px;cursor:pointer;list-style:none;color:var(--gold);padding:8px 12px;font-size:.85rem}
+.dedication-details summary::-webkit-details-marker{display:none}
+.dedication-details[open] .dua{margin-top:10px}
+.dedication-details summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:8px}
