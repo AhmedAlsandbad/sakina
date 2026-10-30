@@ -336,3 +336,19 @@ footer p{margin:0 0 6px}
 .tabs-bottom a[aria-current="page"]{background:var(--panel-2);border-color:var(--rule);font-weight:700}
 .tabs-bottom a:focus-visible,.tabs-top a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){.tabs-bottom a,.tabs-bottom svg,.tabs-top a{transition:none}}
+
+/* Compact dedication and categorized adhkar */
+.sadaqa{margin-top:24px}
+.sadaqa summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:center;gap:8px 16px;flex-wrap:wrap;padding:18px 20px;text-align:center}
+.sadaqa summary::-webkit-details-marker,.adh-disclosure summary::-webkit-details-marker{display:none}
+.sadaqa-summary-title{font-family:var(--f-display);font-size:1.4rem;color:var(--gold);font-weight:700}
+.sadaqa-summary-sub{color:var(--dim);font-size:.9rem}
+.sadaqa-summary-more{color:var(--gold);font-size:.8rem}
+.adh-disclosure{border:1px solid var(--rule);border-radius:18px;background:var(--panel);padding:16px}
+.adh-disclosure>summary{cursor:pointer;list-style:none;color:var(--gold);font-weight:700;font-size:1.2rem;padding:6px 2px}
+.adh-disclosure>summary span{float:left;color:var(--dim);font-size:.8rem;font-weight:400}
+.adh-disclosure[open]>summary{margin-bottom:18px}
+#v-adhkar .seg{flex-wrap:wrap}
+.social a{display:inline-grid;place-items:center;min-width:44px;min-height:44px;padding:10px}
+.social a svg{width:19px;height:19px;fill:currentColor}
+.social a:focus-visible,.sadaqa summary:focus-visible,.adh-disclosure summary:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
