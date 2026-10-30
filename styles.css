@@ -395,3 +395,15 @@ footer p{margin:0 0 6px}
 .dedication-names li{font-family:var(--f-naskh);font-size:clamp(1.12rem,2vw,1.3rem);line-height:1.7}
 .dedication-prayer{font-family:var(--f-naskh);font-size:1.12rem;line-height:1.8;color:var(--ink);margin:10px 0 4px}
 .dedication-details summary{border:1px solid var(--rule);border-radius:999px;margin-top:8px;padding:8px 18px}
+
+/* Dedication and remembrance refinements */
+.dedication{max-width:720px;margin-inline:auto;padding:22px clamp(18px,4vw,36px);border-radius:20px}
+.dedication-head{gap:14px}
+.dedication h2{font-family:var(--f-naskh);font-size:clamp(1.8rem,4vw,2.15rem);line-height:1.45}
+.dedication-names{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;max-width:480px;margin-top:12px}
+.dedication-names li{font-family:var(--f-naskh);font-size:1.2rem;line-height:1.6}
+.dedication-names li:not(:last-child)::after{content:none}
+.dedication-prayer{margin:12px 0 3px;line-height:1.7}
+#v-adhkar .seg button[aria-selected="true"]{background:var(--gold);color:var(--gold-ink);border-color:var(--gold);font-weight:700}
+#v-adhkar .seg button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+@media(max-width:380px){.dedication{padding:20px 12px}.dedication-names{gap:6px}.dedication-names li{font-size:1.04rem}}
