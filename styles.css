@@ -485,3 +485,13 @@ body::after{opacity:calc(var(--pat) * .45);background-size:100px 100px}
 .dedication-prayer{max-width:32ch;margin:14px auto 8px;font:400 1.1rem/1.8 var(--f-naskh);color:var(--ink);text-wrap:balance}
 .dedication-details summary{padding:9px 18px;margin-top:5px}
 @media(max-width:380px){.dedication-frame{padding:20px 12px}.dedication-names li{padding:8px 3px}.dedication-names li span{font-size:1.05rem}}
+
+/* Memorial heading and names */
+.dedication-eyebrow{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 5px;color:var(--dim);font:500 .83rem/1.6 var(--f-body)}
+.dedication-eyebrow span{display:block;width:28px;height:1px;background:color-mix(in srgb,var(--gold) 42%,transparent)}
+.dedication h2{font-size:clamp(2rem,6vw,2.4rem)}
+.dedication-names{max-width:510px;gap:0 16px}
+.dedication-names li{padding:11px 6px}
+.dedication-names small{color:var(--gold);font:400 .76rem/1.7 var(--f-body)}
+.dedication-names li span{font:500 clamp(1rem,3.5vw,1.15rem)/1.7 var(--f-body);letter-spacing:0}
+@media(max-width:380px){.dedication-names{gap:0 8px}.dedication-names li span{font-size:.96rem}}
