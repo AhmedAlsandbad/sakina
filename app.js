@@ -102,6 +102,10 @@ function paint(st) {
   if (cur) $$(`[data-key="${CSS.escape(cur.key)}"]`).forEach(e => { e.classList.add("on"); const i = e.querySelector(".pi"); if (i) i.innerHTML = icon; });
   // sheet controls
   $("#seek").hidden = live || !cur; $("#liveBadge").hidden = !live;
+  $("#shPrev").hidden = $("#shNext").hidden = live || !cur;
+  $("#rate").closest(".field").hidden = live || !cur;
+  $("#sleepSel option[value=\"-1\"]").disabled = live || !cur;
+  if (live && $("#sleepSel").value === "-1") $("#sleepSel").value = "0";
   $("#shPrev").disabled = !(P.qi > 0 && P.queue.length > 1);
   $("#shNext").disabled = !(P.qi < P.queue.length - 1 || P.loop);
   $("#shBack").hidden = $("#shFwd").hidden = live || !cur;
@@ -290,7 +294,7 @@ window.addEventListener("popstate", e => {
    RADIO
    ========================================================= */
 const stationItem = s => ({ kind: "live", key: "st:" + s.id, title: s.full, sub: s.note, eyebrow: "بث مباشر · " + s.tag, url: s.url });
-let RADIOS = [], radShown = 40;
+let RADIOS = [], radShown = 25;
 const INIT = {};
 INIT.radio = () => {
   $("#stations").innerHTML = STATIONS.map(s => `
@@ -309,7 +313,7 @@ async function loadRadios() {
   try {
     const d = await getJSON(API + "radios?language=ar", "c:radios", 24);
     const featured = new Set(STATIONS.map(s => s.url));
-    RADIOS = d.radios.filter(r => !featured.has(r.url) && !norm(r.name).includes(norm("ترجمة معاني القرآن"))).map(r => ({ id: r.id, name: r.name.replace(/\s+/g, " ").trim(), url: r.url }))
+    RADIOS = d.radios.filter(r => !featured.has(r.url) && !norm(r.name).includes(norm("ترجمة معاني القرآن"))).map(r => ({ id: r.id, name: r.name.replace(/\*/g, "").replace(/\s+/g, " ").trim(), url: r.url }))
       .sort((a, b) => sortKey(a.name).localeCompare(sortKey(b.name), "ar"));
     $("#radCount").textContent = ard(RADIOS.length) + " إذاعة";
     renderRadios();
@@ -328,7 +332,7 @@ function renderRadios() {
   $("#radMore").hidden = list.length <= radShown;
   paint(P.state);
 }
-$("#radSearch").addEventListener("input", debounce(() => { radShown = 40; renderRadios(); }, 150));
+$("#radSearch").addEventListener("input", debounce(() => { radShown = 25; renderRadios(); }, 150));
 $("#radMore").onclick = () => { radShown += 60; renderRadios(); };
 $("#radList").onclick = e => { const b = e.target.closest("[data-rad]"); if (!b) return;
   const r = RADIOS.find(x => String(x.id) === b.dataset.rad);
@@ -342,7 +346,8 @@ $("#radList").onclick = e => { const b = e.target.closest("[data-rad]"); if (!b)
 const FAMOUS = [["عبدالباسط"], ["الحصري"], ["المنشاوي"], ["مصطفي", "اسماعيل"], ["البنا"], ["الطبلاوي"], ["العفاسي"], ["المعيقلي"], ["السديس"], ["الشريم"],
   ["الغامدي"], ["ياسر", "الدوسري"], ["العجمي"], ["فارس", "عباد"], ["القطامي"], ["الشاطري"], ["الحذيفي"], ["محمد", "ايوب"], ["خالد", "الجليل"], ["محمد", "جبريل"], ["البلوشي"], ["ادريس", "ابكر"]]
   .map(a => a.map(w => w.replace(/[أإآ]/g, "ا").replace(/ى/g, "ي")));
-let RECITERS = [], SUWAR = {}, RW = [], rwSel = store.get("rw", "حفص عن عاصم"), recShown = 40, curRec = null, curMoshaf = null;
+const rwGroup = rw => rw.startsWith("حفص عن عاصم") ? "حفص عن عاصم" : rw.startsWith("ورش عن نافع") ? "ورش عن نافع" : "";
+let RECITERS = [], SUWAR = {}, RW = [], rwSel = store.get("rw", "حفص عن عاصم"), recShown = 25, curRec = null, curMoshaf = null;
 const rwKey = name => name.split(" - ")[0].replace(/^برواية\s+/, "").replace(/\s+/g, " ").replace(/\s*-[^-]*-\s*$/, "").trim();
 const mType = name => (name.split(" - ")[1] || "").trim();
 INIT.quran = async () => {
@@ -350,12 +355,12 @@ INIT.quran = async () => {
     const [r, s] = await Promise.all([getJSON(API + "reciters?language=ar", "c:reciters", 24), getJSON(API + "suwar?language=ar", "c:suwar", 240)]);
     s.suwar.forEach(x => SUWAR[x.id] = x.name);
     RECITERS = r.reciters.map(x => ({ id: x.id, name: x.name.trim(), n: norm(x.name),
-      moshaf: x.moshaf.map(m => ({ id: m.id, rw: rwKey(m.name), type: mType(m.name), server: m.server, list: m.surah_list.split(",").map(Number) })) }))
+      moshaf: x.moshaf.map(m => ({ id: m.id, rw: rwKey(m.name), type: mType(m.name), server: m.server, list: m.surah_list.split(",").map(Number) })).filter(m => rwGroup(m.rw)) }))
       .filter(x => x.moshaf.length).sort((a, b) => sortKey(a.name).localeCompare(sortKey(b.name), "ar"));
     RECITERS.forEach(r => { r.name = r.name.replace(/\s+/g, " "); const t = tight(r.name); r.fam = FAMOUS.findIndex(f => f.every(w => t.includes(w))); r.letter = sortKey(r.name)[0] || ""; });
-    const cnt = {}; RECITERS.forEach(x => new Set(x.moshaf.map(m => m.rw)).forEach(k => cnt[k] = (cnt[k] || 0) + 1));
+    const cnt = {}; RECITERS.forEach(x => new Set(x.moshaf.map(m => rwGroup(m.rw))).forEach(k => cnt[k] = (cnt[k] || 0) + 1));
     RW = Object.entries(cnt).sort((a, b) => b[1] - a[1]);
-    if (rwSel !== "all" && !cnt[rwSel]) rwSel = "حفص عن عاصم";
+    if (!cnt[rwSel]) rwSel = "حفص عن عاصم";
     $("#recCount").textContent = ard(RECITERS.length) + " قارئ";
     $("#recSearch").placeholder = "ابحث عن قارئ (مثال: عبدالباسط، المنشاوي)";
     renderRw(); renderRecs();
@@ -365,22 +370,19 @@ INIT.quran = async () => {
 };
 function renderRw() {
   const total = RECITERS.length;
-  $("#rwChips").innerHTML = `<button class="chip" data-rw="all" aria-pressed="${rwSel === "all"}">كل الروايات<small>${ard(total)}</small></button>` +
-    RW.map(([k, c]) => `<button class="chip" data-rw="${esc(k)}" aria-pressed="${rwSel === k}">${esc(k.replace(" عن ", " · "))}<small>${ard(c)}</small></button>`).join("");
-  const rare = RW.filter(([k]) => k !== "حفص عن عاصم").length;
-  $("#rwHint").textContent = rwSel === "حفص عن عاصم" ? `متاح كمان ${ard(rare)} رواية أخرى منها ورش وقالون والدوري. اسحب الاختيارات للجنب.`
-    : rwSel === "all" ? "كل القرّاء بكل الروايات" : `رواية ${rwSel}`;
+  $("#rwChips").innerHTML = RW.map(([k, c]) => `<button class="chip" data-rw="${esc(k)}" aria-pressed="${rwSel === k}">${esc(k.replace(" عن ", " · "))}<small>${ard(c)}</small></button>`).join("");
+  $("#rwHint").textContent = `رواية ${rwSel}`;
 }
-$("#rwChips").onclick = e => { const b = e.target.closest("[data-rw]"); if (!b) return; rwSel = b.dataset.rw; store.set("rw", rwSel); recShown = 40; renderRw(); renderRecs(); };
+$("#rwChips").onclick = e => { const b = e.target.closest("[data-rw]"); if (!b) return; rwSel = b.dataset.rw; store.set("rw", rwSel); recShown = 25; renderRw(); renderRecs(); };
 function renderRecs() {
   const q = norm($("#recSearch").value);
-  let list = RECITERS.filter(r => (rwSel === "all" || r.moshaf.some(m => m.rw === rwSel)) && matches(q, r.name));
+  let list = RECITERS.filter(r => (rwSel === "all" || r.moshaf.some(m => rwGroup(m.rw) === rwSel)) && matches(q, r.name));
   let fam = [];
   if (q) list.sort((a, b) => (tight(b.name).startsWith(q.replace(/\s+/g, "")) - tight(a.name).startsWith(q.replace(/\s+/g, ""))) || ((a.fam < 0 ? 99 : a.fam) - (b.fam < 0 ? 99 : b.fam)));
   else { fam = list.filter(r => r.fam >= 0).sort((a, b) => a.fam - b.fam); list = list.filter(r => r.fam < 0); }
   const shown = list.slice(0, recShown);
   const row = r => {
-    const ms = rwSel === "all" ? r.moshaf : r.moshaf.filter(m => m.rw === rwSel);
+    const ms = rwSel === "all" ? r.moshaf : r.moshaf.filter(m => rwGroup(m.rw) === rwSel);
     const types = [...new Set(ms.map(m => m.type).filter(Boolean))].join(" · ");
     const rws = rwSel === "all" ? [...new Set(r.moshaf.map(m => m.rw))].length : 0;
     return `<button class="item" data-rec="${r.id}">
@@ -394,7 +396,7 @@ function renderRecs() {
   $("#recList").innerHTML = (fam.length || shown.length) ? html : `<div class="empty">لا يوجد قارئ بهذا الاسم${rwSel !== "all" ? ` في رواية ${esc(rwSel)}. <button class="link-btn" data-rw="all">ابحث في كل الروايات</button>` : ""}</div>`;
   $("#recMore").hidden = list.length <= recShown;
 }
-$("#recSearch").addEventListener("input", debounce(() => { recShown = 40; renderRecs(); }, 150));
+$("#recSearch").addEventListener("input", debounce(() => { recShown = 25; renderRecs(); }, 150));
 $("#recMore").onclick = () => { recShown += 60; renderRecs(); };
 $("#recList").onclick = e => {
   const a = e.target.closest("[data-rw]"); if (a) { rwSel = "all"; store.set("rw", rwSel); renderRw(); renderRecs(); return; }
@@ -402,7 +404,7 @@ $("#recList").onclick = e => {
 function openReciter(id, moshafId) {
   const r = RECITERS.find(x => x.id === id); if (!r) return;
   curRec = r;
-  const ms = rwSel === "all" ? r.moshaf : r.moshaf.filter(m => m.rw === rwSel);
+  const ms = rwSel === "all" ? r.moshaf : r.moshaf.filter(m => rwGroup(m.rw) === rwSel);
   const pool = (ms.length ? ms : r.moshaf).slice().sort((a, b) => (b.list.length - a.list.length) || ((b.type === "مرتل") - (a.type === "مرتل")));
   curMoshaf = pool.find(m => m.id === moshafId) || pool[0];
   $("#qPick").hidden = true; $("#qReciter").hidden = false; store.set("quranOpen", true);
@@ -529,7 +531,7 @@ function renderAdhkar() {
     return `<button class="dhikr${n >= d.c ? " done" : ""}" data-dh="${d.id}">
       ${d.title ? `<span class="ttl">${d.title}</span>` : ""}
       <p class="${d.q ? "q" : "q naskh"}">${txt}</p>
-      <span class="dt"><span class="src">${d.q ? "قرآن كريم" : d.src}${d.c > 1 ? ` · ${ard(d.c)} مرات` : ""}</span>
+      <span class="dt"><span class="src">${d.q ? "قرآن كريم" : d.src}${d.c > 1 ? ` · ${ard(d.c)} ${d.c >= 11 ? "مرة" : "مرات"}` : ""}</span>
       <span class="ring" style="--p:${n / d.c * 100}"><span>${n >= d.c ? "✓" : ard(d.c - n)}</span></span></span></button>`;
   }).join("");
   adhProgress(st);
