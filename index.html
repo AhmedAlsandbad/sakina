@@ -10,8 +10,8 @@
 <meta property="og:description" content="إذاعات القرآن مباشرة، المصحف بأكثر من ٢٠٠ قارئ، الرقية الشرعية، الأذكار ومواقيت الصلاة.">
 <meta property="og:image" content="icon-512.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon.svg?v=33" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon-192.png?v=33">
+<link rel="icon" href="icon.svg?v=34" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png?v=34">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -23,13 +23,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="styles.css?v=33">
+<link rel="stylesheet" href="styles.css?v=34">
 <script>try{var t=localStorage.getItem("sakina:theme");if(t)document.documentElement.dataset.theme=JSON.parse(t)}catch(e){}</script>
 </head>
 <body>
 
 <header class="top"><div class="wrap">
-  <a class="logo" href="#radio" aria-label="سكينة، الصفحة الرئيسية"><span>سكينة</span><img src="sakina-logo.svg?v=33" alt="" width="52" height="52"></a>
+  <a class="logo" href="#radio" aria-label="سكينة، الصفحة الرئيسية"><span>سكينة</span><img src="sakina-logo.svg?v=34" alt="" width="52" height="52"></a>
   <nav class="tabs-top" aria-label="الأقسام">
     <a href="#radio" data-nav="radio">الإذاعات</a>
     <a href="#quran" data-nav="quran">المصحف</a>
@@ -168,7 +168,12 @@
         <button role="tab" aria-selected="false" data-period="prayer">بعد الصلاة</button>
       </div>
     </div>
-    <div id="adhContent" hidden><div class="progress-row">
+    <div id="adhContent" hidden>
+    <div id="sleepAudio" class="sleep-listen" hidden>
+      <h3>استمع قبل النوم</h3><p>تشغيل سور الإخلاص والفلق والناس كاملة. آية الكرسي وخواتيم البقرة متاحتان للقراءة أدناه.</p>
+      <div class="sleep-options"><label>القارئ <select id="sleepReader"></select></label><label>مؤقت النوم <select id="sleepTimer"><option value="0">بدون مؤقت</option><option value="15">١٥ دقيقة</option><option value="30">٣٠ دقيقة</option><option value="60">ساعة</option></select></label></div>
+      <button class="chip primary" id="sleepPlay">تشغيل السور</button>
+    </div><div class="progress-row">
       <div class="pbar"><i id="adhBar"></i></div>
       <span class="dim" id="adhProg"></span>
       <button class="link-btn" id="adhReset">البدء من جديد</button>
@@ -230,7 +235,7 @@
 <div class="scrim" id="scrim" hidden></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="المشغل" hidden>
   <button class="grab" id="sheetClose" aria-label="إغلاق المشغل"><span></span></button>
-  <div class="sheet-art"><img src="icon.svg?v=33" alt="" width="120" height="120"></div>
+  <div class="sheet-art"><img src="icon.svg?v=34" alt="" width="120" height="120"></div>
   <div class="eyebrow" id="shEyebrow"></div>
   <h2 class="sheet-title" id="shTitle"></h2>
   <div class="dim" id="shSub"></div>
@@ -254,7 +259,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <audio id="audio" preload="none" playsinline></audio>
 
-<script src="data.js?v=33" defer></script>
-<script src="app.js?v=33" defer></script>
+<script src="data.js?v=34" defer></script>
+<script src="app.js?v=34" defer></script>
 </body>
 </html>
