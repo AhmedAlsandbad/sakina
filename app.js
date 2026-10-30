@@ -568,7 +568,7 @@ $("#adhList").onclick = e => {
   }
   adhProgress(st);
 };
-$("#v-adhkar .seg button").forEach(b => b.onclick = () => { $("#adhContent").hidden = false; setPeriod(b.dataset.period); });
+$$("#v-adhkar .seg button").forEach(b => b.onclick = () => { $("#adhContent").hidden = false; setPeriod(b.dataset.period); });
 $("#adhReset").onclick = () => { store.del(adhKey()); renderAdhkar(); toast("تم تصفير العدّاد"); };
 
 /* Quran reading: independently loaded per surah. */
