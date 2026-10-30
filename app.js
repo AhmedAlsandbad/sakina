@@ -132,7 +132,15 @@ function fail() {
 }
 function stop() { P.want = false; clearTimeout(P.stallT); audio.pause(); paint("idle"); }
 function toggle() {
-  if (!P.cur) { const it = store.get("lastItem", null) || stationItem(STATIONS[0]); play(it); return; }
+  if (!P.cur) {
+    const it = store.get("lastItem", null) || stationItem(STATIONS[0]), lq = store.get("lastQueue", null);
+    if (it.moshaf && lq && lq.moshaf === it.moshaf) {
+      const q = lq.list.map(n => ({ kind: "file", key: `q:${lq.moshaf}:${n}`, title: "سورة " + (lq.names[n] || n), sub: lq.recName, eyebrow: it.eyebrow,
+        url: lq.server + String(n).padStart(3, "0") + ".mp3", rec: lq.rec, moshaf: lq.moshaf, n }));
+      const i = Math.max(0, lq.list.indexOf(it.n)); play(q[i], q, i); return;
+    }
+    play(it); return;
+  }
   if (P.want) { stop(); return; }
   P.retries = 0;
   if (P.cur.kind === "live" || !audio.getAttribute("src")) load(true);
@@ -220,9 +228,11 @@ $("#sleepSel").onchange = e => setSleep(+e.target.value);
 setInterval(sleepLabel, 20000);
 
 /* sheet */
-function openSheet() { if (!P.cur) { toggle(); return; } const s = $("#sheet"), c = $("#scrim"); s.hidden = c.hidden = false; requestAnimationFrame(() => { s.classList.add("show"); c.classList.add("show"); }); paint(P.state); }
-function closeSheet() { const s = $("#sheet"), c = $("#scrim"); if (s.hidden) return; s.classList.remove("show"); c.classList.remove("show"); setTimeout(() => { s.hidden = c.hidden = true; }, 380); }
-$("#capOpen").onclick = openSheet; $("#sheetClose").onclick = closeSheet; $("#scrim").onclick = closeSheet;
+function openSheet() { if (!P.cur) { toggle(); return; } const s = $("#sheet"), c = $("#scrim"); if (!s.hidden) return; s.hidden = c.hidden = false;
+  history.pushState({ sheet: 1 }, "", location.hash || "#radio"); requestAnimationFrame(() => { s.classList.add("show"); c.classList.add("show"); }); paint(P.state); }
+function closeSheet(fromPop) { const s = $("#sheet"), c = $("#scrim"); if (s.hidden) return;
+  if (fromPop !== true && history.state && history.state.sheet) { history.back(); return; } s.classList.remove("show"); c.classList.remove("show"); setTimeout(() => { s.hidden = c.hidden = true; }, 380); }
+$("#capOpen").onclick = openSheet; $("#sheetClose").onclick = () => closeSheet(); $("#scrim").onclick = () => closeSheet();
 (() => { let y0 = null; const s = $("#sheet");
   s.addEventListener("touchstart", e => { if (s.scrollTop <= 0) y0 = e.touches[0].clientY; }, { passive: true });
   s.addEventListener("touchmove", e => { if (y0 === null) return; const dy = e.touches[0].clientY - y0; if (dy > 0) { s.style.transition = "none"; s.style.transform = `translateY(${dy}px)`; } }, { passive: true });
@@ -257,6 +267,11 @@ function route() {
   store.set("view", v);
 }
 window.addEventListener("hashchange", route);
+window.addEventListener("popstate", e => {
+  const st = e.state || {};
+  if (!st.sheet && !$("#sheet").hidden) closeSheet(true);
+  if (!st.rec && !$("#qReciter").hidden) closeReciter();
+});
 
 /* =========================================================
    RADIO
@@ -360,6 +375,7 @@ function openReciter(id, moshafId) {
   const pool = ms.length ? ms : r.moshaf;
   curMoshaf = pool.find(m => m.id === moshafId) || pool[0];
   $("#qPick").hidden = true; $("#qReciter").hidden = false; store.set("quranOpen", true);
+  if (!(history.state && history.state.rec)) history.pushState({ rec: id }, "", "#quran");
   $("#recAvatar").textContent = r.name.replace(/^(ال)/, "").trim()[0] || "";
   $("#recName").textContent = r.name;
   $("#moshafChips").innerHTML = r.moshaf.map(m => `<button class="chip" data-ms="${m.id}" aria-pressed="${m.id === curMoshaf.id}">${esc(m.rw)}${m.type ? " · " + esc(m.type) : ""}<small>${ard(m.list.length)}</small></button>`).join("");
@@ -380,7 +396,8 @@ function renderSuras() {
 $("#suraSearch").addEventListener("input", debounce(renderSuras, 120));
 $("#moshafChips").onclick = e => { const b = e.target.closest("[data-ms]"); if (!b) return; curMoshaf = curRec.moshaf.find(m => m.id === +b.dataset.ms);
   $$("#moshafChips .chip").forEach(c => c.setAttribute("aria-pressed", c === b)); renderSuras(); };
-$("#qBack").onclick = () => { $("#qReciter").hidden = true; $("#qPick").hidden = false; store.set("quranOpen", false); $("#suraSearch").value = ""; };
+function closeReciter() { $("#qReciter").hidden = true; $("#qPick").hidden = false; store.set("quranOpen", false); $("#suraSearch").value = ""; }
+$("#qBack").onclick = () => { if (history.state && history.state.rec) history.back(); else closeReciter(); };
 function suraItem(m, rec, n) {
   return { kind: "file", key: `q:${m.id}:${n}`, title: "سورة " + (SUWAR[n] || n), sub: rec.name, eyebrow: m.rw + (m.type ? " · " + m.type : ""),
     url: m.server + String(n).padStart(3, "0") + ".mp3", rec: rec.id, moshaf: m.id, n };
@@ -390,6 +407,8 @@ function playSura(n) {
   const key = `q:${m.id}:${n}`;
   if (P.cur && P.cur.key === key) { toggle(); return; }
   const queue = m.list.map(x => suraItem(m, rec, x));
+  const names = {}; m.list.forEach(x => names[x] = SUWAR[x]);
+  store.set("lastQueue", { moshaf: m.id, rec: rec.id, recName: rec.name, server: m.server, list: m.list, names });
   play(queue[m.list.indexOf(n)], queue, m.list.indexOf(n));
 }
 P.onTrack = it => { if (it.moshaf) { store.set("lastQ:" + it.moshaf, it.n); store.set("lastRec", { rec: it.rec, moshaf: it.moshaf }); } };
