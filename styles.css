@@ -526,3 +526,14 @@ header.top .wrap{min-height:68px;padding-block:6px;gap:12px}
 .sleep-options{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
 .sleep-options label{display:grid;gap:4px;flex:1;min-width:145px;font-size:.85rem}
 .sleep-options select{background:var(--panel);color:var(--ink);border:1px solid var(--rule);border-radius:10px;padding:9px}
+
+.radio-controls{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 8px}
+.radio-controls label{display:grid;gap:4px;flex:1;min-width:140px;font-size:.82rem;color:var(--dim)}
+.radio-controls select{width:100%;min-height:44px;padding:8px 12px;background:var(--panel);border:1px solid var(--rule);border-radius:12px;color:var(--ink)}
+.page-navigation{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:28px;font:500 .85rem var(--f-body);color:#6d5933}
+.page-navigation .chip{color:#594522;background:#f4e8cb;border-color:#c3a568}
+.page-navigation button:disabled{opacity:.45}
+.mushaf-page{border:1px solid #b79b61;box-shadow:inset 0 0 0 6px #f8f0dc,inset 0 0 0 7px #d8c494;line-height:2.5}
+.mushaf-page h3{border-block:1px solid #d9c49a;padding:10px 5px;margin:0 0 20px;font-size:1.5rem}
+#readingVerses{line-height:2.7}
+@media(max-width:480px){.page-navigation{gap:6px}.page-navigation .chip{font-size:.8rem;padding:8px}.page-navigation span{font-size:.75rem}}
