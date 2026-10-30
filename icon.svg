@@ -1,1 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#071512"/><path d="M256 70 296 176 402 216 296 256 256 362 216 256 110 216 216 176Z" fill="none" stroke="#e0b45e" stroke-width="14" transform="translate(0 40)"/><path d="M146 446V300a110 110 0 0 1 220 0v146" fill="none" stroke="#e0b45e" stroke-width="18" stroke-linecap="round"/><circle cx="256" cy="256" r="26" fill="#e0b45e"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6d896"/><stop offset="1" stop-color="#d9a648"/></linearGradient>
+    <radialGradient id="bg" cx=".5" cy=".35" r=".75"><stop offset="0" stop-color="#14362f"/><stop offset="1" stop-color="#071512"/></radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+  <path d="M148 424V262c0-62 44-112 108-166 64 54 108 104 108 166v162" fill="none" stroke="url(#g)" stroke-width="22" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M116 424h280" stroke="url(#g)" stroke-width="22" stroke-linecap="round"/>
+  <g transform="translate(256 290)" fill="none" stroke="url(#g)" stroke-width="13" stroke-linejoin="round">
+    <rect x="-50" y="-50" width="100" height="100"/>
+    <rect x="-50" y="-50" width="100" height="100" transform="rotate(45)"/>
+  </g>
+  <circle cx="256" cy="290" r="16" fill="url(#g)"/>
+</svg>
