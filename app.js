@@ -63,7 +63,7 @@ const audio = $("#audio");
 const P = { cur: null, queue: [], qi: 0, loop: false, want: false, retries: 0, stallT: null, state: "idle", onEnd: null, sleepEnd: 0, sleepT: null, sleepAtEnd: false };
 
 function setMeta(it) {
-  if (it.key && it.key.startsWith("rad:")) it.title = (it.title || "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
+  if (it.key && it.key.startsWith("rad:")) { it.title = (it.title || "").replace(/\*/g, "").replace(/\s+/g, " ").trim(); it.eyebrow = "الإذاعات والقرّاء"; }
   $("#capTitle").textContent = it.title;
   $("#capSub").textContent = it.sub;
   $("#shEyebrow").textContent = it.eyebrow || "";
@@ -381,6 +381,7 @@ $("#rwChips").onclick = e => { const b = e.target.closest("[data-rw]"); if (!b) 
 function renderRecs() {
   const q = norm($("#recSearch").value);
   let list = RECITERS.filter(r => (rwSel === "all" || r.moshaf.some(m => rwGroup(m.rw) === rwSel)) && matches(q, r.name));
+  $("#recCount").textContent = ard(list.length) + " قارئ";
   let fam = [];
   if (q) list.sort((a, b) => (tight(b.name).startsWith(q.replace(/\s+/g, "")) - tight(a.name).startsWith(q.replace(/\s+/g, ""))) || ((a.fam < 0 ? 99 : a.fam) - (b.fam < 0 ? 99 : b.fam)));
   else { fam = list.filter(r => r.fam >= 0).sort((a, b) => a.fam - b.fam); list = list.filter(r => r.fam < 0); }
