@@ -168,7 +168,11 @@ function prev() {
 audio.addEventListener("loadedmetadata", () => { if (P.pendingSeek && audio.duration > P.pendingSeek + 5) audio.currentTime = P.pendingSeek; P.pendingSeek = 0; });
 audio.addEventListener("playing", () => { clearTimeout(P.stallT); P.retries = 0; paint("playing"); });
 audio.addEventListener("waiting", () => { if (!P.want) return; paint("loading"); clearTimeout(P.stallT); P.stallT = setTimeout(() => { if (audio.readyState < 3) fail(); }, 15000); });
-audio.addEventListener("pause", () => { if (!P.want && !audio.ended && P.state !== "error") paint("idle"); });
+audio.addEventListener("pause", () => {
+  if (!P.want && !audio.ended && P.state !== "error") { paint("idle"); return; }
+  // paused by the system (call, headphones unplugged, lock-screen control): reflect it
+  setTimeout(() => { if (P.want && audio.paused && !audio.ended && audio.readyState >= 2) { P.want = false; clearTimeout(P.stallT); paint("idle"); } }, 400);
+});
 audio.addEventListener("error", () => { if (audio.getAttribute("src")) fail(); });
 audio.addEventListener("ended", () => {
   if (P.cur && P.cur.kind === "file") store.del("pos:" + P.cur.url);
