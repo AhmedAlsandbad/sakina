@@ -467,3 +467,21 @@ body::after{opacity:calc(var(--pat) * .45);background-size:100px 100px}
 .dock-toggle{font-family:var(--f-body);min-width:44px}
 @media(max-width:480px){.wrap{padding-inline:14px}.tabs-bottom a{font-size:.7rem}.tabs-bottom svg{width:21px;height:21px}.tabs-bottom{padding-inline:5px}.logo img{width:44px;height:44px}.logo span{font-size:1.65rem}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.tabs-bottom a,.tabs-top a,.seg button{transition:none}}
+
+/* Memorial dedication */
+.dedication{max-width:700px;padding:7px;margin-top:28px;border-radius:24px;background:linear-gradient(145deg,color-mix(in srgb,var(--gold) 9%,var(--panel)),var(--panel) 70%);box-shadow:0 12px 30px #0002}
+.dedication-frame{padding:24px clamp(18px,5vw,44px);border-radius:18px;border:1px solid color-mix(in srgb,var(--gold) 24%,var(--rule))}
+.dedication-emblem{font-size:.82rem;opacity:.8;width:auto;height:auto;margin:0 auto 8px}
+.dedication-eyebrow{font:500 .85rem/1.6 var(--f-body);color:var(--dim);margin:0 0 2px}
+.dedication h2{font:700 clamp(2rem,6vw,2.5rem)/1.35 var(--f-naskh);color:var(--gold);margin:0}
+.dedication-sub{font:400 1.08rem/1.6 var(--f-naskh);color:var(--ink);margin:3px 0 0}
+.dedication-divider{max-width:160px;margin:12px auto 14px;opacity:.75}
+.dedication-names{max-width:510px;gap:0;grid-template-columns:repeat(2,minmax(0,1fr))}
+.dedication-names li{background:none;border:0;border-radius:0;padding:9px 5px}
+.dedication-names li:nth-child(-n+2){border-bottom:1px solid var(--rule)}
+.dedication-names li:nth-child(odd){border-inline-end:1px solid var(--rule)}
+.dedication-names small{font:400 .72rem/1.5 var(--f-body);color:var(--dim)}
+.dedication-names li span{font:700 clamp(1.1rem,3.6vw,1.3rem)/1.55 var(--f-naskh);color:var(--ink)}
+.dedication-prayer{max-width:32ch;margin:14px auto 8px;font:400 1.1rem/1.8 var(--f-naskh);color:var(--ink);text-wrap:balance}
+.dedication-details summary{padding:9px 18px;margin-top:5px}
+@media(max-width:380px){.dedication-frame{padding:20px 12px}.dedication-names li{padding:8px 3px}.dedication-names li span{font-size:1.05rem}}
