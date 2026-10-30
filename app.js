@@ -313,8 +313,11 @@ async function loadRadios() {
   try {
     const d = await getJSON(API + "radios?language=ar", "c:radios", 24);
     const featured = new Set(STATIONS.map(s => s.url));
-    RADIOS = d.radios.filter(r => !featured.has(r.url) && !["ترجمة معاني القرآن", "تكبير", "تفسير"].some(term => norm(r.name).includes(norm(term)))).map(r => ({ id: r.id, name: r.name.replace(/\*/g, "").replace(/\s+/g, " ").trim(), url: r.url }))
+    RADIOS = d.radios.filter(r => !featured.has(r.url) && !["ترجمة معاني القرآن", "تكبير", "تفسير"].some(term => norm(r.name).includes(norm(term)))).map(r => ({ id: r.id, name: r.name.replace(/\*/g, "").replace(/^[\s\-–—]+|[\s\-–—]+$/g, "").replace(/^أذاعة\s+/, "").replace(/^ابراهيم(?=\s|$)/, "إبراهيم").replace(/\s+/g, " ").trim(), url: r.url }))
       .sort((a, b) => sortKey(a.name).localeCompare(sortKey(b.name), "ar"));
+    const counts = new Map(), seen = new Map();
+    RADIOS.forEach(r => counts.set(norm(r.name), (counts.get(norm(r.name)) || 0) + 1));
+    RADIOS.forEach(r => { const key = norm(r.name); if (counts.get(key) > 1) { const n = (seen.get(key) || 0) + 1; seen.set(key, n); r.name += ` · إذاعة ${ard(n)}`; } });
     $("#radCount").textContent = ard(RADIOS.length) + " إذاعة";
     renderRadios();
   } catch (e) { $("#radList").innerHTML = `<div class="empty">تعذّر تحميل الإذاعات. <button class="link-btn" id="radRetry">إعادة المحاولة</button></div>`; $("#radRetry").onclick = loadRadios; }
