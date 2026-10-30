@@ -517,11 +517,16 @@ document.addEventListener("click", e => { if (e.target.closest(".fsUp")) setQs(q
 let period = (() => { const h = new Date().getHours(); return h >= 3 && h < 15 ? "m" : "e"; })();
 INIT.adhkar = () => { loadQuranFont(); setPeriod(period); };
 const adhKey = () => "adh:" + todayKey() + ":" + period;
-function adhItems() { return ADHKAR.filter(d => !d.only || d.only === period); }
+const EXTRA_ADHKAR = {
+  sleep: [{ id: "sleep-name", c: 1, src: "صحيح البخاري", m: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا" }],
+  prayer: [{ id: "prayer-istighfar", c: 3, src: "صحيح مسلم", m: "أَسْتَغْفِرُ اللَّهَ" }, { id: "prayer-salam", c: 1, src: "صحيح مسلم", m: "اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ" }]
+};
+const adhLabels = { m: "أذكار الصباح", e: "أذكار المساء", sleep: "أذكار النوم", prayer: "أذكار بعد الصلاة" };
+function adhItems() { return EXTRA_ADHKAR[period] || ADHKAR.filter(d => !d.only || d.only === period); }
 function setPeriod(p) {
   period = p;
   $$("#v-adhkar .seg button").forEach(b => b.setAttribute("aria-selected", b.dataset.period === p));
-  $("#adhTitle").textContent = p === "m" ? "أذكار الصباح" : "أذكار المساء";
+  $("#adhTitle").textContent = adhLabels[p];
   renderAdhkar();
 }
 function renderAdhkar() {
@@ -544,7 +549,7 @@ function adhProgress(st) {
 }
 $("#adhList").onclick = e => {
   const b = e.target.closest("[data-dh]"); if (!b) return;
-  const d = ADHKAR.find(x => x.id === b.dataset.dh), st = store.get(adhKey(), {});
+  const d = adhItems().find(x => x.id === b.dataset.dh), st = store.get(adhKey(), {});
   const n = (st[d.id] || 0);
   if (n >= d.c) return;
   st[d.id] = n + 1; store.set(adhKey(), st);
@@ -556,7 +561,7 @@ $("#adhList").onclick = e => {
     b.classList.add("done");
     const nextEl = [...$$("#adhList .dhikr")].find(x => !x.classList.contains("done"));
     if (nextEl) setTimeout(() => nextEl.scrollIntoView({ behavior: "smooth", block: "center" }), 280);
-    else toast("أتممت " + (period === "m" ? "أذكار الصباح" : "أذكار المساء") + "، تقبّل الله");
+    else toast("أتممت " + adhLabels[period] + "، تقبّل الله");
   }
   adhProgress(st);
 };
