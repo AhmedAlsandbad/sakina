@@ -518,7 +518,7 @@ document.addEventListener("click", e => { if (e.target.closest(".fsUp")) setQs(q
    ADHKAR
    ========================================================= */
 let period = (() => { const h = new Date().getHours(); return h >= 3 && h < 15 ? "m" : "e"; })();
-INIT.adhkar = () => { loadQuranFont(); setPeriod(period); };
+INIT.adhkar = () => { loadQuranFont(); if (!$("#adhContent").hidden) setPeriod(period); else { $("#adhTitle").textContent = "الأذكار"; $$("#v-adhkar .seg button").forEach(b => b.setAttribute("aria-selected", "false")); } };
 const adhKey = () => "adh:" + todayKey() + ":" + period;
 const EXTRA_ADHKAR = {
   sleep: [{ id: "sleep-name", c: 1, src: "صحيح البخاري", m: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا" }],
@@ -693,6 +693,5 @@ if (last) { P.cur = null; setMeta(last); $("#capSub").textContent = "اضغط ل
 if (!last || last.kind !== "live") { const s = STATIONS.find(x => x.id === store.get("lastStation", "cairo")) || STATIONS[0];
   $("#heroEyebrow").textContent = "بث مباشر · " + s.tag; $("#heroTitle").textContent = s.full; $("#heroSub").textContent = s.note; }
 paint("idle");
-idle(() => { if (!inited.quran) { getJSON(API + "reciters?language=ar", "c:reciters", 24).catch(() => {}); getJSON(API + "suwar?language=ar", "c:suwar", 240).catch(() => {}); }
-  loadPrayer(false); });
+idle(() => { loadPrayer(false); });
 })();
