@@ -568,8 +568,43 @@ $("#adhList").onclick = e => {
   }
   adhProgress(st);
 };
-$$("#v-adhkar .seg button").forEach(b => b.onclick = () => setPeriod(b.dataset.period));
+$("#v-adhkar .seg button").forEach(b => b.onclick = () => { $("#adhContent").hidden = false; setPeriod(b.dataset.period); });
 $("#adhReset").onclick = () => { store.del(adhKey()); renderAdhkar(); toast("تم تصفير العدّاد"); };
+
+/* Quran reading: independently loaded per surah. */
+let readingRequest = 0, readingTafsir = [];
+const readingSelect = $("#readingSurah");
+$("#qListen").onclick = () => { $("#qAudio").hidden = false; $("#qReading").hidden = true; $("#qListen").setAttribute("aria-pressed", "true"); $("#qRead").setAttribute("aria-pressed", "false"); };
+$("#qRead").onclick = async () => {
+  $("#qAudio").hidden = true; $("#qReading").hidden = false; $("#qListen").setAttribute("aria-pressed", "false"); $("#qRead").setAttribute("aria-pressed", "true"); loadQuranFont();
+  if (!readingSelect.options.length) {
+    try { const data = await getJSON("https://api.alquran.cloud/v1/surah", "c:reading-surahs", 720);
+      readingSelect.innerHTML = data.data.map(x => `<option value="${x.number}">${ard(x.number)} · ${esc(x.name)}</option>`).join("");
+      readingSelect.value = String(store.get("readingSurah", 1));
+    } catch(e) { $("#readingVerses").textContent = "تعذّر تحميل قائمة السور. اضغط قراءة وتفسير لإعادة المحاولة."; return; }
+  }
+  loadReading();
+};
+async function loadReading() {
+  const n = +readingSelect.value, request = ++readingRequest; if (!n) return;
+  store.set("readingSurah", n); $("#readingTitle").textContent = readingSelect.selectedOptions[0].textContent;
+  $("#readingVerses").textContent = "جارٍ تحميل الآيات…"; $("#tafsirText").textContent = "اختر آية لعرض تفسيرها.";
+  try {
+    const [q, taf] = await Promise.all([getJSON("https://api.alquran.cloud/v1/surah/" + n + "/quran-uthmani", "c:qread:" + n, 720), getJSON("https://api.alquran.cloud/v1/surah/" + n + "/ar.muyassar", "c:tafsir:" + n, 720)]);
+    if (request !== readingRequest) return;
+    if (!q.data?.ayahs?.length || q.data.ayahs.length !== taf.data?.ayahs?.length) throw Error("invalid data");
+    readingTafsir = taf.data.ayahs;
+    $("#readingVerses").innerHTML = q.data.ayahs.map(a => `<button class="verse" data-ayah="${a.numberInSurah}" aria-label="تفسير الآية ${ard(a.numberInSurah)}">${esc(a.text)} <span>﴿${ard(a.numberInSurah)}﴾</span></button>`).join(" ");
+  } catch(e) { if (request === readingRequest) $("#readingVerses").innerHTML = '<p>تعذّر تحميل السورة أو التفسير. تحقق من اتصال الإنترنت.</p><button class="chip" id="readingRetry">إعادة المحاولة</button>'; }
+}
+readingSelect.onchange = loadReading;
+$("#readingPrev").onclick = () => { if (+readingSelect.value > 1) { readingSelect.value = String(+readingSelect.value - 1); loadReading(); } };
+$("#readingNext").onclick = () => { if (+readingSelect.value < 114) { readingSelect.value = String(+readingSelect.value + 1); loadReading(); } };
+$("#readingVerses").onclick = e => { if (e.target.closest("#readingRetry")) { loadReading(); return; } const b = e.target.closest("[data-ayah]"); if (!b) return;
+  const a = readingTafsir.find(x => x.numberInSurah === +b.dataset.ayah); if (!a) return;
+  $("#readingVerses .verse").forEach(v => v.classList.toggle("selected", v === b));
+  $("#tafsirText").textContent = "الآية " + ard(a.numberInSurah) + " · " + a.text;
+};
 
 /* =========================================================
    PRAYER TIMES
