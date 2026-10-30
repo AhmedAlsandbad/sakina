@@ -524,6 +524,13 @@ const EXTRA_ADHKAR = {
   sleep: [{ id: "sleep-name", c: 1, src: "صحيح البخاري", m: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا" }],
   prayer: [{ id: "prayer-istighfar", c: 3, src: "صحيح مسلم", m: "أَسْتَغْفِرُ اللَّهَ" }, { id: "prayer-salam", c: 1, src: "صحيح مسلم", m: "اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ" }]
 };
+EXTRA_ADHKAR.sleep.push({ id: "sleep-aslamtu", c: 1, src: "صحيح البخاري ٦٣١٥", m: "اللَّهُمَّ أَسْلَمْتُ نَفْسِي إِلَيْكَ، وَوَجَّهْتُ وَجْهِي إِلَيْكَ، وَفَوَّضْتُ أَمْرِي إِلَيْكَ، وَأَلْجَأْتُ ظَهْرِي إِلَيْكَ، رَغْبَةً وَرَهْبَةً إِلَيْكَ، لَا مَلْجَأَ وَلَا مَنْجَا مِنْكَ إِلَّا إِلَيْكَ، آمَنْتُ بِكِتَابِكَ الَّذِي أَنْزَلْتَ، وَنَبِيِّكَ الَّذِي أَرْسَلْتَ" });
+EXTRA_ADHKAR.prayer.push(
+ {id:"prayer-subhan",c:33,src:"صحيح مسلم ٥٩٧",m:"سُبْحَانَ اللَّهِ"},
+ {id:"prayer-hamd",c:33,src:"صحيح مسلم ٥٩٧",m:"الْحَمْدُ لِلَّهِ"},
+ {id:"prayer-takbir",c:33,src:"صحيح مسلم ٥٩٧",m:"اللَّهُ أَكْبَرُ"},
+ {id:"prayer-tahlil",c:1,src:"صحيح مسلم ٥٩٧",m:"لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ"}
+);
 const adhLabels = { m: "أذكار الصباح", e: "أذكار المساء", sleep: "أذكار النوم", prayer: "أذكار بعد الصلاة" };
 function adhItems() { return EXTRA_ADHKAR[period] || ADHKAR.filter(d => !d.only || d.only === period); }
 function setPeriod(p) {
@@ -570,6 +577,8 @@ $("#adhList").onclick = e => {
 };
 $$("#v-adhkar .seg button").forEach(b => b.onclick = () => { $("#adhContent").hidden = false; setPeriod(b.dataset.period); });
 $("#adhReset").onclick = () => { store.del(adhKey()); renderAdhkar(); toast("تم تصفير العدّاد"); };
+
+$("#dockToggle").onclick = () => { const compact = $("#dock").classList.toggle("compact"); $("#dockToggle").setAttribute("aria-expanded", String(!compact)); $("#dockToggle").setAttribute("aria-label", compact ? "إظهار المشغل" : "تصغير المشغل"); $("#dockToggle").textContent = compact ? "⌃" : "⌄"; };
 
 /* Quran reading: independently loaded per surah. */
 let readingRequest = 0, readingTafsir = [];
