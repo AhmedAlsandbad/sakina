@@ -118,33 +118,36 @@ function play(it, queue, qi, opts) {
   P.queue = queue || [it]; P.qi = qi || 0; P.loop = !!(opts && opts.loop); P.onEnd = opts && opts.onEnd || null;
   start(it);
 }
+let playbackEpoch = 0, retryTimer = null, retryPending = false;
 function start(it) {
+  playbackEpoch++; clearTimeout(retryTimer); retryPending = false;
   P.cur = it; P.retries = 0; setMeta(it); store.set("lastItem", it); load(true);
   if (it.kind === "file" && P.onTrack) P.onTrack(it);
   if (P.cur.onStart) P.cur.onStart();
 }
 function load(fresh) {
   clearTimeout(P.stallT); P.want = true;
-  const it = P.cur;
+  const it = P.cur, epoch = playbackEpoch;
   audio.src = it.kind === "live" ? it.url + (it.url.includes("?") ? "&" : "?") + "t=" + Date.now() : it.url;
   audio.playbackRate = it.kind === "live" ? 1 : +($("#rate").value || 1);
   if (fresh && it.kind === "file") { const pos = store.get("pos:" + it.url, 0); P.pendingSeek = pos > 5 ? pos : 0; }
   paint("loading");
   const p = audio.play();
-  if (p) p.catch(err => { if (err && err.name === "NotAllowedError") { P.want = false; paint("idle"); } else fail(); });
+  if (p) p.catch(err => { if (epoch !== playbackEpoch) return; if (err && err.name === "NotAllowedError") { P.want = false; paint("idle"); } else fail(); });
   P.stallT = setTimeout(() => { if (P.want && (audio.paused || audio.readyState < 3)) fail(); }, 12000);
 }
 function fail() {
   clearTimeout(P.stallT);
-  if (!P.want || !P.cur) return;
+  if (!P.want || !P.cur || retryPending) return;
   if (P.retries < 3) {
     P.retries++;
     if (P.cur.kind === "file") P.pendingSeek = audio.currentTime || P.pendingSeek || 0;
     paint("loading");
-    setTimeout(() => { if (P.want) load(false); }, 900 * P.retries);
+    retryPending = true; const epoch = playbackEpoch;
+    retryTimer = setTimeout(() => { retryPending = false; if (P.want && epoch === playbackEpoch) load(false); }, 900 * P.retries);
   } else { P.want = false; paint("error"); }
 }
-function stop() { P.want = false; clearTimeout(P.stallT); audio.pause(); paint("idle"); }
+function stop() { playbackEpoch++; clearTimeout(retryTimer); retryPending = false; P.want = false; clearTimeout(P.stallT); audio.pause(); paint("idle"); }
 function toggle() {
   if (!P.cur) {
     const it = store.get("lastItem", null) || stationItem(STATIONS[0]), lq = store.get("lastQueue", null);
@@ -158,7 +161,7 @@ function toggle() {
   if (P.want) { stop(); return; }
   P.retries = 0;
   if (P.cur.kind === "live" || !audio.getAttribute("src")) load(true);
-  else { P.want = true; paint("loading"); audio.play().catch(fail); }
+  else { P.want = true; paint("loading"); const epoch = playbackEpoch; audio.play().catch(() => { if (epoch === playbackEpoch) fail(); }); }
 }
 function next() {
   if (P.qi < P.queue.length - 1) { P.qi++; start(P.queue[P.qi]); return true; }
@@ -171,7 +174,7 @@ function prev() {
 }
 
 audio.addEventListener("loadedmetadata", () => { if (P.pendingSeek && audio.duration > P.pendingSeek + 5) audio.currentTime = P.pendingSeek; P.pendingSeek = 0; });
-audio.addEventListener("playing", () => { clearTimeout(P.stallT); P.retries = 0; paint("playing"); });
+audio.addEventListener("playing", () => { clearTimeout(P.stallT); clearTimeout(retryTimer); retryPending = false; P.retries = 0; paint("playing"); });
 audio.addEventListener("waiting", () => { if (!P.want) return; paint("loading"); clearTimeout(P.stallT); P.stallT = setTimeout(() => { if (audio.readyState < 3) fail(); }, 15000); });
 audio.addEventListener("pause", () => {
   if (!P.want && !audio.ended && P.state !== "error") { paint("idle"); return; }
@@ -216,14 +219,17 @@ document.addEventListener("keydown", e => {
 });
 
 /* sleep timer */
+let sleepFade = null, sleepOriginalVolume = null;
 function setSleep(min) {
-  clearTimeout(P.sleepT); P.sleepAtEnd = false; P.sleepEnd = 0;
+  clearTimeout(P.sleepT); clearInterval(sleepFade); sleepFade = null;
+  if (sleepOriginalVolume !== null) { audio.volume = sleepOriginalVolume; sleepOriginalVolume = null; }
+  P.sleepAtEnd = false; P.sleepEnd = 0;
   if (min === -1) { P.sleepAtEnd = true; }
   else if (min > 0) {
     P.sleepEnd = Date.now() + min * 60000;
     P.sleepT = setTimeout(() => {
-      const v0 = audio.volume; let k = 0;
-      const f = setInterval(() => { k++; audio.volume = Math.max(0, v0 * (1 - k / 20)); if (k >= 20) { clearInterval(f); stop(); audio.volume = v0; P.sleepEnd = 0; sleepLabel(); toast("انتهى مؤقت النوم"); } }, 1000);
+      const v0 = audio.volume; sleepOriginalVolume = v0; let k = 0;
+      sleepFade = setInterval(() => { k++; audio.volume = Math.max(0, v0 * (1 - k / 20)); if (k >= 20) { clearInterval(sleepFade); sleepFade = null; stop(); audio.volume = v0; sleepOriginalVolume = null; P.sleepEnd = 0; sleepLabel(); toast("انتهى مؤقت النوم"); } }, 1000);
     }, Math.max(0, min * 60000 - 20000));
   }
   $("#sleepSel").value = String(min);
@@ -614,10 +620,11 @@ async function loadReading() {
   store.set("readingSurah", n); $("#readingTitle").textContent = readingSelect.selectedOptions[0].textContent;
   $("#tafsirPanel").classList.remove("tafsir-open"); $("#readingVerses").textContent = "جارٍ تحميل الآيات…"; $("#tafsirText").textContent = "اختر آية لعرض تفسيرها.";
   try {
-    const [q, taf] = await Promise.all([getJSON("https://api.alquran.cloud/v1/surah/" + n + "/quran-uthmani", "c:qread:" + n, 720), getJSON("https://api.alquran.cloud/v1/surah/" + n + "/ar.muyassar", "c:tafsir:" + n, 720)]);
+    const [q, taf] = await Promise.all([getJSON("https://api.alquran.cloud/v1/surah/" + n + "/quran-uthmani", "c:qread:" + n, 720), getJSON("https://api.alquran.cloud/v1/surah/" + n + "/ar.muyassar", "c:tafsir:" + n, 720).catch(() => null)]);
     if (request !== readingRequest) return;
-    if (!q.data?.ayahs?.length || q.data.ayahs.length !== taf.data?.ayahs?.length) throw Error("invalid data");
-    readingTafsir = taf.data.ayahs;
+    if (!q.data?.ayahs?.length) throw Error("invalid data");
+    readingTafsir = taf?.data?.ayahs?.length === q.data.ayahs.length ? taf.data.ayahs : [];
+    if (!readingTafsir.length) $("#tafsirText").textContent = "التفسير غير متاح حاليًا. أعد تحميل السورة للمحاولة مجددًا.";
     $("#readingVerses").innerHTML = q.data.ayahs.map(a => `<button class="verse" data-ayah="${a.numberInSurah}" aria-label="تفسير الآية ${ard(a.numberInSurah)}">${esc(a.text)} <span>﴿${ard(a.numberInSurah)}﴾</span></button>`).join(" ");
   } catch(e) { if (request === readingRequest) $("#readingVerses").innerHTML = '<p>تعذّر تحميل السورة أو التفسير. تحقق من اتصال الإنترنت.</p><button class="chip" id="readingRetry">إعادة المحاولة</button>'; }
 }
@@ -626,7 +633,7 @@ readingSelect.onchange = loadReading;
 $("#readingPrev").onclick = () => { if (+readingSelect.value > 1) { readingSelect.value = String(+readingSelect.value - 1); loadReading(); } };
 $("#readingNext").onclick = () => { if (+readingSelect.value < 114) { readingSelect.value = String(+readingSelect.value + 1); loadReading(); } };
 $("#readingVerses").onclick = e => { if (e.target.closest("#readingRetry")) { loadReading(); return; } const b = e.target.closest("[data-ayah]"); if (!b) return;
-  const a = readingTafsir.find(x => x.numberInSurah === +b.dataset.ayah); if (!a) return;
+  const a = readingTafsir.find(x => x.numberInSurah === +b.dataset.ayah); if (!a) { $("#tafsirPanel").classList.add("tafsir-open"); return; }
   $$("#readingVerses .verse").forEach(v => v.classList.toggle("selected", v === b));
   $("#tafsirText").textContent = "الآية " + ard(a.numberInSurah) + " · " + a.text; $("#tafsirPanel").classList.add("tafsir-open");
 };
@@ -636,7 +643,11 @@ $("#readingVerses").onclick = e => { if (e.target.closest("#readingRetry")) { lo
    ========================================================= */
 const tzCity = { "Asia/Dubai": "dubai", "Africa/Cairo": "cairo", "Asia/Riyadh": "riyadh" };
 let city = CITIES.find(c => c.id === store.get("city", tzCity[Intl.DateTimeFormat().resolvedOptions().timeZone] || "dubai")) || CITIES[0];
-let PT = null, ptTimer = null;
+let PT = null, ptTimer = null, prayerRequest = 0;
+const cityTZ = c => c.country === "Egypt" ? "Africa/Cairo" : c.country === "Saudi Arabia" ? "Asia/Riyadh" : "Asia/Dubai";
+const cityDate = c => new Intl.DateTimeFormat("en-CA", {timeZone:cityTZ(c),year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+const addDay = day => { const [y,m,d] = day.split("-").map(Number); return new Date(Date.UTC(y,m-1,d+1)).toISOString().slice(0,10); };
+const apiDate = day => day.split("-").reverse().join("-");
 const to12 = hm => { let [h, m] = hm.split(":").map(Number); const s = h < 12 ? "ص" : "م"; h = h % 12 || 12; return ard(h + ":" + String(m).padStart(2, "0")) + " " + s; };
 const mins = hm => { const [h, m] = hm.split(":").map(Number); return h * 60 + m; };
 function nowIn(tz) {
@@ -647,14 +658,18 @@ INIT.prayer = () => {
   $("#pCity").innerHTML = CITIES.map(c => `<option value="${c.id}"${c.id === city.id ? " selected" : ""}>${c.name}</option>`).join("");
   renderPrayer();
 };
-$("#pCity").onchange = e => { city = CITIES.find(c => c.id === e.target.value); store.set("city", city.id); loadPrayer(true); };
+$("#pCity").onchange = e => { city = CITIES.find(c => c.id === e.target.value); store.set("city", city.id); PT = null; $("#nextChip").hidden = true; $("#pTimes").textContent = "جارٍ تحميل المواقيت…"; $("#pDate").textContent = city.name; $("#pNext").textContent = "جارٍ التحميل…"; $("#pCount").textContent = ""; $("#pAt").textContent = ""; loadPrayer(true); };
 async function loadPrayer(render) {
+  const selected = city, day = cityDate(selected), request = ++prayerRequest, tomorrow = addDay(day);
+  const url = date => `https://api.aladhan.com/v1/timingsByCity/${apiDate(date)}?city=${encodeURIComponent(selected.city)}&country=${encodeURIComponent(selected.country)}&method=${selected.method}`;
   try {
-    const d = await getJSON(`https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city.city)}&country=${encodeURIComponent(city.country)}&method=${city.method}`,
-      "pt:" + city.id + ":" + todayKey(), 20);
-    PT = { t: d.data.timings, tz: d.data.meta.timezone, hijri: d.data.date.hijri, greg: d.data.date.readable };
+    const [today, next] = await Promise.all([getJSON(url(day), "pt:" + selected.id + ":" + day, 48), getJSON(url(tomorrow), "pt:" + selected.id + ":" + tomorrow, 48).catch(() => null)]);
+    if (request !== prayerRequest || selected.id !== city.id) return;
+    PT = { t: today.data.timings, next: next?.data?.timings || null, tz: today.data.meta.timezone, hijri: today.data.date.hijri, greg: today.data.date.readable, day };
     if (render) renderPrayer(); tickPrayer();
-  } catch (e) {
+  } catch(e) {
+    if (request !== prayerRequest) return;
+    PT = null; $("#nextChip").hidden = true;
     if (render) { $("#pTimes").innerHTML = `<div class="empty">تعذّر تحميل المواقيت. <button class="link-btn" id="ptRetry">إعادة المحاولة</button></div>`; $("#ptRetry").onclick = () => loadPrayer(true); }
   }
 }
@@ -668,26 +683,30 @@ function renderPrayer() {
 }
 function tickPrayer() {
   if (!PT) return;
+  if (PT.day !== cityDate(city)) { PT = null; $("#nextChip").hidden = true; loadPrayer(!$("#v-prayer").hidden); return; }
   const now = nowIn(PT.tz);
   const order = PRAYERS.filter(p => !p.minor);
   let nx = order.find(p => mins(PT.t[p.k]) * 60 > now), tomorrow = false;
   if (!nx) { nx = order[0]; tomorrow = true; }
-  let diff = mins(PT.t[nx.k]) * 60 - now; if (tomorrow) diff += 86400;
+  if (tomorrow && !PT.next) { $("#nextChip").hidden = true; if (!$("#v-prayer").hidden) { $("#pNext").textContent = "صلاة الفجر"; $("#pCount").textContent = "—"; $("#pAt").textContent = "تعذّر تحميل موعد الغد"; } return; }
+  const nextTime = tomorrow ? PT.next[nx.k] : PT.t[nx.k];
+  let diff = mins(nextTime) * 60 - now; if (tomorrow) diff += 86400;
   const hh = Math.floor(diff / 3600), mm = Math.floor(diff % 3600 / 60), ss = diff % 60;
   const cd = ard(`${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`);
   if (!$("#v-prayer").hidden) {
     $("#pNext").textContent = "صلاة " + nx.n;
     $("#pCount").textContent = cd;
-    $("#pAt").textContent = (tomorrow ? "غدًا " : "") + "الساعة " + to12(PT.t[nx.k]);
+    $("#pAt").textContent = (tomorrow ? "غدًا " : "") + "الساعة " + to12(nextTime);
     $$("#pTimes .time").forEach(el => { const k = el.dataset.p; el.classList.toggle("next", k === nx.k && !tomorrow || (tomorrow && k === "Fajr"));
       el.classList.toggle("past", !tomorrow && mins(PT.t[k]) * 60 <= now); });
   }
   const chip = $("#nextChip"); chip.hidden = false;
-  chip.innerHTML = `<b>${nx.n}</b> ${to12(PT.t[nx.k])}`;
+  chip.innerHTML = `<b>${nx.n}</b> ${to12(nextTime)}`;
 }
 $("#nextChip").onclick = () => { location.hash = "#prayer"; };
 setInterval(() => { if (!$("#v-prayer").hidden) tickPrayer(); }, 1000);
 setInterval(tickPrayer, 30000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) { if (!PT || PT.day !== cityDate(city)) loadPrayer(!$("#v-prayer").hidden); else tickPrayer(); } });
 
 /* sadaqa: play Al-Fatiha */
 $("#fatihaBtn").onclick = () => {
@@ -708,7 +727,7 @@ $("#themeBtn").onclick = () => { const r = document.documentElement;
 let deferred = null;
 addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; $("#installBtn").hidden = false; });
 $("#installBtn").onclick = async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; $("#installBtn").hidden = true; };
-if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+if ("serviceWorker" in navigator && location.protocol === "https:") { let hadController = !!navigator.serviceWorker.controller; navigator.serviceWorker.addEventListener("controllerchange", () => { if (hadController) toast("يتوفر تحديث للموقع، أعد تحميل الصفحة لتطبيقه."); hadController = true; }); addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {})); }
 
 /* boot */
 if (!location.hash) { const v = store.get("view", "radio"); history.replaceState(null, "", "#" + v); }
