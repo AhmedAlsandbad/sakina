@@ -111,6 +111,9 @@ function paint(st) {
   $("#shNext").disabled = !(P.qi < P.queue.length - 1 || P.loop);
   $("#shBack").hidden = $("#shFwd").hidden = live || !cur;
   $("#shQueue").textContent = P.queue.length > 1 ? `${ard(P.qi + 1)} من ${ard(P.queue.length)} في القائمة` : "";
+  if (cur && cur.key.startsWith("r:")) {
+    $("#rStatus").textContent = {loading:"جارٍ تحميل التلاوة…", playing:"التلاوة تعمل الآن", idle:"التلاوة متوقفة", error:"تعذّر تشغيل التلاوة. تحقق من الإنترنت أو اختر قارئًا آخر."}[st] || "";
+  }
   if (st === "error" && !live && cur) toast("تعذّر تشغيل التلاوة. تحقق من الإنترنت");
 }
 
@@ -329,10 +332,21 @@ async function loadRadios() {
     renderRadios();
   } catch (e) { $("#radList").innerHTML = `<div class="empty">تعذّر تحميل الإذاعات. <button class="link-btn" id="radRetry">إعادة المحاولة</button></div>`; $("#radRetry").onclick = loadRadios; }
 }
+function radioCategory(name) {
+  const n = norm(name);
+  if (/(اذكار|قصص|صحابه|السيره|الشمائل|صحيح|رياض الصالحين|فتاو|كتاب|رمضان)/.test(n)) return "other";
+  if (/(سوره|تلاو|تراتيل|ايات|القران|الرقيه|متنوع)/.test(n)) return "surahs";
+  return "reciters";
+}
+$("#radCategory").onchange = $("#radSort").onchange = () => { radShown = 25; renderRadios(); };
 function renderRadios() {
   const q = norm($("#radSearch").value);
   const qt = q.replace(/\s+/g, "");
-  const list = q ? RADIOS.filter(r => matches(q, r.name)).sort((a, b) => tight(b.name).startsWith(qt) - tight(a.name).startsWith(qt)) : RADIOS;
+  const cat = $("#radCategory").value;
+  let list = RADIOS.filter(r => (cat === "all" || radioCategory(r.name) === cat) && matches(q, r.name));
+  if (q) list.sort((a,b) => (tight(b.name).startsWith(qt)-tight(a.name).startsWith(qt)) || sortKey(a.name).localeCompare(sortKey(b.name),"ar"));
+  else if ($("#radSort").value === "za") list.reverse();
+  $("#radCount").textContent = ard(list.length) + " إذاعة";
   const shown = list.slice(0, radShown);
   $("#radList").innerHTML = shown.length ? shown.map(r => `
     <button class="item" data-key="rad:${r.id}" data-rad="${r.id}">
@@ -602,7 +616,7 @@ $("#adhReset").onclick = () => { store.del(adhKey()); renderAdhkar(); toast("ت�
 $("#dockToggle").onclick = () => { const compact = $("#dock").classList.toggle("compact"); $("#dockToggle").setAttribute("aria-expanded", String(!compact)); $("#dockToggle").setAttribute("aria-label", compact ? "إظهار المشغل" : "تصغير المشغل"); $("#dockToggle").textContent = compact ? "⌃" : "⌄"; };
 
 /* Quran reading: independently loaded per surah. */
-let readingRequest = 0, readingTafsir = [];
+let readingRequest = 0, readingTafsir = [], readingPages = [], readingPageIndex = 0;
 const readingSelect = $("#readingSurah");
 $("#qListen").onclick = () => { $("#qAudio").hidden = false; $("#qReading").hidden = true; $("#qListen").setAttribute("aria-pressed", "true"); $("#qRead").setAttribute("aria-pressed", "false"); };
 $("#qRead").onclick = async () => {
@@ -618,16 +632,28 @@ $("#qRead").onclick = async () => {
 async function loadReading() {
   const n = +readingSelect.value, request = ++readingRequest; if (!n) return;
   store.set("readingSurah", n); $("#readingTitle").textContent = readingSelect.selectedOptions[0].textContent;
-  $("#tafsirPanel").classList.remove("tafsir-open"); $("#readingVerses").textContent = "جارٍ تحميل الآيات…"; $("#tafsirText").textContent = "اختر آية لعرض تفسيرها.";
+  $("#pageNavigation").hidden = true; $("#tafsirPanel").classList.remove("tafsir-open"); $("#readingVerses").textContent = "جارٍ تحميل الآيات…"; $("#tafsirText").textContent = "اختر آية لعرض تفسيرها.";
   try {
     const [q, taf] = await Promise.all([getJSON("https://api.alquran.cloud/v1/surah/" + n + "/quran-uthmani", "c:qread:" + n, 720), getJSON("https://api.alquran.cloud/v1/surah/" + n + "/ar.muyassar", "c:tafsir:" + n, 720).catch(() => null)]);
     if (request !== readingRequest) return;
     if (!q.data?.ayahs?.length) throw Error("invalid data");
     readingTafsir = taf?.data?.ayahs?.length === q.data.ayahs.length ? taf.data.ayahs : [];
     if (!readingTafsir.length) $("#tafsirText").textContent = "التفسير غير متاح حاليًا. أعد تحميل السورة للمحاولة مجددًا.";
-    $("#readingVerses").innerHTML = q.data.ayahs.map(a => `<button class="verse" data-ayah="${a.numberInSurah}" aria-label="تفسير الآية ${ard(a.numberInSurah)}">${esc(a.text)} <span>﴿${ard(a.numberInSurah)}﴾</span></button>`).join(" ");
+    readingPages = []; readingPageIndex = 0;
+    q.data.ayahs.forEach(a => { let group = readingPages[readingPages.length-1]; if (!group || group.page !== a.page) { group = { page:a.page, verses:[] }; readingPages.push(group); } group.verses.push(a); });
+    renderReadingPage();
   } catch(e) { if (request === readingRequest) $("#readingVerses").innerHTML = '<p>تعذّر تحميل السورة أو التفسير. تحقق من اتصال الإنترنت.</p><button class="chip" id="readingRetry">إعادة المحاولة</button>'; }
 }
+function renderReadingPage() {
+  const page = readingPages[readingPageIndex]; if (!page) return; $("#pageNavigation").hidden = false;
+  $("#readingVerses").innerHTML = page.verses.map(a => `<button class="verse" data-ayah="${a.numberInSurah}" aria-label="تفسير الآية ${ard(a.numberInSurah)}">${esc(a.text)} <span>﴿${ard(a.numberInSurah)}﴾</span></button>`).join(" ");
+  $("#pageLabel").textContent = "صفحة " + ard(page.page) + " · من السورة";
+  $("#pagePrev").disabled = readingPageIndex === 0;
+  $("#pageNext").disabled = readingPageIndex === readingPages.length - 1;
+  $("#tafsirPanel").classList.remove("tafsir-open");
+}
+$("#pagePrev").onclick = () => { if (readingPageIndex > 0) { readingPageIndex--; renderReadingPage(); } };
+$("#pageNext").onclick = () => { if (readingPageIndex < readingPages.length-1) { readingPageIndex++; renderReadingPage(); } };
 $("#tafsirClose").onclick = () => $("#tafsirPanel").classList.remove("tafsir-open");
 readingSelect.onchange = loadReading;
 $("#readingPrev").onclick = () => { if (+readingSelect.value > 1) { readingSelect.value = String(+readingSelect.value - 1); loadReading(); } };
