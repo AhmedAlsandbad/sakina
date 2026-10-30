@@ -385,3 +385,13 @@ footer p{margin:0 0 6px}
 #v-adhkar .seg button[aria-selected="true"]{color:var(--gold)}
 #adhContent[hidden],#qAudio[hidden],#qReading[hidden]{display:none}
 @media(max-width:700px){.reading-layout{grid-template-columns:1fr}.tafsir-panel{position:static}.reading-controls button{flex:1}.mushaf-page{padding:20px}}
+
+/* Dedication */
+.dedication{background:linear-gradient(145deg,color-mix(in srgb,var(--gold) 12%,var(--panel)),var(--panel) 65%);padding:24px clamp(20px,4vw,40px);border-color:color-mix(in srgb,var(--gold) 50%,var(--rule));box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.dedication-head{gap:18px}.dedication-eyebrow{font-family:var(--f-body);font-size:.85rem;color:var(--ink)}
+.dedication h2{font-family:var(--f-display);font-size:clamp(1.9rem,4vw,2.4rem);line-height:1.5}
+.dedication-sub{font-family:var(--f-body);font-size:.95rem;color:var(--ink)}
+.dedication-names{gap:8px 14px;margin-top:6px}
+.dedication-names li{font-family:var(--f-naskh);font-size:clamp(1.12rem,2vw,1.3rem);line-height:1.7}
+.dedication-prayer{font-family:var(--f-naskh);font-size:1.12rem;line-height:1.8;color:var(--ink);margin:10px 0 4px}
+.dedication-details summary{border:1px solid var(--rule);border-radius:999px;margin-top:8px;padding:8px 18px}
