@@ -323,3 +323,16 @@ footer p{margin:0 0 6px}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Navigation and Arabic wordmark */
+.logo{gap:7px;letter-spacing:0;white-space:nowrap}
+.logo span{font-family:'Aref Ruqaa',serif;font-size:1.85rem;line-height:1.35;text-shadow:0 1px 14px color-mix(in srgb,var(--gold) 22%,transparent)}
+.logo img{width:28px;height:28px;opacity:.85}
+.tabs-top a{font-weight:500;border:1px solid transparent;transition:background .2s,color .2s,border-color .2s}
+.tabs-top a:hover,.tabs-top a:focus-visible{color:var(--gold);border-color:var(--rule)}
+.tabs-top a[aria-current="page"]{border-color:var(--rule)}
+.tabs-bottom{gap:3px;padding-top:7px;padding-bottom:max(6px,env(safe-area-inset-bottom,0px))}
+.tabs-bottom a{min-width:0;min-height:48px;align-content:center;gap:3px;padding:5px 2px;border:1px solid transparent;transition:background .2s,color .2s,border-color .2s}
+.tabs-bottom a[aria-current="page"]{background:var(--panel-2);border-color:var(--rule);font-weight:700}
+.tabs-bottom a:focus-visible,.tabs-top a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.tabs-bottom a,.tabs-bottom svg,.tabs-top a{transition:none}}
