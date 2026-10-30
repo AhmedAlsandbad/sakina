@@ -602,7 +602,7 @@ $("#readingPrev").onclick = () => { if (+readingSelect.value > 1) { readingSelec
 $("#readingNext").onclick = () => { if (+readingSelect.value < 114) { readingSelect.value = String(+readingSelect.value + 1); loadReading(); } };
 $("#readingVerses").onclick = e => { if (e.target.closest("#readingRetry")) { loadReading(); return; } const b = e.target.closest("[data-ayah]"); if (!b) return;
   const a = readingTafsir.find(x => x.numberInSurah === +b.dataset.ayah); if (!a) return;
-  $("#readingVerses .verse").forEach(v => v.classList.toggle("selected", v === b));
+  $$("#readingVerses .verse").forEach(v => v.classList.toggle("selected", v === b));
   $("#tafsirText").textContent = "الآية " + ard(a.numberInSurah) + " · " + a.text;
 };
 
