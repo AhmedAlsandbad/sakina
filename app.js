@@ -309,7 +309,7 @@ async function loadRadios() {
   try {
     const d = await getJSON(API + "radios?language=ar", "c:radios", 24);
     const featured = new Set(STATIONS.map(s => s.url));
-    RADIOS = d.radios.filter(r => !featured.has(r.url)).map(r => ({ id: r.id, name: r.name.replace(/\s+/g, " ").trim(), url: r.url }))
+    RADIOS = d.radios.filter(r => !featured.has(r.url) && !norm(r.name).includes(norm("ترجمة معاني القرآن"))).map(r => ({ id: r.id, name: r.name.replace(/\s+/g, " ").trim(), url: r.url }))
       .sort((a, b) => sortKey(a.name).localeCompare(sortKey(b.name), "ar"));
     $("#radCount").textContent = ard(RADIOS.length) + " إذاعة";
     renderRadios();
