@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>سكينة | القرآن والرقية</title>
-<meta name="description" content="إذاعات القرآن الكريم مباشرة، والمصحف كاملًا بأكثر من ٢٠٠ قارئ وبالروايات العشر، والرقية الشرعية، وأذكار الصباح والمساء، ومواقيت الصلاة.">
+<meta name="description" content="صدقة جارية. إذاعات القرآن الكريم مباشرة، والمصحف كاملًا بأكثر من ٢٠٠ قارئ وبالروايات العشر، والرقية الشرعية، وأذكار الصباح والمساء، ومواقيت الصلاة.">
 <meta name="theme-color" content="#071512">
 <meta property="og:title" content="سكينة">
 <meta property="og:description" content="إذاعات القرآن مباشرة، المصحف بأكثر من ٢٠٠ قارئ، الرقية الشرعية، الأذكار ومواقيت الصلاة.">
@@ -20,8 +20,8 @@
 <link rel="preconnect" href="https://cdn.mp3quran.net">
 <link rel="preconnect" href="https://stream.radiojar.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@300;500&display=swap">
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="styles.css?v=5">
 <script>try{var t=localStorage.getItem("sakina:theme");if(t)document.documentElement.dataset.theme=JSON.parse(t)}catch(e){}</script>
 </head>
 <body>
@@ -57,8 +57,29 @@
       <button class="link-btn" id="retryBtn" hidden>إعادة المحاولة</button>
     </div>
 
+
     <div class="sh"><h2>إذاعات القرآن الكريم</h2><p>بث مباشر على مدار الساعة</p></div>
     <div class="stations" id="stations"></div>
+
+    <section class="sadaqa" aria-labelledby="sadaqaTitle">
+      <div class="sadaqa-in">
+        <div class="sadaqa-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 4 29 17 42 19 32 28 35 42 24 35 13 42 16 28 6 19 19 17Z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="24" cy="24" r="4" fill="currentColor"/></svg></div>
+        <p class="sadaqa-eyebrow">هذا الموقع</p>
+        <h2 id="sadaqaTitle">صدقة جارية</h2>
+        <p class="sadaqa-lead">على أرواح</p>
+        <ul class="names">
+          <li><small>المرحوم</small>فؤاد مراد</li>
+          <li><small>المرحومة</small>محاسن الشرقاوي</li>
+          <li><small>المرحومة</small>نادية القوصي</li>
+          <li><small>المرحوم</small>أحمد السيد</li>
+        </ul>
+        <p class="dua">اللَّهُمَّ اغْفِرْ لَهُمْ وَارْحَمْهُمْ، وَعَافِهِمْ وَاعْفُ عَنْهُمْ، وَأَكْرِمْ نُزُلَهُمْ، وَوَسِّعْ مُدْخَلَهُمْ، وَاجْعَلْ كُلَّ آيَةٍ تُسْمَعُ هُنَا فِي مِيزَانِ حَسَنَاتِهِمْ</p>
+        <div class="sadaqa-act">
+          <button class="chip primary" id="fatihaBtn">اقرأ الفاتحة على أرواحهم</button>
+          <span class="dim">لا تنسوهم من صالح دعائكم</span>
+        </div>
+      </div>
+    </section>
 
     <div class="sh"><h2>إذاعات القرّاء</h2><span class="count" id="radCount"></span></div>
     <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -162,7 +183,8 @@
 </main>
 
 <footer><div class="wrap">
-  البث المباشر من إذاعات القرآن الكريم في القاهرة والرياض والشارقة · التلاوات والإذاعات من <a href="https://mp3quran.net" target="_blank" rel="noopener">mp3quran.net</a> · المواقيت من <a href="https://aladhan.com" target="_blank" rel="noopener">aladhan.com</a>
+  <p class="foot-sadaqa">صدقة جارية على أرواح فؤاد مراد، ومحاسن الشرقاوي، ونادية القوصي، وأحمد السيد. رحمهم الله.</p>
+  <p>  البث المباشر من إذاعات القرآن الكريم في القاهرة والرياض والشارقة · التلاوات والإذاعات من <a href="https://mp3quran.net" target="_blank" rel="noopener">mp3quran.net</a> · المواقيت من <a href="https://aladhan.com" target="_blank" rel="noopener">aladhan.com</a></p>
 </div></footer>
 
 <!-- mini player -->
@@ -210,7 +232,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <audio id="audio" preload="none" playsinline></audio>
 
-<script src="data.js?v=4"></script>
-<script src="app.js?v=4"></script>
+<script src="data.js?v=5"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>

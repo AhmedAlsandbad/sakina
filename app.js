@@ -478,7 +478,7 @@ function renderAdhkar() {
     const n = Math.min(st[d.id] || 0, d.c), txt = period === "e" && d.e ? d.e : d.m;
     return `<button class="dhikr${n >= d.c ? " done" : ""}" data-dh="${d.id}">
       ${d.title ? `<span class="ttl">${d.title}</span>` : ""}
-      <p class="q">${txt}</p>
+      <p class="${d.q ? "q" : "q naskh"}">${txt}</p>
       <span class="dt"><span class="src">${d.q ? "قرآن كريم" : d.src}${d.c > 1 ? ` · ${ard(d.c)} مرات` : ""}</span>
       <span class="ring" style="--p:${n / d.c * 100}"><span>${n >= d.c ? "✓" : ard(d.c - n)}</span></span></span></button>`;
   }).join("");
@@ -568,6 +568,14 @@ function tickPrayer() {
 $("#nextChip").onclick = () => { location.hash = "#prayer"; };
 setInterval(() => { if (!$("#v-prayer").hidden) tickPrayer(); }, 1000);
 setInterval(tickPrayer, 30000);
+
+/* sadaqa: play Al-Fatiha */
+$("#fatihaBtn").onclick = () => {
+  const it = { kind: "file", key: "fatiha:sadaqa", title: "سورة الفاتحة", sub: "على أرواح فؤاد ومحاسن ونادية وأحمد", eyebrow: "صدقة جارية",
+    url: "https://cdn.mp3quran.net/audio/mahmoud-husary/r1/001.mp3" };
+  if (P.cur && P.cur.key === it.key) { toggle(); return; }
+  play(it); toast("رحمهم الله وجعلها في ميزان حسناتهم");
+};
 
 /* =========================================================
    APP CHROME
