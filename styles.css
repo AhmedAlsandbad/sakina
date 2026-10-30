@@ -520,3 +520,9 @@ header.top .wrap{min-height:68px;padding-block:6px;gap:12px}
 .dedication-prayer{font:400 1.13rem/1.9 var(--f-naskh);max-width:34ch;margin:16px auto 8px}
 .dedication-details summary{background:var(--panel-2);border:1px solid var(--rule);padding:9px 20px}
 @media(max-width:480px){header.top .wrap{min-height:60px}.logo img{width:48px;height:48px;border-radius:10px}.next-prayer{font-size:.75rem}.dedication-frame{padding:22px 14px}.dedication-names li{padding:10px 4px}.dedication-names li span{font-size:1rem}}
+
+.sleep-listen{margin:16px 0 20px;padding:18px;border:1px solid var(--rule);border-radius:16px;background:var(--panel-2)}
+.sleep-listen h3{margin:0;color:var(--gold);font-size:1rem}.sleep-listen p{color:var(--dim);font-size:.85rem;margin:6px 0 12px}
+.sleep-options{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.sleep-options label{display:grid;gap:4px;flex:1;min-width:145px;font-size:.85rem}
+.sleep-options select{background:var(--panel);color:var(--ink);border:1px solid var(--rule);border-radius:10px;padding:9px}
