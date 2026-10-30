@@ -666,7 +666,7 @@ async function loadPrayer(render) {
     const [today, next] = await Promise.all([getJSON(url(day), "pt:" + selected.id + ":" + day, 48), getJSON(url(tomorrow), "pt:" + selected.id + ":" + tomorrow, 48).catch(() => null)]);
     if (request !== prayerRequest || selected.id !== city.id) return;
     PT = { t: today.data.timings, next: next?.data?.timings || null, tz: today.data.meta.timezone, hijri: today.data.date.hijri, greg: today.data.date.readable, day };
-    if (render) renderPrayer(); tickPrayer();
+    if (render || !$("#v-prayer").hidden) renderPrayer(); else tickPrayer();
   } catch(e) {
     if (request !== prayerRequest) return;
     PT = null; $("#nextChip").hidden = true;
