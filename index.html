@@ -10,8 +10,8 @@
 <meta property="og:description" content="إذاعات القرآن مباشرة، المصحف بأكثر من ٢٠٠ قارئ، الرقية الشرعية، الأذكار ومواقيت الصلاة.">
 <meta property="og:image" content="icon-512.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon.svg?v=36" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon-192.png?v=36">
+<link rel="icon" href="icon.svg?v=37" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png?v=37">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -23,13 +23,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="styles.css?v=36">
+<link rel="stylesheet" href="styles.css?v=37">
 <script>try{var t=localStorage.getItem("sakina:theme");if(t)document.documentElement.dataset.theme=JSON.parse(t)}catch(e){}</script>
 </head>
 <body>
 
 <header class="top"><div class="wrap">
-  <a class="logo" href="#radio" aria-label="سكينة، الصفحة الرئيسية"><span>سكينة</span><img src="sakina-logo.svg?v=36" alt="" width="52" height="52"></a>
+  <a class="logo" href="#radio" aria-label="سكينة، الصفحة الرئيسية"><span>سكينة</span><img src="sakina-logo.svg?v=37" alt="" width="52" height="52"></a>
   <nav class="tabs-top" aria-label="الأقسام">
     <a href="#radio" data-nav="radio">الإذاعات</a>
     <a href="#quran" data-nav="quran">المصحف</a>
@@ -88,6 +88,8 @@
     <div class="sh"><h2>الإذاعات والقرّاء</h2><span class="count" id="radCount"></span></div>
     <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="radSearch" type="search" placeholder="ابحث باسم القارئ أو الإذاعة" autocomplete="off" aria-label="بحث في الإذاعات"></div>
+    <div class="radio-controls"><label>التصنيف <select id="radCategory"><option value="all">كل الإذاعات</option><option value="reciters">القرّاء</option><option value="surahs">سور وتلاوات</option><option value="other">أذكار وقصص وغيرها</option></select></label><label>الترتيب <select id="radSort"><option value="az">أبجديًا</option><option value="za">أبجديًا بالعكس</option></select></label></div>
+    <p class="hint">التصنيف حسب اسم الإذاعة.</p>
     <div class="list" id="radList"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
     <button class="more" id="radMore" hidden>عرض المزيد</button>
 
@@ -123,7 +125,7 @@
       <div class="suras" id="suraList"></div>
     </div>
     </div>
-    <div id="qReading" hidden><div class="reading-controls"><label for="readingSurah">السورة</label><select id="readingSurah"></select><button class="chip" id="readingPrev">السورة السابقة</button><button class="chip" id="readingNext">السورة التالية</button></div><p class="note">النص برواية حفص عن عاصم · اختر آية لعرض تفسيرها الميسّر</p><div class="reading-layout"><article class="mushaf-page"><h3 id="readingTitle"></h3><div id="readingVerses" aria-live="polite"></div></article><aside class="tafsir-panel" aria-live="polite" id="tafsirPanel"><button id="tafsirClose" class="chip tafsir-close" aria-label="إغلاق التفسير">إغلاق</button><h3>التفسير الميسّر</h3><p id="tafsirText">اختر آية لعرض تفسيرها.</p><small>المصدر: مجمع الملك فهد عبر Al Quran Cloud</small></aside></div></div>
+    <div id="qReading" hidden><div class="reading-controls"><label for="readingSurah">السورة</label><select id="readingSurah"></select><button class="chip" id="readingPrev">السورة السابقة</button><button class="chip" id="readingNext">السورة التالية</button></div><p class="note">النص برواية حفص عن عاصم · اختر آية لعرض تفسيرها الميسّر</p><div class="reading-layout"><article class="mushaf-page"><h3 id="readingTitle"></h3><div id="readingVerses" aria-live="polite"></div><div class="page-navigation" id="pageNavigation" hidden><button class="chip" id="pagePrev">الصفحة السابقة</button><span id="pageLabel"></span><button class="chip" id="pageNext">الصفحة التالية</button></div></article><aside class="tafsir-panel" aria-live="polite" id="tafsirPanel"><button id="tafsirClose" class="chip tafsir-close" aria-label="إغلاق التفسير">إغلاق</button><h3>التفسير الميسّر</h3><p id="tafsirText">اختر آية لعرض تفسيرها.</p><small>المصدر: مجمع الملك فهد عبر Al Quran Cloud</small></aside></div></div>
   </section>
 
   <!-- RUQYAH -->
@@ -142,7 +144,7 @@
           <select id="rTimes"><option value="1">مرة واحدة</option><option value="3">٣ مرات</option><option value="7">٧ مرات</option><option value="0">بدون توقف</option></select></div>
         <label class="switch"><input type="checkbox" id="rTriple" checked><span></span>المعوذات ثلاث مرات</label>
         <label class="switch"><input type="checkbox" id="rBaqara"><span></span>إضافة سورة البقرة</label>
-        <button class="chip primary wide" id="rPlay">تشغيل الرقية</button>
+        <p id="rStatus" class="note" role="status" aria-live="polite"></p><button class="chip primary wide" id="rPlay">تشغيل الرقية</button>
         <div class="rprog" id="rProg" hidden></div>
       </div>
       <div class="list" id="rTracks"></div>
@@ -235,7 +237,7 @@
 <div class="scrim" id="scrim" hidden></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="المشغل" hidden>
   <button class="grab" id="sheetClose" aria-label="إغلاق المشغل"><span></span></button>
-  <div class="sheet-art"><img src="icon.svg?v=36" alt="" width="120" height="120"></div>
+  <div class="sheet-art"><img src="icon.svg?v=37" alt="" width="120" height="120"></div>
   <div class="eyebrow" id="shEyebrow"></div>
   <h2 class="sheet-title" id="shTitle"></h2>
   <div class="dim" id="shSub"></div>
@@ -259,7 +261,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <audio id="audio" preload="none" playsinline></audio>
 
-<script src="data.js?v=36" defer></script>
-<script src="app.js?v=36" defer></script>
+<script src="data.js?v=37" defer></script>
+<script src="app.js?v=37" defer></script>
 </body>
 </html>
