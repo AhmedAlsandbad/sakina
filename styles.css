@@ -434,3 +434,15 @@ footer p{margin:0 0 6px}
 .dedication-prayer{font:400 1.1rem/1.8 var(--f-naskh);color:var(--ink);margin:12px 0 4px}
 .dedication-details summary{font-family:var(--f-body);font-size:.84rem;min-height:40px;align-items:center}
 @media(max-width:380px){.dedication-frame{padding:16px 10px}.dedication-names{gap:6px}.dedication-names li span{font-size:1rem}}
+
+/* Radio browsing */
+.stations{gap:10px}
+.st{border-radius:22px;padding:18px 10px 14px;min-height:150px}
+.st h3{font-family:var(--f-naskh);font-size:1.35rem;line-height:1.5}
+.st small{font-size:.78rem}
+.st .mini{width:38px;height:38px;margin-top:10px}
+#radList .item{min-height:68px;padding:12px 14px}
+#radList .item b{white-space:normal;overflow:visible;line-height:1.5}
+#radList .item.on{box-shadow:inset -3px 0 var(--gold)}
+#radList .item:focus-visible,.st:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+@media(max-width:380px){.stations{gap:8px}.st{min-height:140px;padding:14px 8px}.st h3{font-size:1.2rem}}
