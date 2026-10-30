@@ -407,3 +407,8 @@ footer p{margin:0 0 6px}
 #v-adhkar .seg button[aria-selected="true"]{background:var(--gold);color:var(--gold-ink);border-color:var(--gold);font-weight:700}
 #v-adhkar .seg button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 @media(max-width:380px){.dedication{padding:20px 12px}.dedication-names{gap:6px}.dedication-names li{font-size:1.04rem}}
+
+/* Reader controls */
+#qListen[aria-pressed="true"],#qRead[aria-pressed="true"]{background:var(--gold);color:var(--gold-ink);font-weight:700}
+.tafsir-close{display:none}
+@media(max-width:700px){.tafsir-panel.tafsir-open{position:fixed;z-index:60;bottom:0;left:0;right:0;max-height:65vh;overflow:auto;border-radius:22px 22px 0 0;box-shadow:0 -10px 40px #0008;padding:18px 20px max(20px,env(safe-area-inset-bottom))}.tafsir-panel.tafsir-open .tafsir-close{display:block;float:left}.tafsir-panel:not(.tafsir-open){display:none}}
