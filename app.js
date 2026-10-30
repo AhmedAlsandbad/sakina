@@ -250,10 +250,10 @@ function route() {
     $$(".view").forEach(s => { s.hidden = s.dataset.view !== v; });
     $$("[data-nav]").forEach(a => a.dataset.nav === v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
   };
-  if (document.startViewTransition && inited._first) document.startViewTransition(swap); else swap();
-  inited._first = true;
+  swap();
   { const h = document.documentElement; h.style.scrollBehavior = "auto"; window.scrollTo(0, 0); h.style.scrollBehavior = ""; }
   if (!inited[v]) { inited[v] = true; INIT[v](); }
+  if (v === "prayer") tickPrayer();
   store.set("view", v);
 }
 window.addEventListener("hashchange", route);
