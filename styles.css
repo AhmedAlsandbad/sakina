@@ -412,3 +412,8 @@ footer p{margin:0 0 6px}
 #qListen[aria-pressed="true"],#qRead[aria-pressed="true"]{background:var(--gold);color:var(--gold-ink);font-weight:700}
 .tafsir-close{display:none}
 @media(max-width:700px){.tafsir-panel.tafsir-open{position:fixed;z-index:60;bottom:0;left:0;right:0;max-height:65vh;overflow:auto;border-radius:22px 22px 0 0;box-shadow:0 -10px 40px #0008;padding:18px 20px max(20px,env(safe-area-inset-bottom))}.tafsir-panel.tafsir-open .tafsir-close{display:block;float:left}.tafsir-panel:not(.tafsir-open){display:none}}
+
+.dock-toggle{display:block;pointer-events:auto;margin:0 auto 4px;padding:2px 14px;min-height:28px;border:1px solid var(--rule);border-radius:999px;background:var(--panel);color:var(--ink);line-height:1}
+.dock.compact .capsule{display:none}
+.dock-toggle:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media(min-width:860px){.dock-toggle{display:none}.dock.compact .capsule{display:flex}}
