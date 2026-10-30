@@ -449,3 +449,21 @@ footer p{margin:0 0 6px}
 
 /* Supplied brand mark */
 .logo img{width:52px;height:52px;object-fit:contain;border-radius:10px;background:#faf9f3}
+
+/* Calm background and consistent navigation */
+body::after{opacity:calc(var(--pat) * .45);background-size:100px 100px}
+.tabs-top{gap:6px}
+.tabs-top a{min-height:42px;display:flex;align-items:center;justify-content:center;padding:7px 15px;border-radius:14px}
+.tabs-top a[aria-current="page"]{background:var(--panel-2);border-color:color-mix(in srgb,var(--gold) 35%,var(--rule))}
+.tabs-bottom{gap:2px;background:color-mix(in srgb,var(--night) 96%,transparent);border-top:1px solid var(--rule);box-shadow:0 -8px 28px #0002}
+.tabs-bottom a{min-height:52px;font-size:.72rem;border-radius:14px;color:var(--dim)}
+.tabs-bottom a[aria-current="page"]{background:var(--panel-2);color:var(--gold);border-color:color-mix(in srgb,var(--gold) 32%,var(--rule))}
+.seg{border-radius:16px;gap:4px}
+.seg button{min-height:44px;border-radius:12px;font-weight:500}
+#v-adhkar .seg{border:0;padding:0;gap:8px}
+#v-adhkar .seg button{background:var(--panel);color:var(--ink)}
+#v-adhkar .seg button[aria-selected="true"]{background:var(--gold);color:var(--gold-ink)}
+.adh-disclosure{padding:clamp(16px,3vw,24px)}
+.dock-toggle{font-family:var(--f-body);min-width:44px}
+@media(max-width:480px){.wrap{padding-inline:14px}.tabs-bottom a{font-size:.7rem}.tabs-bottom svg{width:21px;height:21px}.tabs-bottom{padding-inline:5px}.logo img{width:44px;height:44px}.logo span{font-size:1.65rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.tabs-bottom a,.tabs-top a,.seg button{transition:none}}
