@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>سكينة | القرآن والرقية</title>
+<meta name="description" content="إذاعات القرآن الكريم مباشرة، والمصحف كاملًا بأكثر من ٢٠٠ قارئ وبالروايات العشر، والرقية الشرعية، وأذكار الصباح والمساء، ومواقيت الصلاة.">
+<meta name="theme-color" content="#071512">
+<meta property="og:title" content="سكينة">
+<meta property="og:description" content="إذاعات القرآن مباشرة، المصحف بأكثر من ٢٠٠ قارئ، الرقية الشرعية، الأذكار ومواقيت الصلاة.">
+<meta property="og:image" content="icon-512.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="سكينة">
+<link rel="preconnect" href="https://mp3quran.net" crossorigin>
+<link rel="preconnect" href="https://cdn.mp3quran.net">
+<link rel="preconnect" href="https://stream.radiojar.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@300;500&display=swap">
+<link rel="stylesheet" href="styles.css?v=4">
+<script>try{var t=localStorage.getItem("sakina:theme");if(t)document.documentElement.dataset.theme=JSON.parse(t)}catch(e){}</script>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <a class="logo" href="#radio" aria-label="سكينة، الصفحة الرئيسية"><img src="icon.svg" alt="" width="32" height="32"><span>سكينة</span></a>
+  <nav class="tabs-top" aria-label="الأقسام">
+    <a href="#radio" data-nav="radio">الإذاعات</a>
+    <a href="#quran" data-nav="quran">المصحف</a>
+    <a href="#ruqyah" data-nav="ruqyah">الرقية</a>
+    <a href="#adhkar" data-nav="adhkar">الأذكار</a>
+    <a href="#prayer" data-nav="prayer">الصلاة</a>
+  </nav>
+  <div class="hd">
+    <button class="next-prayer" id="nextChip" hidden></button>
+    <button class="icon-btn" id="installBtn" hidden aria-label="ثبّت التطبيق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg></button>
+    <button class="icon-btn" id="themeBtn" aria-label="تبديل الوضع الليلي والنهاري"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></button>
+  </div>
+</div></header>
+
+<main class="wrap" id="main">
+  <div class="warn" id="warn" hidden></div>
+
+  <!-- RADIO -->
+  <section class="view" id="v-radio" data-view="radio">
+    <div class="niche" id="hero">
+      <div class="eyebrow" id="heroEyebrow">بث مباشر · ٢٤ ساعة</div>
+      <h1 class="now-title" id="heroTitle">إذاعة القرآن الكريم</h1>
+      <div class="now-sub" id="heroSub">اختر الإذاعة واضغط تشغيل</div>
+      <button class="big" id="heroBtn" aria-label="تشغيل"></button>
+      <div><span class="status" id="heroStatus">جاهز</span></div>
+      <div class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <button class="link-btn" id="retryBtn" hidden>إعادة المحاولة</button>
+    </div>
+
+    <div class="sh"><h2>إذاعات القرآن الكريم</h2><p>بث مباشر على مدار الساعة</p></div>
+    <div class="stations" id="stations"></div>
+
+    <div class="sh"><h2>إذاعات القرّاء</h2><span class="count" id="radCount"></span></div>
+    <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="radSearch" type="search" placeholder="ابحث باسم القارئ أو الإذاعة" autocomplete="off" aria-label="بحث في الإذاعات"></div>
+    <div class="list" id="radList"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+    <button class="more" id="radMore" hidden>عرض المزيد</button>
+  </section>
+
+  <!-- QURAN -->
+  <section class="view" id="v-quran" data-view="quran" hidden>
+    <div class="sh"><h2>المصحف المرتل</h2><span class="count" id="recCount"></span></div>
+
+    <div id="qPick">
+      <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="recSearch" type="search" placeholder="ابحث عن قارئ" autocomplete="off" aria-label="بحث عن قارئ"></div>
+      <div class="chips" id="rwChips" role="group" aria-label="الرواية"></div>
+      <p class="hint" id="rwHint"></p>
+      <div class="list" id="recList"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+      <button class="more" id="recMore" hidden>عرض المزيد</button>
+    </div>
+
+    <div id="qReciter" hidden>
+      <button class="back" id="qBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>كل القرّاء</button>
+      <div class="rec-head">
+        <div class="avatar" id="recAvatar"></div>
+        <div class="min0"><h3 id="recName"></h3><div class="dim" id="recMeta"></div></div>
+      </div>
+      <div class="chips" id="moshafChips" role="group" aria-label="المصحف"></div>
+      <div class="row">
+        <button class="chip primary" id="playFrom1">تشغيل من الفاتحة</button>
+        <button class="chip" id="resumeBtn" hidden></button>
+      </div>
+      <div class="search slim"><input id="suraSearch" type="search" placeholder="ابحث عن سورة" autocomplete="off" aria-label="بحث عن سورة"></div>
+      <div class="suras" id="suraList"></div>
+    </div>
+  </section>
+
+  <!-- RUQYAH -->
+  <section class="view" id="v-ruqyah" data-view="ruqyah" hidden>
+    <div class="sh"><h2>الرقية الشرعية</h2>
+      <div class="seg" role="tablist">
+        <button role="tab" aria-selected="true" aria-controls="r-audio" id="rt-a">استماع</button>
+        <button role="tab" aria-selected="false" aria-controls="r-text" id="rt-t">قراءة</button>
+      </div>
+    </div>
+
+    <div id="r-audio" role="tabpanel" aria-labelledby="rt-a">
+      <div class="panel">
+        <div class="field"><label for="rRec">القارئ</label><select id="rRec"></select></div>
+        <div class="field"><label for="rTimes">تكرار الرقية كاملة</label>
+          <select id="rTimes"><option value="1">مرة واحدة</option><option value="3">٣ مرات</option><option value="7">٧ مرات</option><option value="0">بدون توقف</option></select></div>
+        <label class="switch"><input type="checkbox" id="rTriple" checked><span></span>المعوذات ثلاث مرات</label>
+        <label class="switch"><input type="checkbox" id="rBaqara"><span></span>إضافة سورة البقرة</label>
+        <button class="chip primary wide" id="rPlay">تشغيل الرقية</button>
+        <div class="rprog" id="rProg" hidden></div>
+      </div>
+      <div class="list" id="rTracks"></div>
+    </div>
+
+    <div id="r-text" role="tabpanel" aria-labelledby="rt-t" hidden>
+      <div class="mushaf"><div class="mushaf-in">
+        <div class="fs"><button class="fsUp" aria-label="تكبير الخط">+</button><button class="fsDown" aria-label="تصغير الخط">−</button></div>
+        <div id="rReader"></div>
+      </div></div>
+    </div>
+    <p class="note">الشفاء من الله وحده، والرقية لا تغني عن مراجعة الطبيب.</p>
+  </section>
+
+  <!-- ADHKAR -->
+  <section class="view" id="v-adhkar" data-view="adhkar" hidden>
+    <div class="sh"><h2 id="adhTitle">أذكار الصباح</h2>
+      <div class="seg" role="tablist">
+        <button role="tab" aria-selected="true" data-period="m" id="ad-m">الصباح</button>
+        <button role="tab" aria-selected="false" data-period="e" id="ad-e">المساء</button>
+      </div>
+    </div>
+    <div class="progress-row">
+      <div class="pbar"><i id="adhBar"></i></div>
+      <span class="dim" id="adhProg"></span>
+      <button class="link-btn" id="adhReset">البدء من جديد</button>
+    </div>
+    <div class="fs"><button class="fsUp" aria-label="تكبير الخط">+</button><button class="fsDown" aria-label="تصغير الخط">−</button></div>
+    <div class="adhkar" id="adhList"></div>
+    <p class="note">اضغط على الذكر كل مرة تقرأه، والعدّاد بيتحفظ لحد آخر اليوم.</p>
+  </section>
+
+  <!-- PRAYER -->
+  <section class="view" id="v-prayer" data-view="prayer" hidden>
+    <div class="sh"><h2>مواقيت الصلاة</h2>
+      <select class="chip" id="pCity" aria-label="المدينة"></select>
+    </div>
+    <div class="niche small" id="pHero">
+      <div class="eyebrow" id="pDate"></div>
+      <div class="now-title" id="pNext">…</div>
+      <div class="count-big" id="pCount"></div>
+      <div class="dim" id="pAt"></div>
+    </div>
+    <div class="times" id="pTimes"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
+    <p class="note" id="pNote"></p>
+  </section>
+</main>
+
+<footer><div class="wrap">
+  البث المباشر من إذاعات القرآن الكريم في القاهرة والرياض والشارقة · التلاوات والإذاعات من <a href="https://mp3quran.net" target="_blank" rel="noopener">mp3quran.net</a> · المواقيت من <a href="https://aladhan.com" target="_blank" rel="noopener">aladhan.com</a>
+</div></footer>
+
+<!-- mini player -->
+<div class="dock">
+  <div class="capsule" id="capsule" role="region" aria-label="المشغل">
+    <div class="cap-prog"><i id="capProg"></i></div>
+    <button class="pb" id="capBtn" aria-label="تشغيل"></button>
+    <button class="info" id="capOpen" aria-label="فتح المشغل"><b id="capTitle">لم يبدأ التشغيل</b><small id="capSub">اختر إذاعة أو تلاوة</small></button>
+    <button class="sleep" id="sleepBtn" aria-label="مؤقت النوم"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg><span id="sleepTxt"></span></button>
+  </div>
+  <nav class="tabs-bottom" aria-label="الأقسام">
+    <a href="#radio" data-nav="radio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10h16v10H4zM7 10l10-6"/><circle cx="9" cy="15" r="2"/><path d="M14 14h3M14 17h3"/></svg>الإذاعات</a>
+    <a href="#quran" data-nav="quran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 6c-2-1.5-5-2-8-1.5V19c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V4.5C17 4 14 4.5 12 6zM12 6v14.5"/></svg>المصحف</a>
+    <a href="#ruqyah" data-nav="ruqyah"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 14.2 9.2 21 12l-6.8 2.8L12 21l-2.2-6.2L3 12l6.8-2.8z"/></svg>الرقية</a>
+    <a href="#adhkar" data-nav="adhkar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="5" r="2"/><circle cx="6" cy="9" r="2"/><circle cx="18" cy="9" r="2"/><circle cx="7" cy="16" r="2"/><circle cx="17" cy="16" r="2"/><path d="M12 18v3"/></svg>الأذكار</a>
+    <a href="#prayer" data-nav="prayer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 21V11a8 8 0 0 1 16 0v10M9 21v-5a3 3 0 0 1 6 0v5M12 3V1"/></svg>الصلاة</a>
+  </nav>
+</div>
+
+<!-- full player sheet -->
+<div class="scrim" id="scrim" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="المشغل" hidden>
+  <button class="grab" id="sheetClose" aria-label="إغلاق المشغل"><span></span></button>
+  <div class="sheet-art"><img src="icon.svg" alt="" width="120" height="120"></div>
+  <div class="eyebrow" id="shEyebrow"></div>
+  <h2 class="sheet-title" id="shTitle"></h2>
+  <div class="dim" id="shSub"></div>
+  <div class="seek" id="seek"><span id="tCur">٠:٠٠</span><input type="range" id="seekBar" min="0" max="1000" step="1" value="0" aria-label="موضع التلاوة"><span id="tDur">٠:٠٠</span></div>
+  <div class="live-badge" id="liveBadge">مباشر</div>
+  <div class="ctrl">
+    <button class="c-sm" id="shPrev" aria-label="السابق"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 6v12l8.5-6zM15 6h2v12h-2z"/></svg></button>
+    <button class="c-sm" id="shBack" aria-label="رجوع ١٥ ثانية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 4h4v4M19 8a8 8 0 1 0 1 6"/><text x="11" y="15.5" font-size="6.5" text-anchor="middle" fill="currentColor" stroke="none">15</text></svg></button>
+    <button class="pb big2" id="shPlay" aria-label="تشغيل"></button>
+    <button class="c-sm" id="shFwd" aria-label="تقديم ١٥ ثانية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4H5v4M5 8a8 8 0 1 1-1 6"/><text x="13" y="15.5" font-size="6.5" text-anchor="middle" fill="currentColor" stroke="none">15</text></svg></button>
+    <button class="c-sm" id="shNext" aria-label="التالي"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 6v12l-8.5-6zM7 6h2v12H7z"/></svg></button>
+  </div>
+  <div class="sheet-row">
+    <div class="field"><label for="rate">السرعة</label><select id="rate"><option value="0.75">٠٫٧٥×</option><option value="1" selected>١×</option><option value="1.25">١٫٢٥×</option><option value="1.5">١٫٥×</option></select></div>
+    <div class="field"><label for="sleepSel">مؤقت النوم</label><select id="sleepSel"><option value="0">إيقاف</option><option value="15">١٥ دقيقة</option><option value="30">٣٠ دقيقة</option><option value="60">ساعة</option><option value="-1">نهاية السورة</option></select></div>
+    <div class="field vol-f"><label for="vol">الصوت</label><input id="vol" type="range" min="0" max="1" step="0.05" value="0.9"></div>
+  </div>
+  <div class="dim small-note" id="shQueue"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<audio id="audio" preload="none" playsinline></audio>
+
+<script src="data.js?v=4"></script>
+<script src="app.js?v=4"></script>
+</body>
+</html>
