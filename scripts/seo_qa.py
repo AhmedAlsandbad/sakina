@@ -175,7 +175,7 @@ def main() -> int:
             if og_url and canonical and og_url != canonical:
                 errors.append(f"{rel}: og:url does not match canonical ({og_url} != {canonical})")
             elif not og_url:
-                warnings.append(f"{rel}: missing og:url")
+                errors.append(f"{rel}: missing og:url")
 
             if noindex:
                 errors.append(f"{rel}: unexpectedly noindex")
