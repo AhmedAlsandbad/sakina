@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/normalize-reciter-surah-audio-schema.yml'
+      - 'scripts/normalize_reciter_surah_audio_schema.py'
 
 permissions:
   contents: write
