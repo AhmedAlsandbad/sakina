@@ -566,3 +566,10 @@ header.top .wrap{min-height:68px;padding-block:6px;gap:12px}
 
 /* Keep the reading view clear while preserving footer links elsewhere. */
 body[data-active-view="quran"] footer .foot-sadaqa { display:none; }
+
+.footer-links{max-width:720px;margin:0 auto 12px;text-align:center;font-family:var(--f-body)}
+.footer-links summary{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;border:1px solid var(--rule);border-radius:999px;cursor:pointer;color:var(--ink);font-size:.9rem;list-style:none}
+.footer-links summary::-webkit-details-marker{display:none}.footer-links summary::after{content:"⌄";color:var(--gold)}
+.footer-links[open] summary::after{content:"⌃"}
+.footer-links-list{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 16px;padding:14px 8px;line-height:1.7}
+.footer-links-list a{color:var(--dim);font-size:.88rem;text-decoration:none}.footer-links-list a:hover,.footer-links-list a:focus-visible{color:var(--gold);text-decoration:underline}
