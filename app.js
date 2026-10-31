@@ -3,6 +3,7 @@
 const { STATIONS, RUQYAH_RECITERS, RUQYAH_SURAS, RUQYAH_TEXT, ADHKAR, CITIES, PRAYERS } = window.SAKINA;
 const API = "https://mp3quran.net/api/v3/";
 
+const track = (n, p) => { if (window.sakinaTrack) window.sakinaTrack(n, p); };
 /* ---------- utils ---------- */
 const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
 const store = {
@@ -123,6 +124,9 @@ function play(it, queue, qi, opts) {
 }
 let playbackEpoch = 0, retryTimer = null, retryPending = false;
 function start(it) {
+  { const k = it.key || "", type = k.startsWith("st:") ? "station" : k.startsWith("rad:") ? "reciter_radio" : k.startsWith("q:") ? "surah"
+      : k.startsWith("r:") ? "ruqyah" : k.startsWith("sleep:") ? "sleep" : k.startsWith("fatiha") ? "sadaqa_fatiha" : (it.kind || "other");
+    track("play", { content_type: type, item_name: it.title, reciter: it.sub || "", riwaya: it.eyebrow || "" }); }
   playbackEpoch++; clearTimeout(retryTimer); retryPending = false;
   P.cur = it; P.retries = 0; setMeta(it); store.set("lastItem", it); load(true);
   if (it.kind === "file" && P.onTrack) P.onTrack(it);
@@ -314,6 +318,7 @@ function route() {
   if (!inited[v]) { inited[v] = true; INIT[v](); }
   if (v === "prayer") tickPrayer();
   store.set("view", v);
+  track("view_section", { section: v });
 }
 window.addEventListener("hashchange", route);
 window.addEventListener("popstate", e => {
@@ -379,6 +384,7 @@ function renderRadios() {
   paint(P.state);
 }
 $("#radSearch").addEventListener("input", debounce(() => { radShown = 25; renderRadios(); }, 150));
+$("#radSearch").addEventListener("input", debounce(e => { const q = e.target.value.trim(); if (q.length > 1) track("search", { search_term: q, area: "radio" }); }, 1500));
 $("#radMore").onclick = () => { radShown += 60; renderRadios(); };
 $("#radList").onclick = e => { const b = e.target.closest("[data-rad]"); if (!b) return;
   const r = RADIOS.find(x => String(x.id) === b.dataset.rad);
@@ -444,6 +450,7 @@ function renderRecs() {
   $("#recMore").hidden = list.length <= recShown;
 }
 $("#recSearch").addEventListener("input", debounce(() => { recShown = 25; renderRecs(); }, 150));
+$("#recSearch").addEventListener("input", debounce(e => { const q = e.target.value.trim(); if (q.length > 1) track("search", { search_term: q, area: "reciters" }); }, 1500));
 $("#recMore").onclick = () => { recShown += 60; renderRecs(); };
 $("#recList").onclick = e => {
   const a = e.target.closest("[data-rw]"); if (a) { rwSel = "all"; store.set("rw", rwSel); renderRw(); renderRecs(); return; }
@@ -538,7 +545,7 @@ function rProgress() {
   $("#shQueue").textContent = el.textContent;
 }
 audio.addEventListener("playing", rProgress);
-$("#rPlay").onclick = () => { const { q, loop } = buildRuqyah(); play(q[0], q, 0, { loop, onEnd: () => { $("#rProg").textContent = "انتهت الرقية، تقبّل الله"; } }); };
+$("#rPlay").onclick = () => { const { q, loop } = buildRuqyah(); track("ruqyah_start", { reciter: rRec.name, repeat: $("#rTimes").value, items: q.length }); play(q[0], q, 0, { loop, onEnd: () => { $("#rProg").textContent = "انتهت الرقية، تقبّل الله"; } }); };
 $("#rTracks").onclick = e => { const b = e.target.closest("[data-r]"); if (!b) return; const s = RUQYAH_SURAS[+b.dataset.r];
   if (P.cur && P.cur.key === "r:" + s.n && !P.cur.ctx) { toggle(); return; } play(rItem(s)); };
 $("#rRec").onchange = e => { rRec = RUQYAH_RECITERS.find(r => r.id === e.target.value); store.set("rRec", rRec.id); renderRTracks(); };
@@ -622,7 +629,7 @@ $("#adhList").onclick = e => {
     b.classList.add("done");
     const nextEl = [...$$("#adhList .dhikr")].find(x => !x.classList.contains("done"));
     if (nextEl) setTimeout(() => nextEl.scrollIntoView({ behavior: "smooth", block: "center" }), 280);
-    else toast("أتممت " + adhLabels[period] + "، تقبّل الله");
+    else { toast("أتممت " + adhLabels[period] + "، تقبّل الله"); track("adhkar_complete", { period: adhLabels[period] }); }
   }
   adhProgress(st);
 };
@@ -706,7 +713,7 @@ INIT.prayer = () => {
   $("#pCity").innerHTML = CITIES.map(c => `<option value="${c.id}"${c.id === city.id ? " selected" : ""}>${c.name}</option>`).join("");
   renderPrayer();
 };
-$("#pCity").onchange = e => { city = CITIES.find(c => c.id === e.target.value); store.set("city", city.id); PT = null; $("#nextChip").hidden = true; $("#pTimes").textContent = "جارٍ تحميل المواقيت…"; $("#pDate").textContent = city.name; $("#pNext").textContent = "جارٍ التحميل…"; $("#pCount").textContent = ""; $("#pAt").textContent = ""; loadPrayer(true); };
+$("#pCity").onchange = e => { city = CITIES.find(c => c.id === e.target.value); track("prayer_city", { city: city.name }); store.set("city", city.id); PT = null; $("#nextChip").hidden = true; $("#pTimes").textContent = "جارٍ تحميل المواقيت…"; $("#pDate").textContent = city.name; $("#pNext").textContent = "جارٍ التحميل…"; $("#pCount").textContent = ""; $("#pAt").textContent = ""; loadPrayer(true); };
 async function loadPrayer(render) {
   const selected = city, day = cityDate(selected), request = ++prayerRequest, tomorrow = addDay(day);
   const url = date => `https://api.aladhan.com/v1/timingsByCity/${apiDate(date)}?city=${encodeURIComponent(selected.city)}&country=${encodeURIComponent(selected.country)}&method=${selected.method}`;

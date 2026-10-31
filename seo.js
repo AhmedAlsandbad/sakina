@@ -48,6 +48,7 @@
       if (live) a.src = src + (src.includes("?") ? "&" : "?") + "t=" + Date.now();
       else if (a.error || a.networkState === 3 || !a.currentTime) { a.src = src; a.load(); }
       set("loading"); a.play().catch(() => retry());
+      if (window.sakinaTrack) window.sakinaTrack("play", { content_type: live ? "station_page" : "surah_page", item_name: title, page: location.pathname });
       if ("mediaSession" in navigator) try { navigator.mediaSession.metadata = new MediaMetadata({ title, artist: "سكينة قرآن", artwork: [{ src: "/icon-512.png", sizes: "512x512", type: "image/png" }] }); } catch (e) {}
     });
     a.addEventListener("playing", () => set("playing"));
