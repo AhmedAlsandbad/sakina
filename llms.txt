@@ -58,6 +58,7 @@ Alternate brand names: سكينة, Sakina Quran, SakinaQuran
 ## Site information
 
 - [عن سكينة قرآن](https://sakinaquran.net/about/): تعريف بالموقع وهدفه ونطاقه.
+- [المصادر والمنهجية](https://sakinaquran.net/sources/): مصادر التلاوات ومواقيت الصلاة وكيفية تحديث البيانات المتغيرة.
 - [سياسة المحتوى والتحرير](https://sakinaquran.net/editorial-policy/): مبادئ مراجعة المحتوى والمصادر.
 - [سياسة الخصوصية](https://sakinaquran.net/privacy/): معلومات الخصوصية.
 - [دليل الموقع](https://sakinaquran.net/sitemap/): روابط الأقسام والصفحات المهمة.
@@ -66,6 +67,7 @@ Alternate brand names: سكينة, Sakina Quran, SakinaQuran
 ## Content notes
 
 - بعض التلاوات وإذاعات القراء تعتمد على MP3Quran: https://mp3quran.net/
+- مواقيت الصلاة في صفحات المدن تُجلب عند فتح الصفحة من AlAdhan Prayer Times API باستخدام طريقة الحساب المناسبة لكل مدينة داخل سكينة.
 - الصوت في صفحات الاستماع المخصصة يستخدم `preload="none"` للمحافظة على سرعة التحميل.
 - صفحات مواقيت الصلاة الخاصة بالمدن تطلب توقيت اليوم عند فتح الصفحة بدل تحميل بيانات زمنية كبيرة مسبقًا.
 - المعلومات الزمنية المتغيرة لا تُعرض باعتبارها ثابتة من دون مصدر حديث قابل للتحديث.
