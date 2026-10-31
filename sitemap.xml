@@ -29,7 +29,11 @@
 <url><loc>https://sakinaquran.net/surahs/maryam/</loc></url>
 <url><loc>https://sakinaquran.net/surahs/yusuf/</loc></url>
 <url><loc>https://sakinaquran.net/surahs/taha/</loc></url>
-<url><loc>https://sakinaquran.net/radio/</loc></url>
+<url><loc>https://sakinaquran.net/radio/</loc><priority>0.9</priority></url>
+<url><loc>https://sakinaquran.net/radio/cairo/</loc></url>
+<url><loc>https://sakinaquran.net/radio/sharjah/</loc></url>
+<url><loc>https://sakinaquran.net/radio/riyadh/</loc></url>
+<url><loc>https://sakinaquran.net/radio/ruqyah/</loc></url>
 <url><loc>https://sakinaquran.net/ruqyah/</loc></url>
 <url><loc>https://sakinaquran.net/adhkar/</loc></url>
 <url><loc>https://sakinaquran.net/prayer-times/</loc></url>
