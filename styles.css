@@ -563,3 +563,6 @@ header.top .wrap{min-height:68px;padding-block:6px;gap:12px}
 #qReading .mushaf-art{max-height:none}
 #qReading .mushaf-number{margin-top:3px;line-height:1.2}
 #qReading .page-navigation{margin-top:8px}
+
+/* Keep the reading view clear while preserving footer links elsewhere. */
+body[data-active-view="quran"] footer .foot-sadaqa { display:none; }

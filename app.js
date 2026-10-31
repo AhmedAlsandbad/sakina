@@ -309,6 +309,7 @@ const VIEWS = ["radio", "quran", "ruqyah", "adhkar", "prayer"];
 const inited = {};
 function route() {
   const v = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "radio";
+  document.body.dataset.activeView = v;
   const swap = () => {
     $$(".view").forEach(s => { s.hidden = s.dataset.view !== v; });
     $$("[data-nav]").forEach(a => a.dataset.nav === v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
