@@ -70,7 +70,6 @@
       <button class="link-btn" id="retryBtn" hidden>إعادة المحاولة</button>
     </div>
 
-
     <div class="sh"><h2>إذاعات القرآن الكريم</h2><p>بث مباشر على مدار الساعة</p></div>
     <div class="stations" id="stations"></div>
 
@@ -94,8 +93,6 @@
       </div>
     </section>
 
-
-
     <div class="sh"><h2>الإذاعات والقرّاء</h2><span class="count" id="radCount"></span></div>
     <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="radSearch" type="search" placeholder="ابحث باسم القارئ أو الإذاعة" autocomplete="off" aria-label="بحث في الإذاعات"></div>
@@ -103,15 +100,12 @@
     <p class="hint">التصنيف حسب اسم الإذاعة.</p>
     <div class="list" id="radList"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
     <button class="more" id="radMore" hidden>عرض المزيد</button>
-
-
   </section>
 
   <!-- QURAN -->
   <section class="view" id="v-quran" data-view="quran" hidden>
     <div class="sh"><h2>المصحف</h2><div class="seg" role="group" aria-label="طريقة استخدام المصحف"><button id="qListen" aria-pressed="true">استماع</button><button id="qRead" aria-pressed="false">قراءة وتفسير</button></div></div>
     <div id="qAudio"><span class="count" id="recCount"></span>
-
     <div id="qPick">
       <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         <input id="recSearch" type="search" placeholder="ابحث عن قارئ" autocomplete="off" aria-label="بحث عن قارئ"></div>
@@ -120,7 +114,6 @@
       <div class="list" id="recList"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
       <button class="more" id="recMore" hidden>عرض المزيد</button>
     </div>
-
     <div id="qReciter" hidden>
       <button class="back" id="qBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>كل القرّاء</button>
       <div class="rec-head">
@@ -147,7 +140,6 @@
         <button role="tab" aria-selected="false" aria-controls="r-text" id="rt-t">قراءة</button>
       </div>
     </div>
-
     <div id="r-audio" role="tabpanel" aria-labelledby="rt-a"><p class="note">الاستماع يشمل السور الظاهرة أدناه. نص الرقية المقروء يتضمن آيات وأدعية إضافية.</p>
       <div class="panel">
         <div class="field"><label for="rRec">القارئ</label><select id="rRec"></select></div>
@@ -160,7 +152,6 @@
       </div>
       <div class="list" id="rTracks"></div>
     </div>
-
     <div id="r-text" role="tabpanel" aria-labelledby="rt-t" hidden>
       <div class="mushaf"><div class="mushaf-in">
         <div class="fs"><button class="fsUp" aria-label="تكبير الخط">+</button><button class="fsDown" aria-label="تصغير الخط">−</button></div>
@@ -214,6 +205,20 @@
 </main>
 
 <footer><div class="wrap">
+  <nav class="foot-sadaqa" aria-label="روابط سكينة قرآن">
+    <a href="/quran/">القرآن الكريم</a> ·
+    <a href="/reciters/">قراء القرآن</a> ·
+    <a href="/surahs/">سور القرآن</a> ·
+    <a href="/radio/">إذاعات القرآن</a> ·
+    <a href="/radio/cairo/">إذاعة القرآن الكريم مصر</a> ·
+    <a href="/radio/sharjah/">إذاعة الشارقة للقرآن الكريم</a> ·
+    <a href="/radio/riyadh/">إذاعة القرآن الكريم السعودية</a> ·
+    <a href="/ruqyah/">الرقية الشرعية</a> ·
+    <a href="/adhkar/">الأذكار</a> ·
+    <a href="/prayer-times/">مواقيت الصلاة</a> ·
+    <a href="/about/">عن سكينة</a> ·
+    <a href="/sitemap/">دليل الموقع</a>
+  </nav>
   <p class="foot-sadaqa">صدقة جارية على أرواح فؤاد مراد، ومحاسن الشرقاوي، ونادية القوصي، وأحمد السيد. رحمهم الله.</p>
   <div class="credit">
     <span class="by">إعداد وتصميم: <b dir="ltr">Ahmed Gamal</b></span>
