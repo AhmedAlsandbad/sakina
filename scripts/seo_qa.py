@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = "https://sakinaquran.net"
 SKIP_DIRS = {".git", ".github", "scripts"}
 NOINDEX_OK = {"/404.html"}
+VERIFICATION_FILE_RE = re.compile(r"^(google[a-z0-9_-]+\.html|BingSiteAuth\.xml)$", re.I)
 
 TITLE_RE = re.compile(r"<title>(.*?)</title>", re.I | re.S)
 DESC_RE = re.compile(r'<meta\s+[^>]*name=["\']description["\'][^>]*content=["\']([^"\']*)["\']|<meta\s+[^>]*content=["\']([^"\']*)["\'][^>]*name=["\']description["\']', re.I | re.S)
@@ -74,6 +75,8 @@ def main() -> int:
     for p in ROOT.rglob("*.html"):
         rel_parts = set(p.relative_to(ROOT).parts)
         if rel_parts & SKIP_DIRS:
+            continue
+        if p.parent == ROOT and VERIFICATION_FILE_RE.match(p.name):
             continue
         pages.append(p)
 
