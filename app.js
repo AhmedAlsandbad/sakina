@@ -385,7 +385,7 @@ function renderRadios() {
   paint(P.state);
 }
 $("#radSearch").addEventListener("input", debounce(() => { radShown = 25; renderRadios(); }, 150));
-$("#radSearch").addEventListener("input", debounce(e => { const q = e.target.value.trim(); if (q.length > 1) track("search", { search_term: q, area: "radio" }); }, 1500));
+$("#radSearch").addEventListener("input", debounce(e => { const q = e.target.value.trim(); if (q.length > 1) track("search", { area: "radio" }); }, 1500));
 $("#radMore").onclick = () => { radShown += 60; renderRadios(); };
 $("#radList").onclick = e => { const b = e.target.closest("[data-rad]"); if (!b) return;
   const r = RADIOS.find(x => String(x.id) === b.dataset.rad);
@@ -451,7 +451,7 @@ function renderRecs() {
   $("#recMore").hidden = list.length <= recShown;
 }
 $("#recSearch").addEventListener("input", debounce(() => { recShown = 25; renderRecs(); }, 150));
-$("#recSearch").addEventListener("input", debounce(e => { const q = e.target.value.trim(); if (q.length > 1) track("search", { search_term: q, area: "reciters" }); }, 1500));
+$("#recSearch").addEventListener("input", debounce(e => { const q = e.target.value.trim(); if (q.length > 1) track("search", { area: "reciters" }); }, 1500));
 $("#recMore").onclick = () => { recShown += 60; renderRecs(); };
 $("#recList").onclick = e => {
   const a = e.target.closest("[data-rw]"); if (a) { rwSel = "all"; store.set("rw", rwSel); renderRw(); renderRecs(); return; }
