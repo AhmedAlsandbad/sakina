@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Detect duplicate singleton structured-data entities on indexable HTML pages."""
+"""Validate singleton and media structured data on indexable HTML pages."""
 from __future__ import annotations
 
 import json
@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SKIP_DIRS = {".git", ".github", "scripts"}
 VERIFY_RE = re.compile(r"^(google[a-z0-9_-]+\.html|BingSiteAuth\.xml)$", re.I)
 LD_JSON_RE = re.compile(r'<script\b[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', re.I | re.S)
+AUDIO_SRC_RE = re.compile(r'<audio\b[^>]*\bsrc=["\']([^"\']+)["\'][^>]*>', re.I | re.S)
 SINGLETON_TYPES = {"BreadcrumbList", "FAQPage", "WebPage"}
 
 
@@ -26,21 +27,40 @@ def type_names(value):
     return []
 
 
-def top_level_types(data):
-    """Yield only independently declared entities, not nested references."""
+def top_level_entities(data):
+    """Yield independently declared entities, excluding nested references."""
     if isinstance(data, dict) and isinstance(data.get("@graph"), list):
-        for entity in data["@graph"]:
-            yield from type_names(entity)
+        yield from (x for x in data["@graph"] if isinstance(x, dict))
     elif isinstance(data, dict):
-        yield from type_names(data)
+        yield data
     elif isinstance(data, list):
-        for entity in data:
-            yield from type_names(entity)
+        yield from (x for x in data if isinstance(x, dict))
+
+
+def entity_has_type(entity, wanted: str) -> bool:
+    return wanted in type_names(entity)
+
+
+def ref_ids(value) -> set[str]:
+    if not isinstance(value, list):
+        value = [value]
+    out = set()
+    for item in value:
+        if isinstance(item, dict) and isinstance(item.get("@id"), str):
+            out.add(item["@id"])
+    return out
+
+
+def is_surah_detail(path: Path) -> bool:
+    parts = path.relative_to(ROOT).parts
+    return len(parts) == 3 and parts[0] == "surahs" and parts[2] == "index.html"
 
 
 def main() -> int:
     errors = []
     checked = 0
+    media_checked = 0
+
     for path in sorted(ROOT.rglob("*.html")):
         parts = set(path.relative_to(ROOT).parts)
         if parts & SKIP_DIRS:
@@ -50,27 +70,73 @@ def main() -> int:
         html = path.read_text(encoding="utf-8", errors="replace")
         if re.search(r'<meta\s+[^>]*name=["\']robots["\'][^>]*content=["\'][^"\']*noindex', html, re.I):
             continue
+
         checked += 1
-        counts = Counter()
+        entities = []
         for payload in LD_JSON_RE.findall(html):
             try:
                 data = json.loads(payload.strip())
             except json.JSONDecodeError:
                 # Main SEO QA reports malformed JSON-LD.
                 continue
-            counts.update(top_level_types(data))
+            entities.extend(top_level_entities(data))
+
+        counts = Counter()
+        for entity in entities:
+            counts.update(type_names(entity))
+
         rel = "/" + path.relative_to(ROOT).as_posix()
         for schema_type in sorted(SINGLETON_TYPES):
             if counts[schema_type] > 1:
                 errors.append(f"{rel}: duplicate {schema_type} schema ({counts[schema_type]} instances)")
 
+        if is_surah_detail(path):
+            visible_audio = AUDIO_SRC_RE.findall(html)
+            if visible_audio:
+                media_checked += 1
+                visible_sources = set(visible_audio)
+                audio_entities = [e for e in entities if entity_has_type(e, "AudioObject")]
+                schema_sources = {
+                    e.get("contentUrl") for e in audio_entities if isinstance(e.get("contentUrl"), str)
+                }
+
+                if len(visible_audio) != len(visible_sources):
+                    errors.append(f"{rel}: duplicate visible audio source URL")
+                if schema_sources != visible_sources or len(audio_entities) != len(visible_audio):
+                    errors.append(
+                        f"{rel}: AudioObject contentUrl set/count does not exactly match visible audio players"
+                    )
+
+                audio_ids = [e.get("@id") for e in audio_entities if isinstance(e.get("@id"), str)]
+                if len(audio_ids) != len(audio_entities) or len(set(audio_ids)) != len(audio_entities):
+                    errors.append(f"{rel}: every AudioObject must have a unique @id")
+
+                webpage_entities = [e for e in entities if entity_has_type(e, "WebPage")]
+                if len(webpage_entities) == 1:
+                    webpage = webpage_entities[0]
+                    webpage_id = webpage.get("@id")
+                    if not isinstance(webpage_id, str):
+                        errors.append(f"{rel}: WebPage with static audio must have @id")
+                    if ref_ids(webpage.get("audio")) != set(audio_ids):
+                        errors.append(f"{rel}: WebPage audio references do not match AudioObject @ids")
+                    for entity in audio_entities:
+                        if entity.get("encodingFormat") != "audio/mpeg":
+                            errors.append(f"{rel}: AudioObject must declare encodingFormat audio/mpeg")
+                        if entity.get("inLanguage") != "ar":
+                            errors.append(f"{rel}: AudioObject must declare inLanguage ar")
+                        if ref_ids(entity.get("isPartOf")) != ({webpage_id} if isinstance(webpage_id, str) else set()):
+                            errors.append(f"{rel}: AudioObject isPartOf must reference its WebPage")
+                else:
+                    errors.append(f"{rel}: expected exactly one WebPage entity for static audio page")
+
     print(f"Checked structured data on {checked} indexable HTML pages")
+    print(f"Checked audio/schema parity on {media_checked} surah detail page(s)")
     for error in errors:
         print(f"ERROR: {error}")
     if errors:
-        print(f"Structured-data QA failed: {len(errors)} duplicate singleton issue(s)")
+        print(f"Structured-data QA failed: {len(errors)} issue(s)")
         return 1
-    print("Structured-data QA passed: no duplicate singleton schemas")
+    print("Structured-data QA passed: singleton and audio schemas are consistent")
     return 0
 
 
