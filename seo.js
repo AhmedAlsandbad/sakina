@@ -35,7 +35,7 @@
       if (state) state.textContent = { idle: "اضغط للاستماع", loading: "جارٍ التحميل…", playing: live ? "على الهواء الآن" : "يتم التشغيل", error: "تعذّر التشغيل، حاول مرة أخرى" }[st];
     };
     let retried = false;
-    const retry = () => { // first request sometimes fails on a cold connection: reload once, then report
+    const retry = () => {
       if (retried) { set("error"); return; }
       retried = true; set("loading");
       setTimeout(() => { a.src = live ? src + (src.includes("?") ? "&" : "?") + "t=" + Date.now() : src; a.load(); a.play().catch(() => set("error")); }, 600);
@@ -63,6 +63,13 @@
       bar.addEventListener("change", () => { const d = a.duration || 0; if (d) a.currentTime = bar.value / 1000 * d; drag = false; });
     }
   });
+
+  if (location.pathname.startsWith("/prayer-times/") && document.getElementById("status") && document.getElementById("times")) {
+    const s = document.createElement("script");
+    s.src = "/prayer-page.js?v=1";
+    s.defer = true;
+    document.head.appendChild(s);
+  }
 
   const tb = document.getElementById("themeBtn");
   if (tb) tb.onclick = () => { const r = document.documentElement;
