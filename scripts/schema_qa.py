@@ -56,10 +56,70 @@ def is_surah_detail(path: Path) -> bool:
     return len(parts) == 3 and parts[0] == "surahs" and parts[2] == "index.html"
 
 
+def is_reciter_surah_detail(path: Path) -> bool:
+    parts = path.relative_to(ROOT).parts
+    return len(parts) == 4 and parts[0] == "reciters" and parts[3] == "index.html"
+
+
+def validate_audio_page(rel: str, html: str, entities: list[dict], errors: list[str], *, require_creator: bool) -> None:
+    visible_audio = AUDIO_SRC_RE.findall(html)
+    if not visible_audio:
+        errors.append(f"{rel}: expected at least one visible audio player")
+        return
+
+    visible_sources = set(visible_audio)
+    audio_entities = [e for e in entities if entity_has_type(e, "AudioObject")]
+    schema_sources = {
+        e.get("contentUrl") for e in audio_entities if isinstance(e.get("contentUrl"), str)
+    }
+
+    if len(visible_audio) != len(visible_sources):
+        errors.append(f"{rel}: duplicate visible audio source URL")
+    if schema_sources != visible_sources or len(audio_entities) != len(visible_audio):
+        errors.append(f"{rel}: AudioObject contentUrl set/count does not exactly match visible audio players")
+
+    audio_ids = [e.get("@id") for e in audio_entities if isinstance(e.get("@id"), str)]
+    if len(audio_ids) != len(audio_entities) or len(set(audio_ids)) != len(audio_entities):
+        errors.append(f"{rel}: every AudioObject must have a unique @id")
+
+    webpage_entities = [e for e in entities if entity_has_type(e, "WebPage")]
+    if len(webpage_entities) != 1:
+        errors.append(f"{rel}: expected exactly one WebPage entity for static audio page")
+        return
+
+    webpage = webpage_entities[0]
+    webpage_id = webpage.get("@id")
+    if not isinstance(webpage_id, str) or not webpage_id:
+        errors.append(f"{rel}: WebPage with static audio must have @id")
+        webpage_id = None
+
+    if ref_ids(webpage.get("audio")) != set(audio_ids):
+        errors.append(f"{rel}: WebPage audio references do not match AudioObject @ids")
+
+    for entity in audio_entities:
+        if entity.get("encodingFormat") != "audio/mpeg":
+            errors.append(f"{rel}: AudioObject must declare encodingFormat audio/mpeg")
+        if entity.get("inLanguage") != "ar":
+            errors.append(f"{rel}: AudioObject must declare inLanguage ar")
+        expected_parent = {webpage_id} if isinstance(webpage_id, str) else set()
+        if ref_ids(entity.get("isPartOf")) != expected_parent:
+            errors.append(f"{rel}: AudioObject isPartOf must reference its WebPage")
+        if require_creator:
+            creator = entity.get("creator")
+            if not (
+                isinstance(creator, dict)
+                and entity_has_type(creator, "Person")
+                and isinstance(creator.get("name"), str)
+                and creator.get("name").strip()
+            ):
+                errors.append(f"{rel}: AudioObject must declare a non-empty Person creator")
+
+
 def main() -> int:
     errors = []
     checked = 0
-    media_checked = 0
+    surah_media_checked = 0
+    reciter_surah_checked = 0
 
     for path in sorted(ROOT.rglob("*.html")):
         parts = set(path.relative_to(ROOT).parts)
@@ -90,47 +150,18 @@ def main() -> int:
             if counts[schema_type] > 1:
                 errors.append(f"{rel}: duplicate {schema_type} schema ({counts[schema_type]} instances)")
 
-        if is_surah_detail(path):
-            visible_audio = AUDIO_SRC_RE.findall(html)
-            if visible_audio:
-                media_checked += 1
-                visible_sources = set(visible_audio)
-                audio_entities = [e for e in entities if entity_has_type(e, "AudioObject")]
-                schema_sources = {
-                    e.get("contentUrl") for e in audio_entities if isinstance(e.get("contentUrl"), str)
-                }
-
-                if len(visible_audio) != len(visible_sources):
-                    errors.append(f"{rel}: duplicate visible audio source URL")
-                if schema_sources != visible_sources or len(audio_entities) != len(visible_audio):
-                    errors.append(
-                        f"{rel}: AudioObject contentUrl set/count does not exactly match visible audio players"
-                    )
-
-                audio_ids = [e.get("@id") for e in audio_entities if isinstance(e.get("@id"), str)]
-                if len(audio_ids) != len(audio_entities) or len(set(audio_ids)) != len(audio_entities):
-                    errors.append(f"{rel}: every AudioObject must have a unique @id")
-
-                webpage_entities = [e for e in entities if entity_has_type(e, "WebPage")]
-                if len(webpage_entities) == 1:
-                    webpage = webpage_entities[0]
-                    webpage_id = webpage.get("@id")
-                    if not isinstance(webpage_id, str):
-                        errors.append(f"{rel}: WebPage with static audio must have @id")
-                    if ref_ids(webpage.get("audio")) != set(audio_ids):
-                        errors.append(f"{rel}: WebPage audio references do not match AudioObject @ids")
-                    for entity in audio_entities:
-                        if entity.get("encodingFormat") != "audio/mpeg":
-                            errors.append(f"{rel}: AudioObject must declare encodingFormat audio/mpeg")
-                        if entity.get("inLanguage") != "ar":
-                            errors.append(f"{rel}: AudioObject must declare inLanguage ar")
-                        if ref_ids(entity.get("isPartOf")) != ({webpage_id} if isinstance(webpage_id, str) else set()):
-                            errors.append(f"{rel}: AudioObject isPartOf must reference its WebPage")
-                else:
-                    errors.append(f"{rel}: expected exactly one WebPage entity for static audio page")
+        if is_surah_detail(path) and AUDIO_SRC_RE.search(html):
+            surah_media_checked += 1
+            validate_audio_page(rel, html, entities, errors, require_creator=False)
+        elif is_reciter_surah_detail(path):
+            reciter_surah_checked += 1
+            validate_audio_page(rel, html, entities, errors, require_creator=True)
 
     print(f"Checked structured data on {checked} indexable HTML pages")
-    print(f"Checked audio/schema parity on {media_checked} surah detail page(s)")
+    print(
+        f"Checked audio/schema parity on {surah_media_checked} surah detail page(s) "
+        f"and {reciter_surah_checked} reciter-surah page(s)"
+    )
     for error in errors:
         print(f"ERROR: {error}")
     if errors:
