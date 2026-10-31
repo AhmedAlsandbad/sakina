@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SITE = "https://sakinaquran.net"
 CSS_V = "38"     # styles.css version used by index.html
 SEO_V = "4"
-GA_V = "1"      # bump when analytics.js changes      # bump when seo.css / seo.js change
+GA_V = "2"      # bump when analytics.js changes      # bump when seo.css / seo.js change
 
 SECTION = {
     "quran": "القرآن الكريم", "reciters": "القرّاء", "surahs": "السور", "radio": "الإذاعات",

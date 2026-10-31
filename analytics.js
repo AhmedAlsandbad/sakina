@@ -1,6 +1,6 @@
 /* Google Analytics 4 for every page of Sakina. Set GA_ID once; all pages load this file. */
 (function () {
-  var GA_ID = "G-XXXXXXXXXX";
+  var GA_ID = "G-5VX3Y4M3FV";
   window.sakinaTrack = function (name, params) { try { if (window.gtag) window.gtag("event", name, params || {}); } catch (e) {} };
   if (!/^G-[A-Z0-9]{6,}$/.test(GA_ID) || GA_ID === "G-XXXXXXXXXX") return;
   if (location.hostname !== "sakinaquran.net" && location.hostname !== "www.sakinaquran.net") return; // keep previews out of the numbers
