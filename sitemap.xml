@@ -48,6 +48,10 @@
 <url><loc>https://sakinaquran.net/adhkar/evening/</loc><lastmod>2026-10-31</lastmod></url>
 <url><loc>https://sakinaquran.net/adhkar/sleep/</loc><lastmod>2026-10-31</lastmod></url>
 <url><loc>https://sakinaquran.net/adhkar/after-prayer/</loc><lastmod>2026-10-31</lastmod></url>
-<url><loc>https://sakinaquran.net/prayer-times/</loc><lastmod>2026-10-31</lastmod></url>
+<url><loc>https://sakinaquran.net/prayer-times/</loc><lastmod>2026-10-31</lastmod><priority>0.8</priority></url>
+<url><loc>https://sakinaquran.net/prayer-times/cairo/</loc><lastmod>2026-10-31</lastmod></url>
+<url><loc>https://sakinaquran.net/prayer-times/dubai/</loc><lastmod>2026-10-31</lastmod></url>
+<url><loc>https://sakinaquran.net/prayer-times/sharjah/</loc><lastmod>2026-10-31</lastmod></url>
+<url><loc>https://sakinaquran.net/prayer-times/riyadh/</loc><lastmod>2026-10-31</lastmod></url>
 <url><loc>https://sakinaquran.net/sitemap/</loc><lastmod>2026-10-31</lastmod></url>
 </urlset>
