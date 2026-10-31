@@ -197,6 +197,8 @@ audio.addEventListener("timeupdate", () => {
   if (!seeking) { $("#seekBar").value = d ? t / d * 1000 : 0; $("#tCur").textContent = fmt(t); $("#tDur").textContent = fmt(d); }
   $("#capProg").style.width = d ? (t / d * 100) + "%" : "0";
   if (d > 240 && Date.now() - lastSave > 5000) { lastSave = Date.now(); store.set("pos:" + it.url, t); }
+  if (d && "mediaSession" in navigator && navigator.mediaSession.setPositionState && Date.now() - (P.posT || 0) > 2000) {
+    P.posT = Date.now(); try { navigator.mediaSession.setPositionState({ duration: d, position: Math.min(t, d), playbackRate: audio.playbackRate || 1 }); } catch (e) {} }
 });
 let seeking = false;
 $("#seekBar").addEventListener("input", e => { seeking = true; $("#tCur").textContent = fmt(e.target.value / 1000 * (audio.duration || 0)); });
@@ -222,22 +224,41 @@ document.addEventListener("keydown", e => {
 });
 
 /* sleep timer */
-let sleepFade = null, sleepOriginalVolume = null;
+/* Sleep timer. Judged by the wall clock, not by one long setTimeout: phones pause or slow timers
+   when the screen is locked, so the deadline is re-checked on every audio tick, on a short interval,
+   and when the page becomes visible again. If the page is hidden it stops at once instead of fading. */
+const FADE_MS = 20000;
+let sleepTick = null, sleepV0 = null;
+function sleepCheck() {
+  if (!P.sleepEnd) return;
+  const left = P.sleepEnd - Date.now();
+  if (left <= 0) {
+    const v0 = sleepV0; P.sleepEnd = 0; clearInterval(sleepTick); sleepTick = null; clearTimeout(P.sleepT);
+    stop(); if (v0 !== null) audio.volume = v0; sleepV0 = null;
+    $("#sleepSel").value = "0"; sleepLabel(); toast("انتهى مؤقت النوم"); return;
+  }
+  if (Date.now() - (P.lblT || 0) > 15000) { P.lblT = Date.now(); sleepLabel(); }
+  if (left <= FADE_MS && P.want) {
+    if (sleepV0 === null) sleepV0 = audio.volume;
+    if (document.hidden) { P.sleepEnd = Date.now(); sleepCheck(); return; }
+    audio.volume = Math.max(0, sleepV0 * left / FADE_MS);
+  }
+}
 function setSleep(min) {
-  clearTimeout(P.sleepT); clearInterval(sleepFade); sleepFade = null;
-  if (sleepOriginalVolume !== null) { audio.volume = sleepOriginalVolume; sleepOriginalVolume = null; }
+  clearTimeout(P.sleepT); clearInterval(sleepTick); sleepTick = null;
+  if (sleepV0 !== null) { audio.volume = sleepV0; sleepV0 = null; }
   P.sleepAtEnd = false; P.sleepEnd = 0;
   if (min === -1) { P.sleepAtEnd = true; }
   else if (min > 0) {
     P.sleepEnd = Date.now() + min * 60000;
-    P.sleepT = setTimeout(() => {
-      const v0 = audio.volume; sleepOriginalVolume = v0; let k = 0;
-      sleepFade = setInterval(() => { k++; audio.volume = Math.max(0, v0 * (1 - k / 20)); if (k >= 20) { clearInterval(sleepFade); sleepFade = null; stop(); audio.volume = v0; sleepOriginalVolume = null; P.sleepEnd = 0; sleepLabel(); toast("انتهى مؤقت النوم"); } }, 1000);
-    }, Math.max(0, min * 60000 - 20000));
+    P.sleepT = setTimeout(sleepCheck, Math.max(0, min * 60000 - FADE_MS));
+    sleepTick = setInterval(sleepCheck, 1000);
   }
   $("#sleepSel").value = String(min);
   sleepLabel();
 }
+audio.addEventListener("timeupdate", sleepCheck);
+document.addEventListener("visibilitychange", sleepCheck);
 function sleepLabel() {
   const b = $("#sleepBtn"), t = $("#sleepTxt");
   if (P.sleepAtEnd) { b.classList.add("on"); t.textContent = "آخر السورة"; return; }
@@ -274,6 +295,7 @@ if ("mediaSession" in navigator) try {
   navigator.mediaSession.setActionHandler("previoustrack", prev);
   navigator.mediaSession.setActionHandler("seekforward", () => { audio.currentTime += 15; });
   navigator.mediaSession.setActionHandler("seekbackward", () => { audio.currentTime -= 15; });
+  try { navigator.mediaSession.setActionHandler("seekto", e => { if (P.cur && P.cur.kind === "file" && isFinite(e.seekTime)) audio.currentTime = e.seekTime; }); } catch (e) {}
 } catch (e) {}
 
 /* =========================================================

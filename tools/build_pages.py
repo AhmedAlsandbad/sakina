@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup, NavigableString
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = "https://sakinaquran.net"
-CSS_V = "37"     # styles.css version used by index.html
+CSS_V = "38"     # styles.css version used by index.html
 SEO_V = "3"      # bump when seo.css / seo.js change
 
 SECTION = {
