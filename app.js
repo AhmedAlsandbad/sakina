@@ -645,53 +645,119 @@ $("#adhReset").onclick = () => { store.del(adhKey()); renderAdhkar(); toast("ت�
 $("#dockToggle").onclick = () => { const compact = $("#dock").classList.toggle("compact"); $("#dockToggle").setAttribute("aria-expanded", String(!compact)); $("#dockToggle").setAttribute("aria-label", compact ? "إظهار المشغل" : "تصغير المشغل"); $("#dockToggle").textContent = compact ? "⌃" : "⌄"; };
 
 /* Quran reading: independently loaded per surah. */
-let readingRequest = 0, readingTafsir = [], readingPages = [], readingPageIndex = 0;
+let readingRequest = 0, tafsirRequest = 0, currentPage = Math.max(1, Math.min(604, +store.get("mushafPage", 1) || 1));
 const readingSelect = $("#readingSurah");
+const pageHost = $("#readingVerses");
+const sourceBase = "https://cdn.quran.ws/svg/pages/v1.1.1/hafs-kfqc/";
+const pageCache = new Map();
+const wideReader = matchMedia("(min-width: 1000px)");
 $("#qListen").onclick = () => { $("#qAudio").hidden = false; $("#qReading").hidden = true; $("#qListen").setAttribute("aria-pressed", "true"); $("#qRead").setAttribute("aria-pressed", "false"); };
 $("#qRead").onclick = async () => {
-  $("#qAudio").hidden = true; $("#qReading").hidden = false; $("#qListen").setAttribute("aria-pressed", "false"); $("#qRead").setAttribute("aria-pressed", "true"); loadQuranFont();
+  $("#qAudio").hidden = true; $("#qReading").hidden = false; $("#qListen").setAttribute("aria-pressed", "false"); $("#qRead").setAttribute("aria-pressed", "true");
   if (!readingSelect.options.length) {
-    try { const data = await getJSON("https://api.alquran.cloud/v1/surah", "c:reading-surahs", 720);
-      readingSelect.innerHTML = data.data.map(x => `<option value="${x.number}">${ard(x.number)} · ${esc(x.name)}</option>`).join("");
+    try {
+      const data = await getJSON("https://api.alquran.cloud/v1/surah", "c:reading-surahs", 720);
+      readingSelect.innerHTML = data.data.map(x => '<option value="' + x.number + '">' + ard(x.number) + ' · ' + esc(x.name) + '</option>').join("");
       readingSelect.value = String(store.get("readingSurah", 1));
-    } catch(e) { $("#readingVerses").textContent = "تعذّر تحميل قائمة السور. اضغط قراءة وتفسير لإعادة المحاولة."; return; }
+    } catch (e) { pageHost.textContent = "تعذّر تحميل قائمة السور. اضغط قراءة وتفسير لإعادة المحاولة."; return; }
   }
-  loadReading();
+  renderMushaf();
 };
 async function loadReading() {
   const n = +readingSelect.value, request = ++readingRequest; if (!n) return;
-  store.set("readingSurah", n); $("#readingTitle").textContent = readingSelect.selectedOptions[0].textContent;
-  $("#pageNavigation").hidden = true; $("#tafsirPanel").classList.remove("tafsir-open"); $("#readingVerses").textContent = "جارٍ تحميل الآيات…"; $("#tafsirText").textContent = "اختر آية لعرض تفسيرها.";
+  store.set("readingSurah", n);
+  pageHost.textContent = "جارٍ تحديد صفحة السورة…";
   try {
-    const [q, taf] = await Promise.all([getJSON("https://api.alquran.cloud/v1/surah/" + n + "/quran-uthmani", "c:qread:" + n, 720), getJSON("https://api.alquran.cloud/v1/surah/" + n + "/ar.muyassar", "c:tafsir:" + n, 720).catch(() => null)]);
+    const q = await getJSON("https://api.alquran.cloud/v1/surah/" + n + "/quran-uthmani", "c:qread:" + n, 720);
     if (request !== readingRequest) return;
-    if (!q.data?.ayahs?.length) throw Error("invalid data");
-    readingTafsir = taf?.data?.ayahs?.length === q.data.ayahs.length ? taf.data.ayahs : [];
-    if (!readingTafsir.length) $("#tafsirText").textContent = "التفسير غير متاح حاليًا. أعد تحميل السورة للمحاولة مجددًا.";
-    readingPages = []; readingPageIndex = 0;
-    q.data.ayahs.forEach(a => { let group = readingPages[readingPages.length-1]; if (!group || group.page !== a.page) { group = { page:a.page, verses:[] }; readingPages.push(group); } group.verses.push(a); });
-    renderReadingPage();
-  } catch(e) { if (request === readingRequest) $("#readingVerses").innerHTML = '<p>تعذّر تحميل السورة أو التفسير. تحقق من اتصال الإنترنت.</p><button class="chip" id="readingRetry">إعادة المحاولة</button>'; }
+    if (!q.data?.ayahs?.[0]?.page) throw Error("missing page");
+    currentPage = q.data.ayahs[0].page;
+    renderMushaf();
+  } catch(e) { if (request === readingRequest) pageHost.innerHTML = '<p>تعذّر تحميل السورة. تحقق من اتصال الإنترنت.</p><button class="chip" id="readingRetry">إعادة المحاولة</button>'; }
 }
-function renderReadingPage() {
-  const page = readingPages[readingPageIndex]; if (!page) return; $("#pageNavigation").hidden = false;
-  $("#readingVerses").innerHTML = page.verses.map(a => `<button class="verse" data-ayah="${a.numberInSurah}" aria-label="تفسير الآية ${ard(a.numberInSurah)}">${esc(a.text)} <span>﴿${ard(a.numberInSurah)}﴾</span></button>`).join(" ");
-  $("#pageLabel").textContent = "صفحة " + ard(page.page) + " · من السورة";
-  $("#pagePrev").disabled = readingPageIndex === 0;
-  $("#pageNext").disabled = readingPageIndex === readingPages.length - 1;
+function validatePage(text) {
+  const doc = new DOMParser().parseFromString(text, "image/svg+xml");
+  const root = doc.documentElement;
+  if (root.localName !== "svg" || doc.querySelector("parsererror")) throw Error("invalid page");
+  for (const el of root.querySelectorAll("*")) {
+    if (!["svg", "g", "path"].includes(el.localName)) throw Error("unsupported page element");
+    for (const attr of [...el.attributes]) {
+      if (/^on/i.test(attr.name) || /href/i.test(attr.name) || /url\s*\(/i.test(attr.value)) el.removeAttributeNode(attr);
+    }
+  }
+  root.removeAttribute("width"); root.removeAttribute("height"); root.classList.add("mushaf-art");
+  root.querySelectorAll(".ayahPolygon").forEach(p => {
+    p.setAttribute("role", "button"); p.setAttribute("tabindex", "0");
+    p.setAttribute("aria-label", "تفسير السورة " + ard(p.getAttribute("surah")) + "، الآية " + ard(p.getAttribute("ayah")));
+  });
+  return document.importNode(root, true);
+}
+async function mountMushafPage(host, number, request) {
+  try {
+    let text = pageCache.get(number);
+    if (!text) {
+      const res = await fetch(sourceBase + String(number).padStart(3, "0") + ".svg");
+      if (!res.ok) throw Error("page unavailable");
+      text = await res.text(); pageCache.set(number, text);
+      if (pageCache.size > 4) pageCache.delete(pageCache.keys().next().value);
+    }
+    if (request !== readingRequest) return;
+    const svg = validatePage(text);
+    host.replaceChildren(svg);
+    requestAnimationFrame(() => { if (number > 2 || !svg.isConnected) return; try {
+      const box = svg.getBBox(), pad = Math.max(box.width, box.height) * .04;
+      if (box.width && box.height) svg.setAttribute("viewBox", [box.x-pad,box.y-pad,box.width+2*pad,box.height+2*pad].join(" "));
+    } catch (_) {} });
+  } catch(e) { if (request === readingRequest) host.innerHTML = '<p>تعذّر تحميل الصفحة. تحقق من الاتصال.</p><button class="chip" id="pageRetry">إعادة المحاولة</button>'; }
+}
+function renderMushaf() {
+  ++tafsirRequest;
+  const request = ++readingRequest;
+  const spread = wideReader.matches && currentPage < 604;
+  const pages = spread ? [currentPage, currentPage + 1] : [currentPage];
+  $("#readingTitle").textContent = "مصحف المدينة النبوية";
   $("#tafsirPanel").classList.remove("tafsir-open");
+  $("#pageNavigation").hidden = false;
+  $("#pageLabel").textContent = pages.length === 2 ? "الصفحتان " + ard(pages[0]) + " و" + ard(pages[1]) : "صفحة " + ard(currentPage);
+  $("#pagePrev").disabled = currentPage <= 1;
+  $("#pageNext").disabled = pages[pages.length-1] >= 604;
+  store.set("mushafPage", currentPage);
+  pageHost.innerHTML = "";
+  const list = document.createElement("div"); list.className = "mushaf-spread";
+  pages.forEach(number => {
+    const page = document.createElement("div"); page.className = "mushaf-sheet";
+    const body = document.createElement("div"); body.className = "mushaf-art-host"; body.textContent = "جارٍ تحميل الصفحة…";
+    const label = document.createElement("span"); label.className = "mushaf-number"; label.textContent = ard(number);
+    page.append(body, label); list.append(page); mountMushafPage(body, number, request);
+  });
+  pageHost.append(list);
 }
-$("#pagePrev").onclick = () => { if (readingPageIndex > 0) { readingPageIndex--; renderReadingPage(); } };
-$("#pageNext").onclick = () => { if (readingPageIndex < readingPages.length-1) { readingPageIndex++; renderReadingPage(); } };
-$("#tafsirClose").onclick = () => $("#tafsirPanel").classList.remove("tafsir-open");
+async function showTafsir(surah, ayah, shape) {
+  if (!(surah >= 1 && surah <= 114 && ayah >= 1 && ayah <= 286)) return;
+  const request = ++tafsirRequest, panel = $("#tafsirPanel");
+  $$(".ayahPolygon").forEach(p => p.setAttribute("fill-opacity", "0"));
+  shape.setAttribute("fill", "#7d9768"); shape.setAttribute("fill-opacity", ".3");
+  panel.classList.add("tafsir-open"); $("#tafsirText").textContent = "جارٍ تحميل التفسير…";
+  try {
+    const data = await getJSON("https://api.alquran.cloud/v1/surah/" + surah + "/ar.muyassar", "c:tafsir:" + surah, 720);
+    if (request !== tafsirRequest) return;
+    const a = data.data.ayahs.find(x => x.numberInSurah === ayah);
+    $("#tafsirText").textContent = a ? "سورة " + surah + " · الآية " + ard(ayah) + " · " + a.text : "التفسير غير متاح لهذه الآية.";
+  } catch (_) { if (request === tafsirRequest) $("#tafsirText").textContent = "تعذّر تحميل التفسير. تحقق من الاتصال واضغط الآية مجددًا."; }
+}
+$("#pagePrev").onclick = () => { currentPage = Math.max(1, currentPage - (wideReader.matches ? 2 : 1)); renderMushaf(); };
+$("#pageNext").onclick = () => { currentPage = Math.min(604, currentPage + (wideReader.matches ? 2 : 1)); renderMushaf(); };
+$("#tafsirClose").onclick = () => { ++tafsirRequest; $("#tafsirPanel").classList.remove("tafsir-open"); };
 readingSelect.onchange = loadReading;
 $("#readingPrev").onclick = () => { if (+readingSelect.value > 1) { readingSelect.value = String(+readingSelect.value - 1); loadReading(); } };
 $("#readingNext").onclick = () => { if (+readingSelect.value < 114) { readingSelect.value = String(+readingSelect.value + 1); loadReading(); } };
-$("#readingVerses").onclick = e => { if (e.target.closest("#readingRetry")) { loadReading(); return; } const b = e.target.closest("[data-ayah]"); if (!b) return;
-  const a = readingTafsir.find(x => x.numberInSurah === +b.dataset.ayah); if (!a) { $("#tafsirPanel").classList.add("tafsir-open"); return; }
-  $$("#readingVerses .verse").forEach(v => v.classList.toggle("selected", v === b));
-  $("#tafsirText").textContent = "الآية " + ard(a.numberInSurah) + " · " + a.text; $("#tafsirPanel").classList.add("tafsir-open");
+pageHost.onclick = e => {
+  if (e.target.closest("#readingRetry")) { loadReading(); return; }
+  if (e.target.closest("#pageRetry")) { renderMushaf(); return; }
+  const p = e.target.closest(".ayahPolygon"); if (p) showTafsir(+p.getAttribute("surah"), +p.getAttribute("ayah"), p);
 };
+pageHost.onkeydown = e => { if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("ayahPolygon")) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent("click", {bubbles:true})); } };
+wideReader.addEventListener("change", () => { if (!$("#qReading").hidden) renderMushaf(); });
 
 /* =========================================================
    PRAYER TIMES
@@ -794,3 +860,4 @@ if (!last || last.kind !== "live") { const s = STATIONS.find(x => x.id === store
 paint("idle");
 idle(() => { loadPrayer(false); });
 })();
+

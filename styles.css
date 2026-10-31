@@ -537,3 +537,17 @@ header.top .wrap{min-height:68px;padding-block:6px;gap:12px}
 .mushaf-page h3{border-block:1px solid #d9c49a;padding:10px 5px;margin:0 0 20px;font-size:1.5rem}
 #readingVerses{line-height:2.7}
 @media(max-width:480px){.page-navigation{gap:6px}.page-navigation .chip{font-size:.8rem;padding:8px}.page-navigation span{font-size:.75rem}}
+
+/* Printed Madinah mushaf */
+#qReading .mushaf-page{padding:16px;background:#ede3cb;box-shadow:none;border:1px solid #c9b887}
+#qReading .mushaf-page h3{margin:0 0 12px;font-size:1.35rem}
+#readingVerses{line-height:normal}
+.mushaf-spread{display:grid;grid-template-columns:1fr;gap:12px;direction:rtl}
+@media(min-width:1000px){.mushaf-spread{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.mushaf-sheet{background:#fffdf4;border:double 5px #98815c;padding:clamp(10px,2vw,22px);color:#1d1a14;box-shadow:0 4px 15px #43382126}
+.mushaf-art-host{min-height:160px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.mushaf-art{display:block;width:100%;height:auto;max-height:76vh}
+.mushaf-art .ayahPolygon{cursor:pointer}
+.mushaf-art .ayahPolygon:focus-visible{stroke:#52794b;stroke-width:2;outline:none}
+.mushaf-number{display:block;margin-top:8px;font-family:var(--f-naskh);color:#705c3d}
+
