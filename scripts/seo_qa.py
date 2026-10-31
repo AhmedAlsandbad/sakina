@@ -2,10 +2,11 @@
 """Static SEO QA for sakinaquran.net.
 
 Uses Python stdlib only. Exits non-zero on SEO regressions that can affect
-crawlability/indexation. Intended for GitHub Actions and local use.
+crawlability, structured data, indexation, or media performance.
 """
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -22,14 +23,23 @@ TITLE_RE = re.compile(r"<title>(.*?)</title>", re.I | re.S)
 DESC_RE = re.compile(r'<meta\s+[^>]*name=["\']description["\'][^>]*content=["\']([^"\']*)["\']|<meta\s+[^>]*content=["\']([^"\']*)["\'][^>]*name=["\']description["\']', re.I | re.S)
 CANON_RE = re.compile(r'<link\s+[^>]*rel=["\']canonical["\'][^>]*href=["\']([^"\']+)["\']|<link\s+[^>]*href=["\']([^"\']+)["\'][^>]*rel=["\']canonical["\']', re.I | re.S)
 ROBOTS_RE = re.compile(r'<meta\s+[^>]*name=["\']robots["\'][^>]*content=["\']([^"\']*)["\']|<meta\s+[^>]*content=["\']([^"\']*)["\'][^>]*name=["\']robots["\']', re.I | re.S)
+OG_URL_RE = re.compile(r'<meta\s+[^>]*property=["\']og:url["\'][^>]*content=["\']([^"\']+)["\']|<meta\s+[^>]*content=["\']([^"\']+)["\'][^>]*property=["\']og:url["\']', re.I | re.S)
 H1_RE = re.compile(r"<h1\b", re.I)
 HREF_RE = re.compile(r'<a\s+[^>]*href=["\']([^"\']+)["\']', re.I)
+HTML_TAG_RE = re.compile(r"<html\b([^>]*)>", re.I | re.S)
+LD_JSON_RE = re.compile(r'<script\b[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', re.I | re.S)
+AUDIO_TAG_RE = re.compile(r"<audio\b[^>]*>", re.I | re.S)
 
 
 def first_group(match):
     if not match:
         return None
     return next((g.strip() for g in match.groups() if g is not None), None)
+
+
+def attr_value(tag: str, name: str) -> str | None:
+    m = re.search(rf'\b{re.escape(name)}\s*=\s*["\']([^"\']*)["\']', tag, re.I | re.S)
+    return m.group(1).strip() if m else None
 
 
 def page_url(path: Path) -> str:
@@ -84,12 +94,26 @@ def main() -> int:
         rel = "/" + path.relative_to(ROOT).as_posix()
         html = path.read_text(encoding="utf-8", errors="replace")
         expected = page_url(path)
-        title = (TITLE_RE.search(html).group(1).strip() if TITLE_RE.search(html) else "")
+        title_match = TITLE_RE.search(html)
+        title = title_match.group(1).strip() if title_match else ""
         desc = first_group(DESC_RE.search(html))
         canonical = first_group(CANON_RE.search(html))
+        og_url = first_group(OG_URL_RE.search(html))
         robots = (first_group(ROBOTS_RE.search(html)) or "").lower()
         h1_count = len(H1_RE.findall(html))
         noindex = "noindex" in robots
+
+        html_tag = HTML_TAG_RE.search(html)
+        if not html_tag:
+            errors.append(f"{rel}: missing <html> element")
+        else:
+            attrs = html_tag.group(1)
+            lang = attr_value(attrs, "lang")
+            direction = attr_value(attrs, "dir")
+            if lang != "ar":
+                errors.append(f"{rel}: expected html lang=\"ar\", found {lang!r}")
+            if direction != "rtl":
+                errors.append(f"{rel}: expected html dir=\"rtl\", found {direction!r}")
 
         if not title:
             errors.append(f"{rel}: missing <title>")
@@ -120,6 +144,11 @@ def main() -> int:
                 else:
                     canonicals[canonical] = rel
 
+            if og_url and canonical and og_url != canonical:
+                errors.append(f"{rel}: og:url does not match canonical ({og_url} != {canonical})")
+            elif not og_url:
+                warnings.append(f"{rel}: missing og:url")
+
             if noindex:
                 errors.append(f"{rel}: unexpectedly noindex")
             if h1_count != 1:
@@ -128,6 +157,21 @@ def main() -> int:
         else:
             if not noindex:
                 warnings.append(f"{rel}: 404 page should normally be noindex")
+
+        for i, payload in enumerate(LD_JSON_RE.findall(html), start=1):
+            payload = payload.strip()
+            if not payload:
+                errors.append(f"{rel}: empty JSON-LD block #{i}")
+                continue
+            try:
+                json.loads(payload)
+            except json.JSONDecodeError as e:
+                errors.append(f"{rel}: invalid JSON-LD block #{i}: {e.msg} at line {e.lineno} col {e.colno}")
+
+        for audio in AUDIO_TAG_RE.findall(html):
+            preload = attr_value(audio, "preload")
+            if preload != "none":
+                errors.append(f"{rel}: audio must use preload=\"none\" for performance (found {preload!r})")
 
         for href in HREF_RE.findall(html):
             if not internal_target_exists(href, path):
