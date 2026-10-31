@@ -15,9 +15,10 @@ Language: Arabic
 - Prayer times: https://sakinaquran.net/prayer-times/
 
 ## Featured radio pages
+- Makkah Quran Radio: https://sakinaquran.net/radio/makkah/
 - Cairo Quran Radio: https://sakinaquran.net/radio/cairo/
 - Sharjah Quran Radio: https://sakinaquran.net/radio/sharjah/
-- Riyadh Quran Radio: https://sakinaquran.net/radio/riyadh/
+- Saudi Quran Radio / Riyadh: https://sakinaquran.net/radio/riyadh/
 
 ## Featured reciters
 - Abdulbasit Abdulsamad: https://sakinaquran.net/reciters/abdulbasit-abdulsamad/
@@ -25,6 +26,9 @@ Language: Arabic
 - Muhammad Siddiq Al-Minshawi: https://sakinaquran.net/reciters/muhammad-siddiq-al-minshawi/
 - Mishary Rashid Alafasy: https://sakinaquran.net/reciters/mishary-rashid-alafasy/
 - Maher Al-Muaiqly: https://sakinaquran.net/reciters/maher-al-muaiqly/
+- Abdulrahman Al-Sudais: https://sakinaquran.net/reciters/abdulrahman-al-sudais/
+- Saud Al-Shuraim: https://sakinaquran.net/reciters/saud-al-shuraim/
+- Islam Sobhi: https://sakinaquran.net/reciters/islam-sobhi/
 
 ## Featured surahs
 - Al-Fatiha: https://sakinaquran.net/surahs/al-fatiha/
@@ -35,6 +39,14 @@ Language: Arabic
 - Al-Waqiah: https://sakinaquran.net/surahs/al-waqiah/
 - Al-Mulk: https://sakinaquran.net/surahs/al-mulk/
 
+## Prayer time pages
+- Makkah: https://sakinaquran.net/prayer-times/makkah/
+- Madinah: https://sakinaquran.net/prayer-times/madinah/
+- Riyadh: https://sakinaquran.net/prayer-times/riyadh/
+- Dubai: https://sakinaquran.net/prayer-times/dubai/
+- Sharjah: https://sakinaquran.net/prayer-times/sharjah/
+- Cairo: https://sakinaquran.net/prayer-times/cairo/
+
 ## Site information
 - About: https://sakinaquran.net/about/
 - Editorial policy: https://sakinaquran.net/editorial-policy/
@@ -42,3 +54,4 @@ Language: Arabic
 - XML sitemap: https://sakinaquran.net/sitemap.xml
 
 Audio is not preloaded on dedicated listening pages; playback starts after user interaction to preserve page performance.
+Prayer-time city pages fetch the current day's timings only when opened, keeping the static pages lightweight.
