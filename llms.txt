@@ -1,57 +1,76 @@
-# Sakina Quran | سكينة قرآن
+# سكينة قرآن | Sakina Quran
 
-سكينة قرآن موقع عربي مجاني للاستماع إلى القرآن الكريم، إذاعات القرآن المباشرة، الرقية الشرعية، الأذكار ومواقيت الصلاة.
+> سكينة قرآن موقع عربي مجاني يسهّل الوصول إلى القرآن الكريم والاستماع إليه، وإذاعات القرآن المباشرة، والرقية الشرعية، والأذكار ومواقيت الصلاة.
 
 Canonical site: https://sakinaquran.net/
-Language: Arabic
+Primary language: Arabic (ar)
+Preferred brand name: سكينة قرآن
+Alternate brand names: سكينة, Sakina Quran, SakinaQuran
 
 ## Main sections
-- Quran: https://sakinaquran.net/quran/
-- Reciters: https://sakinaquran.net/reciters/
-- Surahs: https://sakinaquran.net/surahs/
-- Quran radio: https://sakinaquran.net/radio/
-- Ruqyah: https://sakinaquran.net/ruqyah/
-- Adhkar: https://sakinaquran.net/adhkar/
-- Prayer times: https://sakinaquran.net/prayer-times/
+
+- [الصفحة الرئيسية](https://sakinaquran.net/): إذاعة القرآن الكريم والوصول إلى أقسام سكينة الرئيسية.
+- [القرآن الكريم](https://sakinaquran.net/quran/): المصحف والاستماع والوصول إلى القراء والسور.
+- [قراء القرآن](https://sakinaquran.net/reciters/): صفحات القراء والتلاوات المرتبطة بهم.
+- [سور القرآن](https://sakinaquran.net/surahs/): صفحات السور وروابط الاستماع المتاحة.
+- [إذاعات القرآن](https://sakinaquran.net/radio/): دليل إذاعات القرآن المباشرة.
+- [الرقية الشرعية](https://sakinaquran.net/ruqyah/): قراءة واستماع للرقية الشرعية.
+- [الأذكار](https://sakinaquran.net/adhkar/): أذكار الصباح والمساء والنوم وما بعد الصلاة.
+- [مواقيت الصلاة](https://sakinaquran.net/prayer-times/): مواقيت الصلاة والصفحات المرتبطة بالمدن المتاحة.
 
 ## Featured radio pages
-- Makkah Quran Radio: https://sakinaquran.net/radio/makkah/
-- Cairo Quran Radio: https://sakinaquran.net/radio/cairo/
-- Sharjah Quran Radio: https://sakinaquran.net/radio/sharjah/
-- Saudi Quran Radio / Riyadh: https://sakinaquran.net/radio/riyadh/
+
+- [إذاعة القرآن من مكة](https://sakinaquran.net/radio/makkah/)
+- [إذاعة القرآن الكريم من القاهرة](https://sakinaquran.net/radio/cairo/)
+- [إذاعة الشارقة للقرآن الكريم](https://sakinaquran.net/radio/sharjah/)
+- [إذاعة القرآن الكريم السعودية](https://sakinaquran.net/radio/riyadh/)
 
 ## Featured reciters
-- Abdulbasit Abdulsamad: https://sakinaquran.net/reciters/abdulbasit-abdulsamad/
-- Mahmoud Khalil Al-Husary: https://sakinaquran.net/reciters/mahmoud-khalil-al-husary/
-- Muhammad Siddiq Al-Minshawi: https://sakinaquran.net/reciters/muhammad-siddiq-al-minshawi/
-- Mishary Rashid Alafasy: https://sakinaquran.net/reciters/mishary-rashid-alafasy/
-- Maher Al-Muaiqly: https://sakinaquran.net/reciters/maher-al-muaiqly/
-- Abdulrahman Al-Sudais: https://sakinaquran.net/reciters/abdulrahman-al-sudais/
-- Saud Al-Shuraim: https://sakinaquran.net/reciters/saud-al-shuraim/
-- Islam Sobhi: https://sakinaquran.net/reciters/islam-sobhi/
+
+- [عبدالباسط عبدالصمد](https://sakinaquran.net/reciters/abdulbasit-abdulsamad/)
+- [محمود خليل الحصري](https://sakinaquran.net/reciters/mahmoud-khalil-al-husary/)
+- [محمد صديق المنشاوي](https://sakinaquran.net/reciters/muhammad-siddiq-al-minshawi/)
+- [مشاري راشد العفاسي](https://sakinaquran.net/reciters/mishary-rashid-alafasy/)
+- [ماهر المعيقلي](https://sakinaquran.net/reciters/maher-al-muaiqly/)
+- [عبدالرحمن السديس](https://sakinaquran.net/reciters/abdulrahman-al-sudais/)
+- [سعود الشريم](https://sakinaquran.net/reciters/saud-al-shuraim/)
+- [إسلام صبحي](https://sakinaquran.net/reciters/islam-sobhi/)
 
 ## Featured surahs
-- Al-Fatiha: https://sakinaquran.net/surahs/al-fatiha/
-- Al-Baqarah: https://sakinaquran.net/surahs/al-baqarah/
-- Al-Kahf: https://sakinaquran.net/surahs/al-kahf/
-- Ya-Sin: https://sakinaquran.net/surahs/ya-sin/
-- Ar-Rahman: https://sakinaquran.net/surahs/ar-rahman/
-- Al-Waqiah: https://sakinaquran.net/surahs/al-waqiah/
-- Al-Mulk: https://sakinaquran.net/surahs/al-mulk/
 
-## Prayer time pages
-- Makkah: https://sakinaquran.net/prayer-times/makkah/
-- Madinah: https://sakinaquran.net/prayer-times/madinah/
-- Riyadh: https://sakinaquran.net/prayer-times/riyadh/
-- Dubai: https://sakinaquran.net/prayer-times/dubai/
-- Sharjah: https://sakinaquran.net/prayer-times/sharjah/
-- Cairo: https://sakinaquran.net/prayer-times/cairo/
+- [سورة الفاتحة](https://sakinaquran.net/surahs/al-fatiha/)
+- [سورة البقرة](https://sakinaquran.net/surahs/al-baqarah/)
+- [سورة الكهف](https://sakinaquran.net/surahs/al-kahf/)
+- [سورة يس](https://sakinaquran.net/surahs/ya-sin/)
+- [سورة الرحمن](https://sakinaquran.net/surahs/ar-rahman/)
+- [سورة الواقعة](https://sakinaquran.net/surahs/al-waqiah/)
+- [سورة الملك](https://sakinaquran.net/surahs/al-mulk/)
+
+## Prayer-time pages
+
+- [مكة](https://sakinaquran.net/prayer-times/makkah/)
+- [المدينة المنورة](https://sakinaquran.net/prayer-times/madinah/)
+- [الرياض](https://sakinaquran.net/prayer-times/riyadh/)
+- [دبي](https://sakinaquran.net/prayer-times/dubai/)
+- [الشارقة](https://sakinaquran.net/prayer-times/sharjah/)
+- [القاهرة](https://sakinaquran.net/prayer-times/cairo/)
 
 ## Site information
-- About: https://sakinaquran.net/about/
-- Editorial policy: https://sakinaquran.net/editorial-policy/
-- HTML sitemap: https://sakinaquran.net/sitemap/
-- XML sitemap: https://sakinaquran.net/sitemap.xml
 
-Audio is not preloaded on dedicated listening pages; playback starts after user interaction to preserve page performance.
-Prayer-time city pages fetch the current day's timings only when opened, keeping the static pages lightweight.
+- [عن سكينة قرآن](https://sakinaquran.net/about/): تعريف بالموقع وهدفه ونطاقه.
+- [سياسة المحتوى والتحرير](https://sakinaquran.net/editorial-policy/): مبادئ مراجعة المحتوى والمصادر.
+- [سياسة الخصوصية](https://sakinaquran.net/privacy/): معلومات الخصوصية.
+- [دليل الموقع](https://sakinaquran.net/sitemap/): روابط الأقسام والصفحات المهمة.
+- [XML Sitemap](https://sakinaquran.net/sitemap.xml): خريطة الموقع لمحركات البحث.
+
+## Content notes
+
+- بعض التلاوات وإذاعات القراء تعتمد على MP3Quran: https://mp3quran.net/
+- الصوت في صفحات الاستماع المخصصة يستخدم `preload="none"` للمحافظة على سرعة التحميل.
+- صفحات مواقيت الصلاة الخاصة بالمدن تطلب توقيت اليوم عند فتح الصفحة بدل تحميل بيانات زمنية كبيرة مسبقًا.
+- المعلومات الزمنية المتغيرة لا تُعرض باعتبارها ثابتة من دون مصدر حديث قابل للتحديث.
+- سكينة قرآن ليس جهة إفتاء أو جهة طبية؛ المحتوى الديني العام لا يغني عن سؤال أهل الاختصاص عند الحاجة.
+
+## Creator
+
+Created and maintained by Ahmed Gamal.
