@@ -1,0 +1,88 @@
+/* Content pages (reciters, surahs, radio, adhkar, prayer, hubs). Loads after styles.css and reuses its tokens. */
+body.seo-page{--dock-h:76px}
+@media (min-width:860px){body.seo-page{--dock-h:0px}}
+.seo-page .hd .chip{display:none}
+@media (min-width:560px){.seo-page .hd .chip{display:inline-block}}
+.seo{max-width:860px;padding-block:18px 8px}
+.seo .crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;font-size:var(--fs-sm);color:var(--dim);margin:4px 0 14px}
+.seo .crumbs a{color:var(--dim);text-decoration:none;border-radius:6px;padding:1px 2px}
+.seo .crumbs a:hover{color:var(--gold)}
+.seo .crumbs .sep{opacity:.5}
+.seo .crumbs [aria-current]{color:var(--ink)}
+
+/* page head */
+.seo-head{position:relative;background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--rule);
+  border-radius:var(--r-lg);padding:26px clamp(18px,4vw,34px) 22px;overflow:hidden}
+
+.seo-content h1{font-family:var(--f-display);font-weight:700;font-size:var(--fs-3xl);line-height:1.35;margin:0 0 8px;color:var(--ink);text-wrap:balance}
+.seo-content h1+p,.seo-head p{color:var(--dim);margin:0;max-width:62ch}
+.seo-content h2{font-size:var(--fs-xl);margin:0 0 10px}
+.seo-content h3{font-size:var(--fs-lg);font-weight:500;margin:0 0 8px;color:var(--gold)}
+.seo-content p{margin:0 0 10px}
+.seo-content p:last-child{margin-bottom:0}
+.seo-content a{color:var(--gold);text-decoration:none}
+.seo-content a:hover{text-decoration:underline;text-underline-offset:3px}
+.seo-content ul{margin:0;padding-inline-start:20px;display:grid;gap:4px}
+.seo-content>section,.seo-content>.box,.seo-content>div:not(.seo-head),.seo-content>p{margin-top:18px}
+.seo-content>section>h2,.seo-content>h2{margin-top:28px}
+.seo-content>section.box>h2,.seo-content>.box>h2{margin-top:0}
+.seo-content .muted,.seo-content .note{color:var(--dim);font-size:var(--fs-sm)}
+
+/* boxes and cards */
+.seo-content .box{background:var(--panel);border:1px solid var(--rule);border-radius:var(--r-lg);padding:18px clamp(14px,3vw,24px)}
+.seo-content .box>.card+.card{margin-top:8px}
+.seo-content .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.seo-content .grid>a,.seo-content a.card{display:block;background:var(--panel);border:1px solid var(--rule);border-radius:var(--r-md);padding:12px 14px;
+  color:var(--ink);text-decoration:none;transition:border-color .2s,transform .2s var(--ease)}
+.seo-content .grid>a:hover,.seo-content a.card:hover{border-color:var(--gold);text-decoration:none;transform:translateY(-1px)}
+.seo-content a.card b{display:block;font-weight:500;color:var(--ink)}
+.seo-content a.card small{color:var(--dim);font-size:var(--fs-xs)}
+.seo-content a.card br{display:none}
+.seo-content div.card{display:flex;align-items:center;gap:12px;background:var(--panel-2);border:1px solid var(--rule);border-radius:var(--r-md);padding:10px 12px}
+.seo-content div.card>a{flex:1;min-width:0;color:var(--ink)}
+.seo-content div.card>a b{font-weight:500}
+.seo-content .links{display:flex;flex-wrap:wrap;gap:8px}
+.seo-content .links a{border:1px solid var(--rule);background:var(--panel);border-radius:var(--r-pill);padding:6px 14px;font-size:var(--fs-sm);color:var(--ink);text-decoration:none}
+.seo-content .links a:hover{border-color:var(--gold);color:var(--gold)}
+.seo-content .facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.seo-content .facts span{display:grid;min-width:96px;background:var(--panel);border:1px solid var(--rule);border-radius:var(--r-md);padding:8px 14px;text-align:center}
+.seo-content .facts b{font-size:var(--fs-xl);color:var(--gold);font-variant-numeric:tabular-nums;line-height:1.3}
+.seo-content .facts small{color:var(--dim);font-size:var(--fs-xs)}
+.seo-content .count{display:inline-block;font-size:var(--fs-xs);color:var(--gold);border:1px solid var(--rule);border-radius:var(--r-pill);padding:0 10px;margin-bottom:8px}
+.seo-content .quran{font-family:var(--f-quran);font-size:1.45rem;line-height:2.25;text-align:justify;margin:0}
+.seo-content .times{margin-top:6px}
+
+/* audio player (enhanced by seo.js; plain <audio controls> stays as fallback) */
+.sp{display:flex;align-items:center;gap:12px;width:100%}
+.sp audio{display:none}
+.sp-btn{width:52px;height:52px;flex:none;border-radius:50%;display:grid;place-items:center;color:var(--gold-ink);
+  background:radial-gradient(circle at 35% 30%,var(--gold-2),var(--gold));box-shadow:0 8px 22px -10px var(--gold);transition:transform .15s var(--ease)}
+.sp-btn svg{width:22px;height:22px}
+.sp-body{flex:1;min-width:0;display:grid;gap:4px}
+.sp-row{display:flex;align-items:center;gap:10px;font-size:var(--fs-xs);color:var(--dim);font-variant-numeric:tabular-nums}
+.sp-row input{flex:1;accent-color:var(--gold);min-width:0}
+.sp-live{color:var(--live);font-weight:500;display:inline-flex;align-items:center;gap:6px}
+.sp.playing .sp-live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--live);animation:pulse 1.4s infinite}
+.sp-state{color:var(--dim);font-size:var(--fs-xs)}
+.box>.sp{margin-top:6px;background:var(--panel-2);border:1px solid var(--rule);border-radius:var(--r-md);padding:12px}
+.card .sp{width:auto;flex:none}
+.card .sp .sp-btn{width:40px;height:40px}
+.card .sp .sp-btn svg{width:17px;height:17px}
+.card .sp .sp-body{display:none}
+.card.on{border-color:var(--gold)}
+.seo-content audio{width:100%;margin-top:6px}
+
+/* open-in-app call to action */
+.cta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between;margin-top:20px;background:var(--panel);
+  border:1px solid color-mix(in srgb,var(--gold) 40%,var(--rule));border-radius:var(--r-lg);padding:16px 18px}
+.cta b{display:block;font-weight:500}
+.cta span{color:var(--dim);font-size:var(--fs-sm)}
+.cta a.chip{text-decoration:none}
+.related{margin-top:18px}
+.related h2{font-family:var(--f-body);font-size:var(--fs-sm);font-weight:500;color:var(--dim);margin:0 0 8px}
+
+@media (max-width:560px){
+  .seo-content .grid{grid-template-columns:1fr 1fr}
+  .seo-content .quran{font-size:1.3rem}
+}
+@media (max-width:380px){.seo-content .grid{grid-template-columns:1fr}}
