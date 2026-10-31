@@ -58,7 +58,7 @@ HEAD_ADD = f'''<meta name="theme-color" content="#071512">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
 {{quran_font}}<link rel="stylesheet" href="/styles.css?v={CSS_V}">
 <link rel="stylesheet" href="/seo.css?v={SEO_V}">
-<script src="/analytics.js?v={GA_V}"></script>
+<script src="/analytics.js?v={GA_V}" defer></script>
 <script>try{{var t=localStorage.getItem("sakina:theme");if(t)document.documentElement.dataset.theme=JSON.parse(t)}}catch(e){{}}</script>'''
 QURAN_FONT = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap">\n'
 
