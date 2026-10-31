@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup, NavigableString
 ROOT = Path(__file__).resolve().parent.parent
 SITE = "https://sakinaquran.net"
 CSS_V = "37"     # styles.css version used by index.html
-SEO_V = "2"      # bump when seo.css / seo.js change
+SEO_V = "3"      # bump when seo.css / seo.js change
 
 SECTION = {
     "quran": "القرآن الكريم", "reciters": "القرّاء", "surahs": "السور", "radio": "الإذاعات",
