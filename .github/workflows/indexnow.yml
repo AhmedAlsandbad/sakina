@@ -1,0 +1,105 @@
+name: IndexNow submit changed pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  indexnow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Build URL list
+        env:
+          INDEXNOW_KEY: fc2f13ca9038ec3aac41849d58aab04c
+          SITE: https://sakinaquran.net
+          BEFORE: ${{ github.event.before }}
+        run: |
+          python - <<'PY'
+          import json, os, re, subprocess
+          from pathlib import Path
+
+          site = os.environ['SITE'].rstrip('/')
+          before = os.environ.get('BEFORE', '')
+          sha = os.environ.get('GITHUB_SHA', 'HEAD')
+
+          def changed_files():
+              if before and set(before) != {'0'}:
+                  try:
+                      out = subprocess.check_output(['git','diff','--name-only',before,sha], text=True)
+                      return [x.strip() for x in out.splitlines() if x.strip()]
+                  except Exception:
+                      pass
+              try:
+                  out = subprocess.check_output(['git','show','--pretty=','--name-only',sha], text=True)
+                  return [x.strip() for x in out.splitlines() if x.strip()]
+              except Exception:
+                  return []
+
+          files = changed_files()
+          urls = set()
+
+          # When the sitemap changes, submit all URLs listed in it.
+          if 'sitemap.xml' in files and Path('sitemap.xml').exists():
+              text = Path('sitemap.xml').read_text(encoding='utf-8')
+              urls.update(re.findall(r'<loc>(https://[^<]+)</loc>', text))
+          else:
+              for p in files:
+                  if p == 'index.html':
+                      urls.add(site + '/')
+                  elif p.endswith('/index.html'):
+                      urls.add(site + '/' + p[:-10])
+                  elif p.endswith('.html') and p != '404.html':
+                      urls.add(site + '/' + p)
+                  elif p in {'app.js','data.js','styles.css','sw.js','manifest.webmanifest','robots.txt','llms.txt'}:
+                      urls.add(site + '/')
+
+          # A manual run submits the current sitemap.
+          if os.environ.get('GITHUB_EVENT_NAME') == 'workflow_dispatch' and Path('sitemap.xml').exists():
+              text = Path('sitemap.xml').read_text(encoding='utf-8')
+              urls.update(re.findall(r'<loc>(https://[^<]+)</loc>', text))
+
+          if not urls:
+              urls.add(site + '/')
+
+          payload = {
+              'host': 'sakinaquran.net',
+              'key': os.environ['INDEXNOW_KEY'],
+              'keyLocation': site + '/' + os.environ['INDEXNOW_KEY'] + '.txt',
+              'urlList': sorted(urls)[:10000]
+          }
+          Path('indexnow.json').write_text(json.dumps(payload, ensure_ascii=False), encoding='utf-8')
+          print('Submitting', len(payload['urlList']), 'URL(s)')
+          for u in payload['urlList'][:20]: print(u)
+          PY
+
+      - name: Verify public key and submit to IndexNow
+        env:
+          INDEXNOW_KEY: fc2f13ca9038ec3aac41849d58aab04c
+        run: |
+          KEY_URL="https://sakinaquran.net/${INDEXNOW_KEY}.txt"
+          for i in {1..12}; do
+            if curl -fsS "$KEY_URL" | grep -qx "$INDEXNOW_KEY"; then
+              echo "IndexNow key is publicly available."
+              break
+            fi
+            if [ "$i" = "12" ]; then
+              echo "IndexNow key is not public yet."
+              exit 1
+            fi
+            sleep 10
+          done
+          curl --fail-with-body -sS \
+            -X POST \
+            -H 'Content-Type: application/json; charset=utf-8' \
+            --data-binary @indexnow.json \
+            https://api.indexnow.org/indexnow
+          echo "IndexNow submission completed."
