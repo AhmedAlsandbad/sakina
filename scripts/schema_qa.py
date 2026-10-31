@@ -15,20 +15,27 @@ LD_JSON_RE = re.compile(r'<script\b[^>]*type=["\']application/ld\+json["\'][^>]*
 SINGLETON_TYPES = {"BreadcrumbList", "FAQPage", "WebPage"}
 
 
-def walk_types(value):
-    if isinstance(value, dict):
-        t = value.get("@type")
-        if isinstance(t, str):
-            yield t
-        elif isinstance(t, list):
-            for item in t:
-                if isinstance(item, str):
-                    yield item
-        for child in value.values():
-            yield from walk_types(child)
-    elif isinstance(value, list):
-        for child in value:
-            yield from walk_types(child)
+def type_names(value):
+    if not isinstance(value, dict):
+        return []
+    t = value.get("@type")
+    if isinstance(t, str):
+        return [t]
+    if isinstance(t, list):
+        return [item for item in t if isinstance(item, str)]
+    return []
+
+
+def top_level_types(data):
+    """Yield only independently declared entities, not nested references."""
+    if isinstance(data, dict) and isinstance(data.get("@graph"), list):
+        for entity in data["@graph"]:
+            yield from type_names(entity)
+    elif isinstance(data, dict):
+        yield from type_names(data)
+    elif isinstance(data, list):
+        for entity in data:
+            yield from type_names(entity)
 
 
 def main() -> int:
@@ -45,13 +52,13 @@ def main() -> int:
             continue
         checked += 1
         counts = Counter()
-        for i, payload in enumerate(LD_JSON_RE.findall(html), start=1):
+        for payload in LD_JSON_RE.findall(html):
             try:
                 data = json.loads(payload.strip())
             except json.JSONDecodeError:
                 # Main SEO QA reports malformed JSON-LD.
                 continue
-            counts.update(walk_types(data))
+            counts.update(top_level_types(data))
         rel = "/" + path.relative_to(ROOT).as_posix()
         for schema_type in sorted(SINGLETON_TYPES):
             if counts[schema_type] > 1:
