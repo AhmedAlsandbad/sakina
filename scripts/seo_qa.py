@@ -2,7 +2,7 @@
 """Static SEO QA for sakinaquran.net.
 
 Uses Python stdlib only. Exits non-zero on SEO regressions that can affect
-crawlability, structured data, indexation, or media performance.
+crawlability, structured data, indexation, internal discovery, or media performance.
 """
 from __future__ import annotations
 
@@ -51,27 +51,54 @@ def page_url(path: Path) -> str:
     return "/" + rel
 
 
-def internal_target_exists(href: str, source: Path) -> bool:
+def internal_candidate(href: str, source: Path) -> Path | None:
     if not href or href.startswith(("#", "mailto:", "tel:", "javascript:")):
-        return True
+        return None
     parsed = urlparse(href)
     if parsed.scheme in {"http", "https"}:
         if parsed.netloc not in {"sakinaquran.net", "www.sakinaquran.net"}:
-            return True
+            return None
         p = parsed.path
     else:
         p = parsed.path
     if not p:
-        return True
+        return None
     if p.startswith("/"):
         candidate = ROOT / p.lstrip("/")
     else:
         candidate = source.parent / p
+    try:
+        candidate = candidate.resolve()
+        candidate.relative_to(ROOT.resolve())
+    except ValueError:
+        return None
     if candidate.is_dir():
         candidate = candidate / "index.html"
     elif not candidate.suffix:
         candidate = candidate / "index.html"
+    return candidate
+
+
+def internal_target_exists(href: str, source: Path) -> bool:
+    if not href or href.startswith(("#", "mailto:", "tel:", "javascript:")):
+        return True
+    parsed = urlparse(href)
+    if parsed.scheme in {"http", "https"} and parsed.netloc not in {"sakinaquran.net", "www.sakinaquran.net"}:
+        return True
+    candidate = internal_candidate(href, source)
+    if candidate is None:
+        return True
     return candidate.exists()
+
+
+def linked_page_url(href: str, source: Path) -> str | None:
+    candidate = internal_candidate(href, source)
+    if candidate is None or not candidate.exists() or candidate.suffix.lower() != ".html":
+        return None
+    try:
+        return page_url(candidate)
+    except ValueError:
+        return None
 
 
 def main() -> int:
@@ -80,6 +107,7 @@ def main() -> int:
     titles: dict[str, str] = {}
     canonicals: dict[str, str] = {}
     indexable_urls: set[str] = set()
+    linked_urls: set[str] = set()
 
     pages = []
     for p in ROOT.rglob("*.html"):
@@ -176,6 +204,9 @@ def main() -> int:
         for href in HREF_RE.findall(html):
             if not internal_target_exists(href, path):
                 errors.append(f"{rel}: broken internal link -> {href}")
+            target_url = linked_page_url(href, path)
+            if target_url and target_url != expected:
+                linked_urls.add(target_url)
 
     sitemap_path = ROOT / "sitemap.xml"
     if not sitemap_path.exists():
@@ -201,6 +232,10 @@ def main() -> int:
     for u in extra:
         warnings.append(f"sitemap.xml contains URL without matching HTML page: {u}")
 
+    orphaned = sorted((indexable_urls - {"/"}) - linked_urls)
+    for u in orphaned:
+        errors.append(f"orphan indexable page: {u} has no inbound HTML link from another page")
+
     robots_path = ROOT / "robots.txt"
     if not robots_path.exists():
         errors.append("/robots.txt: missing")
@@ -212,6 +247,7 @@ def main() -> int:
             errors.append("/robots.txt: entire site is disallowed")
 
     print(f"Checked {len(pages)} HTML pages")
+    print(f"Indexable pages: {len(indexable_urls)}; linked internally: {len(linked_urls & indexable_urls)}")
     for w in warnings:
         print(f"WARNING: {w}")
     for e in errors:
