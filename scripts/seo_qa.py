@@ -2,7 +2,8 @@
 """Static SEO QA for sakinaquran.net.
 
 Uses Python stdlib only. Exits non-zero on SEO regressions that can affect
-crawlability, structured data, indexation, internal discovery, or media performance.
+crawlability, structured data, indexation, analytics coverage, internal discovery,
+or media performance.
 """
 from __future__ import annotations
 
@@ -29,6 +30,7 @@ HREF_RE = re.compile(r'<a\s+[^>]*href=["\']([^"\']+)["\']', re.I)
 HTML_TAG_RE = re.compile(r"<html\b([^>]*)>", re.I | re.S)
 LD_JSON_RE = re.compile(r'<script\b[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', re.I | re.S)
 AUDIO_TAG_RE = re.compile(r"<audio\b[^>]*>", re.I | re.S)
+ANALYTICS_RE = re.compile(r'<script\b[^>]*src=["\']/analytics\.js\?v=2["\'][^>]*>', re.I | re.S)
 
 
 def first_group(match):
@@ -108,6 +110,7 @@ def main() -> int:
     canonicals: dict[str, str] = {}
     indexable_urls: set[str] = set()
     linked_urls: set[str] = set()
+    analytics_pages = 0
 
     pages = []
     for p in ROOT.rglob("*.html"):
@@ -181,6 +184,12 @@ def main() -> int:
                 errors.append(f"{rel}: unexpectedly noindex")
             if h1_count != 1:
                 errors.append(f"{rel}: expected exactly 1 H1, found {h1_count}")
+
+            if not ANALYTICS_RE.search(html):
+                errors.append(f"{rel}: missing /analytics.js?v=2 GA4 loader")
+            else:
+                analytics_pages += 1
+
             indexable_urls.add(expected)
         else:
             if not noindex:
@@ -248,6 +257,7 @@ def main() -> int:
 
     print(f"Checked {len(pages)} HTML pages")
     print(f"Indexable pages: {len(indexable_urls)}; linked internally: {len(linked_urls & indexable_urls)}")
+    print(f"GA4 loader coverage: {analytics_pages}/{len(indexable_urls)} indexable pages")
     for w in warnings:
         print(f"WARNING: {w}")
     for e in errors:
