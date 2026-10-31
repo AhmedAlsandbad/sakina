@@ -426,7 +426,7 @@ function renderRw() {
   $("#rwChips").innerHTML = RW.map(([k, c]) => `<button class="chip" data-rw="${esc(k)}" aria-pressed="${rwSel === k}">${esc(k.replace(" عن ", " · "))}<small>${ard(c)}</small></button>`).join("");
   $("#rwHint").textContent = `رواية ${rwSel}`;
 }
-$("#rwChips").onclick = e => { const b = e.target.closest("[data-rw]"); if (!b) return; rwSel = b.dataset.rw; store.set("rw", rwSel); recShown = 25; renderRw(); renderRecs(); };
+$("#rwChips").onclick = e => { const b = e.target.closest("[data-rw]"); if (!b) return; rwSel = b.dataset.rw; track("riwaya_select", { riwaya: rwSel }); store.set("rw", rwSel); recShown = 25; renderRw(); renderRecs(); };
 function renderRecs() {
   const q = norm($("#recSearch").value);
   let list = RECITERS.filter(r => (rwSel === "all" || r.moshaf.some(m => rwGroup(m.rw) === rwSel)) && matches(q, r.name));
@@ -455,7 +455,7 @@ $("#recSearch").addEventListener("input", debounce(e => { const q = e.target.val
 $("#recMore").onclick = () => { recShown += 60; renderRecs(); };
 $("#recList").onclick = e => {
   const a = e.target.closest("[data-rw]"); if (a) { rwSel = "all"; store.set("rw", rwSel); renderRw(); renderRecs(); return; }
-  const b = e.target.closest("[data-rec]"); if (b) openReciter(+b.dataset.rec); };
+  const b = e.target.closest("[data-rec]"); if (b) { const r = RECITERS.find(x => x.id === +b.dataset.rec); if (r) track("reciter_select", { reciter: r.name, riwaya: rwSel }); openReciter(+b.dataset.rec); } };
 function openReciter(id, moshafId) {
   const r = RECITERS.find(x => x.id === id); if (!r) return;
   curRec = r;
@@ -483,6 +483,7 @@ function renderSuras() {
 }
 $("#suraSearch").addEventListener("input", debounce(renderSuras, 120));
 $("#moshafChips").onclick = e => { const b = e.target.closest("[data-ms]"); if (!b) return; curMoshaf = curRec.moshaf.find(m => m.id === +b.dataset.ms);
+  if (curMoshaf) track("moshaf_select", { reciter: curRec.name, riwaya: curMoshaf.rw, moshaf_type: curMoshaf.type || "" });
   $$("#moshafChips .chip").forEach(c => c.setAttribute("aria-pressed", c === b)); renderSuras(); };
 function closeReciter() { $("#qReciter").hidden = true; $("#qPick").hidden = false; store.set("quranOpen", false); $("#suraSearch").value = ""; }
 $("#qBack").onclick = () => { if (history.state && history.state.rec) history.back(); else closeReciter(); };
@@ -549,7 +550,7 @@ audio.addEventListener("playing", rProgress);
 $("#rPlay").onclick = () => { const { q, loop } = buildRuqyah(); track("ruqyah_start", { reciter: rRec.name, repeat: $("#rTimes").value, items: q.length }); play(q[0], q, 0, { loop, onEnd: () => { $("#rProg").textContent = "انتهت الرقية، تقبّل الله"; } }); };
 $("#rTracks").onclick = e => { const b = e.target.closest("[data-r]"); if (!b) return; const s = RUQYAH_SURAS[+b.dataset.r];
   if (P.cur && P.cur.key === "r:" + s.n && !P.cur.ctx) { toggle(); return; } play(rItem(s)); };
-$("#rRec").onchange = e => { rRec = RUQYAH_RECITERS.find(r => r.id === e.target.value); store.set("rRec", rRec.id); renderRTracks(); };
+$("#rRec").onchange = e => { rRec = RUQYAH_RECITERS.find(r => r.id === e.target.value); track("ruqyah_reciter_select", { reciter: rRec.name }); store.set("rRec", rRec.id); renderRTracks(); };
 $("#rTimes").onchange = e => store.set("rTimes", +e.target.value);
 $("#rTriple").onchange = e => store.set("rTriple", e.target.checked);
 $("#rBaqara").onchange = e => { store.set("rBaqara", e.target.checked); renderRTracks(); };
@@ -634,7 +635,7 @@ $("#adhList").onclick = e => {
   }
   adhProgress(st);
 };
-$$("#v-adhkar .seg button").forEach(b => b.onclick = () => { $("#adhContent").hidden = false; setPeriod(b.dataset.period); });
+$$("#v-adhkar .seg button").forEach(b => b.onclick = () => { track("adhkar_period_select", { period: b.dataset.period }); $("#adhContent").hidden = false; setPeriod(b.dataset.period); });
 $("#sleepReader").innerHTML = RUQYAH_RECITERS.map(r => `<option value="${esc(r.id)}">${esc(r.name)}</option>`).join("");
 $("#sleepPlay").onclick = () => {
   const r = RUQYAH_RECITERS.find(x => x.id === $("#sleepReader").value); if (!r) return;
@@ -652,8 +653,9 @@ const pageHost = $("#readingVerses");
 const sourceBase = "https://cdn.quran.ws/svg/pages/v1.1.1/hafs-kfqc/";
 const pageCache = new Map();
 const wideReader = matchMedia("(min-width: 1000px)");
-$("#qListen").onclick = () => { $("#qAudio").hidden = false; $("#qReading").hidden = true; $("#qListen").setAttribute("aria-pressed", "true"); $("#qRead").setAttribute("aria-pressed", "false"); };
+$("#qListen").onclick = () => { track("quran_mode_select", { mode: "listen" }); $("#qAudio").hidden = false; $("#qReading").hidden = true; $("#qListen").setAttribute("aria-pressed", "true"); $("#qRead").setAttribute("aria-pressed", "false"); };
 $("#qRead").onclick = async () => {
+  track("quran_mode_select", { mode: "read" });
   $("#qAudio").hidden = true; $("#qReading").hidden = false; $("#qListen").setAttribute("aria-pressed", "false"); $("#qRead").setAttribute("aria-pressed", "true");
   if (!readingSelect.options.length) {
     try {
@@ -734,6 +736,7 @@ function renderMushaf() {
 }
 async function showTafsir(surah, ayah, shape) {
   if (!(surah >= 1 && surah <= 114 && ayah >= 1 && ayah <= 286)) return;
+  track("tafsir_open", { surah: surah, ayah: ayah });
   const request = ++tafsirRequest, panel = $("#tafsirPanel");
   $$(".ayahPolygon").forEach(p => p.setAttribute("fill-opacity", "0"));
   shape.setAttribute("fill", "#7d9768"); shape.setAttribute("fill-opacity", ".3");
@@ -847,7 +850,7 @@ $("#themeBtn").onclick = () => { const r = document.documentElement;
 
 let deferred = null;
 addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; $("#installBtn").hidden = false; });
-$("#installBtn").onclick = async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; $("#installBtn").hidden = true; };
+$("#installBtn").onclick = async () => { if (!deferred) return; deferred.prompt(); const choice = await deferred.userChoice; track("pwa_install", { outcome: choice && choice.outcome ? choice.outcome : "unknown" }); deferred = null; $("#installBtn").hidden = true; };
 if ("serviceWorker" in navigator && location.protocol === "https:") { let hadController = !!navigator.serviceWorker.controller; navigator.serviceWorker.addEventListener("controllerchange", () => { if (hadController) toast("يتوفر تحديث للموقع، أعد تحميل الصفحة لتطبيقه."); hadController = true; }); addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {})); }
 
 /* boot */
