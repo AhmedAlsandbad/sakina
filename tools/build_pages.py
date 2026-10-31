@@ -14,14 +14,14 @@ from bs4 import BeautifulSoup, NavigableString
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = "https://sakinaquran.net"
-CSS_V = "38"     # styles.css version used by index.html
+CSS_V = "44"     # styles.css version used by index.html
 SEO_V = "4"
 GA_V = "2"      # bump when analytics.js changes      # bump when seo.css / seo.js change
 
 SECTION = {
     "quran": "القرآن الكريم", "reciters": "القرّاء", "surahs": "السور", "radio": "الإذاعات",
     "adhkar": "الأذكار", "prayer-times": "مواقيت الصلاة", "ruqyah": "الرقية الشرعية",
-    "about": "عن سكينة", "editorial-policy": "سياسة المحتوى", "sitemap": "دليل الموقع",
+    "about": "عن سكينة", "privacy": "سياسة الخصوصية", "editorial-policy": "سياسة المحتوى", "sitemap": "دليل الموقع",
 }
 APP_LINK = {  # section -> (hash in the app, call-to-action text)
     "quran": ("#quran", "المصحف كامل بأكثر من ٢٠٠ قارئ، مع تشغيل متواصل ومؤقت نوم"),
