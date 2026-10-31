@@ -1,0 +1,44 @@
+# Sakina Quran | سكينة قرآن
+
+سكينة قرآن موقع عربي مجاني للاستماع إلى القرآن الكريم، إذاعات القرآن المباشرة، الرقية الشرعية، الأذكار ومواقيت الصلاة.
+
+Canonical site: https://sakinaquran.net/
+Language: Arabic
+
+## Main sections
+- Quran: https://sakinaquran.net/quran/
+- Reciters: https://sakinaquran.net/reciters/
+- Surahs: https://sakinaquran.net/surahs/
+- Quran radio: https://sakinaquran.net/radio/
+- Ruqyah: https://sakinaquran.net/ruqyah/
+- Adhkar: https://sakinaquran.net/adhkar/
+- Prayer times: https://sakinaquran.net/prayer-times/
+
+## Featured radio pages
+- Cairo Quran Radio: https://sakinaquran.net/radio/cairo/
+- Sharjah Quran Radio: https://sakinaquran.net/radio/sharjah/
+- Riyadh Quran Radio: https://sakinaquran.net/radio/riyadh/
+
+## Featured reciters
+- Abdulbasit Abdulsamad: https://sakinaquran.net/reciters/abdulbasit-abdulsamad/
+- Mahmoud Khalil Al-Husary: https://sakinaquran.net/reciters/mahmoud-khalil-al-husary/
+- Muhammad Siddiq Al-Minshawi: https://sakinaquran.net/reciters/muhammad-siddiq-al-minshawi/
+- Mishary Rashid Alafasy: https://sakinaquran.net/reciters/mishary-rashid-alafasy/
+- Maher Al-Muaiqly: https://sakinaquran.net/reciters/maher-al-muaiqly/
+
+## Featured surahs
+- Al-Fatiha: https://sakinaquran.net/surahs/al-fatiha/
+- Al-Baqarah: https://sakinaquran.net/surahs/al-baqarah/
+- Al-Kahf: https://sakinaquran.net/surahs/al-kahf/
+- Ya-Sin: https://sakinaquran.net/surahs/ya-sin/
+- Ar-Rahman: https://sakinaquran.net/surahs/ar-rahman/
+- Al-Waqiah: https://sakinaquran.net/surahs/al-waqiah/
+- Al-Mulk: https://sakinaquran.net/surahs/al-mulk/
+
+## Site information
+- About: https://sakinaquran.net/about/
+- Editorial policy: https://sakinaquran.net/editorial-policy/
+- HTML sitemap: https://sakinaquran.net/sitemap/
+- XML sitemap: https://sakinaquran.net/sitemap.xml
+
+Audio is not preloaded on dedicated listening pages; playback starts after user interaction to preserve page performance.
