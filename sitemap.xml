@@ -34,7 +34,11 @@
 <url><loc>https://sakinaquran.net/radio/sharjah/</loc></url>
 <url><loc>https://sakinaquran.net/radio/riyadh/</loc></url>
 <url><loc>https://sakinaquran.net/radio/ruqyah/</loc></url>
-<url><loc>https://sakinaquran.net/ruqyah/</loc></url>
-<url><loc>https://sakinaquran.net/adhkar/</loc></url>
+<url><loc>https://sakinaquran.net/ruqyah/</loc><priority>0.8</priority></url>
+<url><loc>https://sakinaquran.net/adhkar/</loc><priority>0.8</priority></url>
+<url><loc>https://sakinaquran.net/adhkar/morning/</loc></url>
+<url><loc>https://sakinaquran.net/adhkar/evening/</loc></url>
+<url><loc>https://sakinaquran.net/adhkar/sleep/</loc></url>
+<url><loc>https://sakinaquran.net/adhkar/after-prayer/</loc></url>
 <url><loc>https://sakinaquran.net/prayer-times/</loc></url>
 </urlset>
