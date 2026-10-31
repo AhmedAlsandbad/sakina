@@ -21,6 +21,8 @@ jobs:
           python-version: '3.12'
       - name: Run static SEO checks
         run: python scripts/seo_qa.py
+      - name: Check duplicate structured data
+        run: python scripts/schema_qa.py
       - name: Validate JavaScript syntax
         run: |
           node --check app.js
