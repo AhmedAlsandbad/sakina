@@ -715,7 +715,6 @@ function renderMushaf() {
   const request = ++readingRequest;
   const spread = wideReader.matches && currentPage < 604;
   const pages = spread ? [currentPage, currentPage + 1] : [currentPage];
-  $("#readingTitle").textContent = "مصحف المدينة النبوية";
   $("#tafsirPanel").classList.remove("tafsir-open"); $("#tafsirText").textContent = "اختر آية لعرض تفسيرها.";
   $("#pageNavigation").hidden = false;
   $("#pageLabel").textContent = pages.length === 2 ? "الصفحتان " + ard(pages[0]) + " و" + ard(pages[1]) : "صفحة " + ard(currentPage);

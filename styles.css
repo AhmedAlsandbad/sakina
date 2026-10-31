@@ -551,3 +551,15 @@ header.top .wrap{min-height:68px;padding-block:6px;gap:12px}
 .mushaf-art .ayahPolygon:focus-visible{stroke:#52794b;stroke-width:2;outline:none}
 .mushaf-number{display:block;margin-top:8px;font-family:var(--f-naskh);color:#705c3d}
 
+
+/* Compact Mushaf layout */
+#qReading .reading-controls{margin:10px 0;gap:8px}
+#qReading .reading-layout{grid-template-columns:minmax(0,1fr);gap:12px}
+#qReading .tafsir-panel:not(.tafsir-open){display:none}
+@media(min-width:1000px){#qReading .reading-layout:has(.tafsir-open){grid-template-columns:minmax(0,1fr) minmax(230px,300px)}}
+#qReading .mushaf-page{padding:clamp(5px,1vw,10px);min-height:0;border-radius:12px;line-height:normal}
+#qReading .mushaf-spread{gap:6px}
+#qReading .mushaf-sheet{padding:clamp(4px,.8vw,10px);border-width:3px}
+#qReading .mushaf-art{max-height:none}
+#qReading .mushaf-number{margin-top:3px;line-height:1.2}
+#qReading .page-navigation{margin-top:8px}
