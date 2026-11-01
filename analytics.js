@@ -39,6 +39,55 @@
   if (window.__sakinaPwaLoader) return;
   window.__sakinaPwaLoader = true;
 
+  function isStandalone() {
+    return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  }
+
+  function ensureInstallShortcut() {
+    if (isStandalone()) return;
+    var ua = navigator.userAgent || "";
+    var mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    if (!mobile || document.getElementById("sakinaInstallShortcut")) return;
+
+    var proxy = document.getElementById("installBtn");
+    if (!proxy) {
+      proxy = document.createElement("button");
+      proxy.id = "installBtn";
+      proxy.type = "button";
+      proxy.hidden = true;
+      proxy.style.display = "none";
+      proxy.setAttribute("aria-hidden", "true");
+      document.body.appendChild(proxy);
+    }
+
+    if (!document.getElementById("sakinaInstallShortcutStyle")) {
+      var style = document.createElement("style");
+      style.id = "sakinaInstallShortcutStyle";
+      style.textContent = ".sakina-install-shortcut{position:fixed;z-index:99989;left:16px;bottom:calc(82px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:7px;border:1px solid rgba(226,184,92,.45);background:#102a23;color:#f2d487;box-shadow:0 10px 28px rgba(0,0,0,.28);border-radius:999px;padding:10px 13px;font:600 12px 'Readex Pro',system-ui,sans-serif;cursor:pointer;direction:rtl}.sakina-install-shortcut:hover{transform:translateY(-1px)}.sakina-install-shortcut span:first-child{font-size:17px;line-height:1}@media(max-width:360px){.sakina-install-shortcut{padding:10px;width:44px;height:44px;justify-content:center}.sakina-install-shortcut .sakina-install-label{display:none}}";
+      document.head.appendChild(style);
+    }
+
+    var btn = document.createElement("button");
+    btn.id = "sakinaInstallShortcut";
+    btn.className = "sakina-install-shortcut";
+    btn.type = "button";
+    btn.setAttribute("aria-label", "إضافة سكينة إلى الشاشة الرئيسية");
+    btn.title = "إضافة سكينة إلى الشاشة الرئيسية";
+    btn.innerHTML = '<span aria-hidden="true">＋</span><span class="sakina-install-label">ثبّت سكينة</span>';
+    btn.addEventListener("click", function () {
+      try { window.sakinaTrack("pwa_install_shortcut_click", { page_path: location.pathname }); } catch (e) {}
+      var target = document.getElementById("installBtn");
+      if (target) target.click();
+    });
+    document.body.appendChild(btn);
+
+    window.addEventListener("appinstalled", function () { if (btn && btn.remove) btn.remove(); });
+    try {
+      var mq = window.matchMedia("(display-mode: standalone)");
+      if (mq.addEventListener) mq.addEventListener("change", function (e) { if (e.matches && btn && btn.remove) btn.remove(); });
+    } catch (e) {}
+  }
+
   function loadSmartAudio() {
     if (!document.getElementById("audio")) return;
     if (document.querySelector('script[data-sakina-smart-audio]')) return;
@@ -78,10 +127,17 @@
     p.onerror = loadReminders;
     document.head.appendChild(p);
   }
-  var c = document.createElement("script");
-  c.src = "/push-config.js?v=2";
-  c.defer = true;
-  c.onload = loadPwa;
-  c.onerror = loadPwa;
-  document.head.appendChild(c);
+
+  function initSharedPwa() {
+    ensureInstallShortcut();
+    var c = document.createElement("script");
+    c.src = "/push-config.js?v=2";
+    c.defer = true;
+    c.onload = loadPwa;
+    c.onerror = loadPwa;
+    document.head.appendChild(c);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initSharedPwa, { once: true });
+  else initSharedPwa();
 })();
