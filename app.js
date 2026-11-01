@@ -137,7 +137,7 @@ function play(it, queue, qi, opts) {
   P.queue = queue || [it]; P.qi = qi || 0; P.loop = !!(opts && opts.loop); P.onEnd = opts && opts.onEnd || null;
   start(it);
 }
-let playbackEpoch = 0, retryTimer = null, retryPending = false;
+let playbackEpoch = 0, playbackStartedEpoch = -1, retryTimer = null, retryPending = false;
 function start(it) {
   { const k = it.key || "", type = k.startsWith("st:") ? "station" : k.startsWith("rad:") ? "reciter_radio" : k.startsWith("q:") ? "surah"
       : k.startsWith("r:") ? "ruqyah" : k.startsWith("sleep:") ? "sleep" : k.startsWith("fatiha") ? "sadaqa_fatiha" : (it.kind || "other");
@@ -196,7 +196,16 @@ function prev() {
 }
 
 audio.addEventListener("loadedmetadata", () => { if (P.pendingSeek && audio.duration > P.pendingSeek + 5) audio.currentTime = P.pendingSeek; P.pendingSeek = 0; });
-audio.addEventListener("playing", () => { clearTimeout(P.stallT); clearTimeout(retryTimer); retryPending = false; P.retries = 0; paint("playing"); });
+audio.addEventListener("playing", () => {
+  clearTimeout(P.stallT); clearTimeout(retryTimer); retryPending = false; P.retries = 0; paint("playing");
+  if (P.want && P.cur && playbackStartedEpoch !== playbackEpoch) {
+    playbackStartedEpoch = playbackEpoch;
+    const it = P.cur, k = it.key || "";
+    const type = k.startsWith("st:") ? "station" : k.startsWith("rad:") ? "reciter_radio" : k.startsWith("q:") ? "surah"
+      : k.startsWith("r:") ? "ruqyah" : k.startsWith("sleep:") ? "sleep" : k.startsWith("fatiha") ? "sadaqa_fatiha" : (it.kind || "other");
+    track("play_started", { content_type: type, item_name: it.title, reciter: it.sub || "", riwaya: it.eyebrow || "" });
+  }
+});
 audio.addEventListener("waiting", () => { if (!P.want) return; paint("loading"); clearTimeout(P.stallT); P.stallT = setTimeout(() => { if (audio.readyState < 3) fail(); }, 15000); });
 audio.addEventListener("pause", () => {
   if (!P.want && !audio.ended && P.state !== "error") { paint("idle"); return; }
