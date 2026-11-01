@@ -578,3 +578,6 @@ body[data-active-view="quran"] footer .foot-sadaqa { display:none; }
 .skip-link{position:fixed;inset-block-start:8px;inset-inline-start:12px;z-index:1000;padding:10px 16px;background:var(--panel);color:var(--ink);border:2px solid var(--gold);border-radius:10px;transform:translateY(-160%)}
 .skip-link:focus{transform:translateY(0)}
 @media(pointer:coarse),(max-width:600px){.chip,.footer-links summary,.footer-links-list a{min-height:44px;display:inline-flex;align-items:center;justify-content:center}.radio-controls select{min-height:44px}.reading-controls{flex-wrap:wrap}.reading-controls select{max-width:100%;min-width:0}.item .t{min-width:0}.item .t b{overflow-wrap:anywhere}}
+
+/* Grid tracks must shrink when cached reader rows cross responsive breakpoints. */
+.list{grid-template-columns:minmax(0,1fr);min-width:0;max-width:100%}.list>.item{min-width:0;max-width:100%;contain-intrinsic-inline-size:0}.list>.group-h,.list>.letter{min-width:0}
