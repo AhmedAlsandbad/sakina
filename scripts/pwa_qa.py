@@ -56,7 +56,7 @@ require(index, "apple-mobile-web-app-capable", "index.html")
 require(index, "apple-touch-icon", "index.html")
 
 analytics = text("analytics.js")
-for needle in ("/push-config.js?v=2", "/pwa.js?v=2", "/reminders.js?v=1", "/smart-audio-cache.js?v=1"):
+for needle in ("/push-config.js?v=2", "/pwa.js?v=2", "/reminders.js?v=1", "/smart-audio-cache.js?v=1", "sakinaInstallShortcut", "ثبّت سكينة"):
     require(analytics, needle, "analytics.js")
 
 pwa = text("pwa.js")
@@ -79,7 +79,7 @@ push_config = text("push-config.js")
 require(push_config, "vapidPublicKey", "push-config.js")
 require(push_config, "subscribeEndpoint", "push-config.js")
 
-print("PWA QA checked manifest, install UX, service worker, Web Push, reminders and smart recent audio replay")
+print("PWA QA checked manifest, install UX, install shortcut, service worker, Web Push, reminders and smart recent audio replay")
 if errors:
     for error in errors:
         print(f"ERROR: {error}")
