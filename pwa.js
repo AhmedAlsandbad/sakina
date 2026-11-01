@@ -265,6 +265,22 @@
     track("notification_offer", { platform: isIOS ? "ios" : isAndroid ? "android" : "other" });
   }
 
+  function initPwaUi() {
+    if (!isStandalone() && isMobile) setTimeout(() => showInstallSheet(false), 1500);
+    if (isStandalone()) setTimeout(() => showNotificationOffer(false), 1800);
+    if ("Notification" in window && Notification.permission === "granted") {
+      getRegistration().then(reg => { if (reg) subscribeRemotePush(reg); });
+    }
+  }
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.addEventListener("message", event => {
+      if (event.data && event.data.type === "PUSH_SUBSCRIPTION_CHANGED") {
+        getRegistration().then(reg => { if (reg) subscribeRemotePush(reg); });
+      }
+    });
+  }
+
   window.SakinaPWA = {
     showInstallPrompt: () => showInstallSheet(true),
     showNotificationPrompt: () => showNotificationOffer(true),
@@ -273,8 +289,6 @@
   };
 
   getRegistration();
-  document.addEventListener("DOMContentLoaded", () => {
-    if (!isStandalone() && isMobile) setTimeout(() => showInstallSheet(false), 1500);
-    if (isStandalone()) setTimeout(() => showNotificationOffer(false), 1800);
-  }, { once: true });
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initPwaUi, { once: true });
+  else initPwaUi();
 })();
