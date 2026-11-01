@@ -623,3 +623,8 @@ body[data-active-view="quran"] footer .foot-sadaqa { display:none; }
 .capsule{box-shadow:0 8px 24px #0003}
 #v-adhkar .seg button{box-shadow:none}
 @media(max-width:480px){.stations{gap:10px}.st{min-height:130px}.tabs-bottom{padding-inline:8px}.tabs-bottom a{font-size:.7rem}#hero{margin-bottom:26px}}
+
+/* Quiet depth behind the original geometric pattern. */
+body{background-image:radial-gradient(ellipse 85% 52% at 50% -8%,color-mix(in srgb,var(--gold) 5%,var(--night)),transparent 72%)}
+body::after{background-size:96px 96px}
+@media(max-width:600px){header.top,.tabs-bottom{backdrop-filter:none;-webkit-backdrop-filter:none} .view{animation-duration:.18s}}
