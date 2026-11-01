@@ -1,0 +1,117 @@
+/* Sakina player refinements: clearer controls, safer mobile spacing, no overlap with PWA actions. */
+
+/* Mini player */
+.capsule{
+  min-height:64px;
+  padding:8px 10px;
+  gap:9px;
+  border-radius:22px;
+  overflow:visible;
+}
+.capsule .info{
+  min-height:46px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:3px 2px;
+  border-radius:12px;
+}
+.capsule .info:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.capsule .info b{font-size:.95rem;line-height:1.35}
+.capsule .info small{font-size:.76rem;line-height:1.45;margin-top:2px}
+.pb{width:48px;height:48px;box-shadow:0 7px 20px color-mix(in srgb,var(--gold) 20%,transparent)}
+.pb svg{width:20px;height:20px}
+.sleep{
+  min-width:42px;
+  height:42px;
+  justify-content:center;
+  padding:0 10px;
+  background:color-mix(in srgb,var(--panel) 88%,transparent);
+}
+.sleep:not(.on) span:empty{display:none}
+.cap-prog{inset:auto 18px -1px;height:3px;background:color-mix(in srgb,var(--rule) 40%,transparent);border-radius:99px;overflow:hidden}
+.cap-prog i{border-radius:99px}
+.dock-toggle{
+  margin-bottom:5px;
+  min-height:26px;
+  min-width:48px;
+  background:color-mix(in srgb,var(--panel) 94%,transparent);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  box-shadow:0 4px 16px rgba(0,0,0,.14);
+}
+
+/* Full player */
+.sheet{
+  max-height:min(92dvh,760px);
+  overscroll-behavior:contain;
+  padding-top:4px;
+}
+.grab{
+  position:sticky;
+  top:-4px;
+  z-index:3;
+  background:linear-gradient(var(--panel) 70%,transparent);
+  padding:9px 0 14px;
+}
+.sheet-art{width:116px;height:116px;margin-top:2px;margin-bottom:10px}
+.sheet-art img{width:74px;height:74px}
+.sheet-title{font-size:clamp(1.45rem,5vw,var(--fs-2xl));max-width:90%;margin-inline:auto}
+#shSub{display:block;max-width:90%;margin:3px auto 0;color:var(--dim);font-size:.88rem;line-height:1.55}
+.seek{margin:18px 0 8px;gap:12px}
+.seek input[type="range"]{min-height:32px;cursor:pointer}
+.ctrl{gap:12px;margin:12px 0 18px}
+.c-sm{width:50px;height:50px;background:color-mix(in srgb,var(--panel-2) 72%,transparent)}
+.c-sm:not(:disabled):active{background:var(--panel-2)}
+.pb.big2{width:76px;height:76px;box-shadow:0 10px 30px color-mix(in srgb,var(--gold) 24%,transparent)}
+.sheet-row{gap:9px}
+.sheet-row .field{
+  background:color-mix(in srgb,var(--panel-2) 68%,transparent);
+  border:1px solid var(--rule);
+  border-radius:14px;
+  padding:10px 11px;
+}
+.sheet-row .field label{display:block;margin-bottom:5px;color:var(--dim);font-size:.78rem}
+.sheet-row .field select{min-height:42px}
+.vol-f input{min-height:30px}
+#shQueue{min-height:1.3em}
+
+@media(max-width:560px){
+  .capsule{width:calc(100% - 16px);min-height:60px;padding:7px 8px;gap:7px;border-radius:18px}
+  .pb{width:46px;height:46px}
+  .capsule .info b{font-size:.9rem}
+  .capsule .info small{font-size:.71rem}
+  .sleep{height:40px;min-width:40px;padding:0 8px}
+  .sleep:not(.on){width:40px;padding:0}
+  .sleep:not(.on) span{display:none}
+  .sleep.on span{font-size:.72rem}
+  .sleep svg{width:16px;height:16px}
+  .dock-toggle{min-height:24px;margin-bottom:3px;padding:1px 12px}
+
+  .sheet{border-radius:24px 24px 0 0;padding-inline:max(14px,env(safe-area-inset-right,0px));padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+  .sheet-art{width:98px;height:98px;margin-bottom:8px}
+  .sheet-art img{width:64px;height:64px}
+  .ctrl{gap:7px;margin-top:9px}
+  .c-sm{width:44px;height:44px}
+  .c-sm svg{width:20px;height:20px}
+  .pb.big2{width:68px;height:68px}
+  .pb.big2 svg{width:27px;height:27px}
+  .seek{gap:7px;font-size:.74rem}
+  .sheet-row{grid-template-columns:1fr 1fr;gap:8px}
+  .vol-f{grid-column:1/-1}
+}
+
+@media(max-width:370px){
+  .capsule{gap:5px}
+  .capsule .info b{font-size:.84rem}
+  .capsule .info small{font-size:.68rem}
+  .sleep.on{max-width:74px;padding-inline:7px}
+  .ctrl{gap:5px}
+  .c-sm{width:41px;height:41px}
+  .pb.big2{width:64px;height:64px}
+}
+
+@media(min-width:860px){
+  .capsule{max-width:680px}
+  .sheet{max-width:590px}
+}
