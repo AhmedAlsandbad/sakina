@@ -1,6 +1,6 @@
 // Sakina Quran service worker: app shell, offline fallback, Web Push and reminder checks.
 // Audio streams are never cached.
-const V = "sakina-v75";
+const V = "sakina-v76";
 const PREF_CACHE = "sakina-reminders-v1";
 const PREF_URL = "/__sakina/reminder-settings";
 const STATE_URL = "/__sakina/reminder-state";
@@ -14,7 +14,7 @@ const SHELL = [
   "/analytics.js?v=2",
   "/pwa.js?v=2",
   "/reminders.js?v=1",
-  "/push-config.js?v=1",
+  "/push-config.js?v=2",
   "/manifest.webmanifest",
   "/icon.svg",
   "/sakina-logo.svg?v=38",
