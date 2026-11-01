@@ -661,3 +661,7 @@ body::after{background-size:96px 96px}
 @media(min-width:700px){.discover-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.discover-card{min-height:125px}}
 @media(hover:hover){.discover-card:hover{border-color:var(--gold);background:var(--panel-2)}}
 @media(prefers-reduced-motion:no-preference){.discover-card{transition:transform .18s ease,border-color .18s ease,background .18s ease}.discover-card:active{transform:scale(.98)}}
+
+/* Friday reminder */
+.friday-card{margin:24px 0;padding:22px;border:1px solid var(--rule);border-radius:20px;background:linear-gradient(145deg,var(--panel-2),var(--panel))}
+.friday-head{display:flex;align-items:center;justify-content:space-between;gap:16px}.friday-head h2{margin:5px 0;color:var(--ink);font-size:1.25rem}.friday-head p{margin:0;color:var(--dim);font-size:.88rem;line-height:1.7}.friday-label{font-size:.78rem;color:var(--gold)}.friday-mark{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:14px;border:1px solid var(--rule);color:var(--gold);font-size:1.35rem}.friday-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}.friday-actions .chip{min-height:44px}.friday-details{margin-top:15px;border-top:1px solid var(--rule);padding-top:12px;color:var(--dim);font-size:.86rem;line-height:1.9}.friday-details summary{cursor:pointer;color:var(--ink)}.friday-details ul{padding-inline-start:20px}.friday-details a{color:var(--gold)}@media(max-width:480px){.friday-card{padding:18px}.friday-actions .chip{flex:1 1 150px}}

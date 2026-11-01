@@ -1,7 +1,7 @@
 // Caches the app shell so the site opens instantly and works as an installed app.
 // Audio streams are never cached.
-const V = "sakina-v69";
-const SHELL = ["./", "index.html", "styles.css?v=54", "data.js?v=39", "app.js?v=57", "manifest.webmanifest", "icon.svg", "sakina-logo.svg?v=38", "icon-192.png", "icon-512.png"];
+const V = "sakina-v70";
+const SHELL = ["./", "index.html", "styles.css?v=55", "data.js?v=39", "app.js?v=58", "manifest.webmanifest", "icon.svg", "sakina-logo.svg?v=38", "icon-192.png", "icon-512.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(V).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener("activate", e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k)))));

@@ -841,6 +841,27 @@ pageHost.onclick = e => {
 pageHost.onkeydown = e => { if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("ayahPolygon")) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent("click", {bubbles:true})); } };
 wideReader.addEventListener("change", () => { if (!$("#qReading").hidden) renderMushaf(); });
 
+/* Friday reminder uses the visitor's local day and never sends notifications. */
+function updateFridayReminder() {
+  const friday = new Date().getDay() === 5;
+  $("#fridayLabel").textContent = friday ? "اليوم الجمعة" : "زاد الجمعة";
+  $("#fridayHint").textContent = friday ? "تذكير اليوم: سورة الكهف والصلاة على النبي ﷺ" : "سورة الكهف وآداب الجمعة في مكان واحد";
+  $("#fridayTitle").textContent = friday ? "جمعة مباركة" : "تذكير يوم الجمعة";
+}
+updateFridayReminder();
+setInterval(updateFridayReminder, 60000);
+$("#fridayListen").onclick = () => {
+  const item = {kind:"file", key:"friday:kahf:husary", title:"سورة الكهف", sub:"محمود خليل الحصري", eyebrow:"زاد الجمعة", url:"https://cdn.mp3quran.net/audio/mahmoud-husary/r1/018.mp3"};
+  if (P.cur && P.cur.key === item.key) toggle(); else play(item);
+};
+$("#fridayRead").onclick = async () => {
+  location.hash = "#quran";
+  await $("#qRead").onclick();
+  if ($("#qReading").hidden || !readingSelect.options.length) return;
+  readingSelect.value = "18";
+  await loadReading();
+};
+
 /* =========================================================
    PRAYER TIMES
    ========================================================= */

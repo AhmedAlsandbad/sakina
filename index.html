@@ -32,7 +32,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="styles.css?v=54">
+<link rel="stylesheet" href="styles.css?v=55">
 <script src="/analytics.js?v=2" defer></script>
 <script>try{var t=localStorage.getItem("sakina:theme");if(t)document.documentElement.dataset.theme=JSON.parse(t)}catch(e){}</script>
 </head>
@@ -89,6 +89,14 @@
           <button class="chip primary" id="fatihaBtn">استمع إلى الفاتحة</button>
         </details>
       </div>
+    </section>
+    <section class="friday-card" aria-labelledby="fridayTitle">
+      <div class="friday-head"><div><span class="friday-label" id="fridayLabel">زاد الجمعة</span><h2 id="fridayTitle">جمعة مباركة</h2><p id="fridayHint">تذكير بسورة الكهف وآداب الجمعة</p></div><span class="friday-mark" aria-hidden="true">✦</span></div>
+      <div class="friday-actions"><button class="chip primary" id="fridayRead">قراءة سورة الكهف</button><button class="chip" id="fridayListen">استمع للكهف · الحصري</button></div>
+      <details class="friday-details"><summary>سنن وآداب الجمعة <span aria-hidden="true">⌄</span></summary>
+        <ul><li>قراءة سورة الكهف يوم الجمعة.</li><li>الإكثار من الصلاة على النبي ﷺ.</li><li>الاغتسال والتطيب والتبكير للجمعة لمن يذهب للصلاة، والإنصات للخطبة.</li><li>الإكثار من الدعاء وتحري ساعة الإجابة.</li></ul>
+        <p>المصادر: <a href="https://dorar.net/h/Z3G0JpMU" target="_blank" rel="noopener noreferrer">فضل الكهف</a> · <a href="https://sunnah.com/abudawud:1047" target="_blank" rel="noopener noreferrer">الصلاة على النبي ﷺ</a> · <a href="https://sunnah.com/bukhari:883" target="_blank" rel="noopener noreferrer">آداب الجمعة</a> · <a href="https://sunnah.com/bukhari:935" target="_blank" rel="noopener noreferrer">ساعة الإجابة</a></p>
+      </details>
     </section>
     <section class="discover" aria-labelledby="discoverTitle">
       <div class="discover-heading"><h2 id="discoverTitle">ماذا تحب أن تستمع؟</h2><p>اختر ما يناسبك، واستمع بهدوء</p></div>
@@ -303,6 +311,6 @@
 <audio id="audio" preload="none" playsinline></audio>
 
 <script src="data.js?v=39" defer></script>
-<script src="app.js?v=57" defer></script>
+<script src="app.js?v=58" defer></script>
 </body>
 </html>
