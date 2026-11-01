@@ -46,7 +46,7 @@ if manifest:
     if "512x512" not in sizes:
         errors.append("manifest.webmanifest: missing 512x512 icon")
 
-for asset in ("icon-192.png", "icon-512.png", "offline.html", "pwa.js", "reminders.js", "smart-audio-cache.js", "push-config.js", "sw.js"):
+for asset in ("icon-192.png", "icon-512.png", "offline.html", "pwa.js", "reminders.js", "smart-audio-cache.js", "push-config.js", "player-ui.css", "sw.js"):
     if not (ROOT / asset).exists():
         errors.append(f"missing required PWA asset: {asset}")
 
@@ -56,11 +56,11 @@ require(index, "apple-mobile-web-app-capable", "index.html")
 require(index, "apple-touch-icon", "index.html")
 
 analytics = text("analytics.js")
-for needle in ("/push-config.js?v=2", "/pwa.js?v=2", "/reminders.js?v=1", "/smart-audio-cache.js?v=1", "sakinaInstallShortcut", "ثبّت سكينة"):
+for needle in ("/push-config.js?v=2", "/pwa.js?v=3", "/reminders.js?v=1", "/smart-audio-cache.js?v=1", "/player-ui.css?v=1", "ensureInstallShortcut", "ثبّت سكينة"):
     require(analytics, needle, "analytics.js")
 
 pwa = text("pwa.js")
-for needle in ("beforeinstallprompt", "appinstalled", "Notification.requestPermission", "pushManager.subscribe", "syncPushPreferences", "showInstallPrompt"):
+for needle in ("beforeinstallprompt", "appinstalled", "Notification.requestPermission", "pushManager.subscribe", "syncPushPreferences", "showInstallPrompt", "header .hd", "sakina-reminder-head"):
     require(pwa, needle, "pwa.js")
 
 reminders = text("reminders.js")
@@ -71,15 +71,19 @@ smart_audio = text("smart-audio-cache.js")
 for needle in ("indexedDB", "MAX_ITEMS = 2", "120 * 1024 * 1024", "smart_audio_cached", "smart_audio_offline_replay", "saveData", 'type || "").toLowerCase() === "cellular"'):
     require(smart_audio, needle, "smart-audio-cache.js")
 
+player_ui = text("player-ui.css")
+for needle in (".capsule", ".sheet", ".pb.big2", ".sleep:not(.on)", "@media(max-width:560px)"):
+    require(player_ui, needle, "player-ui.css")
+
 sw = text("sw.js")
-for needle in ('addEventListener("push"', 'addEventListener("notificationclick"', 'addEventListener("periodicsync"', "REMINDER_PREFS", "/pwa.js?v=2", "/reminders.js?v=1", "/smart-audio-cache.js?v=1", "/push-config.js?v=2", "/offline.html"):
+for needle in ('addEventListener("push"', 'addEventListener("notificationclick"', 'addEventListener("periodicsync"', "REMINDER_PREFS", "/pwa.js?v=3", "/player-ui.css?v=1", "/reminders.js?v=1", "/smart-audio-cache.js?v=1", "/push-config.js?v=2", "/offline.html"):
     require(sw, needle, "sw.js")
 
 push_config = text("push-config.js")
 require(push_config, "vapidPublicKey", "push-config.js")
 require(push_config, "subscribeEndpoint", "push-config.js")
 
-print("PWA QA checked manifest, install UX, install shortcut, service worker, Web Push, reminders and smart recent audio replay")
+print("PWA QA checked manifest, install UX, header controls, player UI, service worker, Web Push, reminders and smart recent audio replay")
 if errors:
     for error in errors:
         print(f"ERROR: {error}")
