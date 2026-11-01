@@ -17,7 +17,8 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = "https://sakinaquran.net"
 SKIP_DIRS = {".git", ".github", "scripts"}
-NOINDEX_OK = {"/404.html"}
+# Utility pages intentionally excluded from search. They must stay noindex and out of sitemap.xml.
+NOINDEX_OK = {"/404.html", "/offline.html"}
 VERIFICATION_FILE_RE = re.compile(r"^(google[a-z0-9_-]+\.html|BingSiteAuth\.xml)$", re.I)
 
 TITLE_RE = re.compile(r"<title>(.*?)</title>", re.I | re.S)
@@ -193,7 +194,7 @@ def main() -> int:
             indexable_urls.add(expected)
         else:
             if not noindex:
-                warnings.append(f"{rel}: 404 page should normally be noindex")
+                warnings.append(f"{rel}: utility noindex page should normally be noindex")
 
         for i, payload in enumerate(LD_JSON_RE.findall(html), start=1):
             payload = payload.strip()
