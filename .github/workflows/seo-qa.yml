@@ -32,5 +32,6 @@ jobs:
           node --check pwa.js
           node --check reminders.js
           node --check ux-enhancements.js
+          node --check smart-audio-cache.js
           node --check push-config.js
           node --check sw.js
