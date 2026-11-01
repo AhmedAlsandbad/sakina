@@ -511,7 +511,7 @@ function renderRecs() {
   $("#recCount").textContent = ard(list.length) + " قارئ";
   let fam = [];
   if (q) list.sort((a, b) => (tight(b.name).startsWith(q.replace(/\s+/g, "")) - tight(a.name).startsWith(q.replace(/\s+/g, ""))) || ((a.fam < 0 ? 99 : a.fam) - (b.fam < 0 ? 99 : b.fam)));
-  else { fam = list.filter(r => r.fam >= 0).sort((a, b) => a.fam - b.fam); list = list.filter(r => r.fam < 0); }
+  else { fam = list.filter(r => r.fam >= 0).sort((a, b) => a.fam - b.fam).slice(0, 6); const featured = new Set(fam.map(r => r.id)); list = list.filter(r => !featured.has(r.id)); }
   const shown = list.slice(0, recShown);
   const row = r => {
     const ms = rwSel === "all" ? r.moshaf : r.moshaf.filter(m => rwGroup(m.rw) === rwSel);
