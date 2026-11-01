@@ -91,6 +91,7 @@ function paint(st) {
   // hero reflects live radio only
   const heroOn = live;
   $("#heroBtn").innerHTML = heroOn ? icon : IC.play;
+  $("#heroBtn").setAttribute("aria-label", heroOn && st === "playing" ? "إيقاف الإذاعة" : "تشغيل الإذاعة");
   $("#hero").classList.toggle("playing", heroOn && st === "playing");
   const hs = $("#heroStatus");
   if (heroOn) {
@@ -377,7 +378,7 @@ function renderRadios() {
   $("#radCount").textContent = ard(list.length) + " إذاعة";
   const shown = list.slice(0, radShown);
   $("#radList").innerHTML = shown.length ? shown.map(r => `
-    <button class="item" data-key="rad:${r.id}" data-rad="${r.id}">
+    <button class="item" data-key="rad:${r.id}" data-rad="${r.id}" aria-label="تشغيل إذاعة ${esc(r.name)}">
       <span class="medal">${IC.radio.replace('aria-hidden="true"', 'aria-hidden="true" width="18" height="18"')}</span>
       <span class="t"><b>${esc(r.name)}</b><small>إذاعة متواصلة</small></span><span class="ic pi">${IC.play}</span>
     </button>`).join("") : `<div class="empty">لا توجد إذاعة بهذا الاسم</div>`;
@@ -397,7 +398,7 @@ $("#radList").onclick = e => { const b = e.target.closest("[data-rad]"); if (!b)
    ========================================================= */
 /* best-known reciters shown first, in this order (matched on name words) */
 const FAMOUS = [["عبدالباسط"], ["الحصري"], ["المنشاوي"], ["مصطفي", "اسماعيل"], ["البنا"], ["الطبلاوي"], ["العفاسي"], ["المعيقلي"], ["السديس"], ["الشريم"],
-  ["الغامدي"], ["ياسر", "الدوسري"], ["العجمي"], ["فارس", "عباد"], ["القطامي"], ["الشاطري"], ["الحذيفي"], ["محمد", "ايوب"], ["خالد", "الجليل"], ["محمد", "جبريل"], ["البلوشي"], ["ادريس", "ابكر"]]
+  ["الغامدي"], ["ياسر", "الدوسري"], ["العجمي"], ["فارس", "عباد"], ["القطامي"], ["الشاطري"], ["الحذيفي"], ["محمد", "ايوب"], ["خالد", "الجليل"], ["محمد", "جبريل"], ["البلوشي"], ["ادريس", "ابكر"], ["اسلام", "صبحي"], ["علي", "جابر"], ["محمد", "اللحيدان"], ["بندر", "بليله"], ["عبدالله", "الجهني"]]
   .map(a => a.map(w => w.replace(/[أإآ]/g, "ا").replace(/ى/g, "ي")));
 const rwGroup = rw => rw.startsWith("حفص عن عاصم") ? "حفص عن عاصم" : rw.startsWith("ورش عن نافع") ? "ورش عن نافع" : "";
 let RECITERS = [], SUWAR = {}, RW = [], rwSel = store.get("rw", "حفص عن عاصم"), recShown = 25, curRec = null, curMoshaf = null;
@@ -410,10 +411,10 @@ INIT.quran = async () => {
     RECITERS = r.reciters.map(x => ({ id: x.id, name: x.name.trim(), n: norm(x.name),
       moshaf: x.moshaf.map(m => ({ id: m.id, rw: rwKey(m.name), type: mType(m.name), server: m.server, list: m.surah_list.split(",").map(Number) })).filter(m => rwGroup(m.rw)) }))
       .filter(x => x.moshaf.length).sort((a, b) => sortKey(a.name).localeCompare(sortKey(b.name), "ar"));
-    RECITERS.forEach(r => { r.name = r.name.replace(/\s+/g, " "); const t = tight(r.name); r.fam = FAMOUS.findIndex(f => f.every(w => t.includes(w))); r.letter = sortKey(r.name)[0] || ""; });
+    RECITERS.forEach(r => { r.name = r.name.replace(/\s+/g, " "); const t = tight(r.name); r.fam = FAMOUS.findIndex(f => f.every(w => norm(r.name).split(" ").includes(norm(w)))); r.letter = sortKey(r.name)[0] || ""; });
     const cnt = {}; RECITERS.forEach(x => new Set(x.moshaf.map(m => rwGroup(m.rw))).forEach(k => cnt[k] = (cnt[k] || 0) + 1));
     RW = Object.entries(cnt).sort((a, b) => b[1] - a[1]);
-    if (!cnt[rwSel]) rwSel = "حفص عن عاصم";
+    if (rwSel !== "all" && !cnt[rwSel]) rwSel = "حفص عن عاصم";
     $("#recCount").textContent = ard(RECITERS.length) + " قارئ";
     $("#recSearch").placeholder = "ابحث عن قارئ (مثال: عبدالباسط، المنشاوي)";
     renderRw(); renderRecs();
@@ -423,8 +424,8 @@ INIT.quran = async () => {
 };
 function renderRw() {
   const total = RECITERS.length;
-  $("#rwChips").innerHTML = RW.map(([k, c]) => `<button class="chip" data-rw="${esc(k)}" aria-pressed="${rwSel === k}">${esc(k.replace(" عن ", " · "))}<small>${ard(c)}</small></button>`).join("");
-  $("#rwHint").textContent = `رواية ${rwSel}`;
+  $("#rwChips").innerHTML = `<button class="chip" data-rw="all" aria-pressed="${rwSel === "all"}">كل القرّاء<small>${ard(total)}</small></button>` + RW.map(([k, c]) => `<button class="chip" data-rw="${esc(k)}" aria-pressed="${rwSel === k}">${esc(k.replace(" عن ", " · "))}<small>${ard(c)}</small></button>`).join("");
+  $("#rwHint").textContent = rwSel === "all" ? "كل القرّاء في روايتي حفص وورش" : `رواية ${rwSel}`;
 }
 $("#rwChips").onclick = e => { const b = e.target.closest("[data-rw]"); if (!b) return; rwSel = b.dataset.rw; track("riwaya_select", { riwaya: rwSel }); store.set("rw", rwSel); recShown = 25; renderRw(); renderRecs(); };
 function renderRecs() {

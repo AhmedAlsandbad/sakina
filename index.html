@@ -34,11 +34,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="styles.css?v=44">
+<link rel="stylesheet" href="styles.css?v=45">
 <script src="/analytics.js?v=2" defer></script>
 <script>try{var t=localStorage.getItem("sakina:theme");if(t)document.documentElement.dataset.theme=JSON.parse(t)}catch(e){}</script>
 </head>
 <body>
+<a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
 
 <header class="top"><div class="wrap">
   <a class="logo" href="#radio" aria-label="سكينة، الصفحة الرئيسية"><span>سكينة</span><img src="sakina-logo.svg?v=38" alt="" width="52" height="52"></a>
@@ -71,6 +72,9 @@
       <button class="link-btn" id="retryBtn" hidden>إعادة المحاولة</button>
     </div>
 
+    <div class="sh"><h2>إذاعات القرآن الكريم</h2><p>بث مباشر على مدار الساعة</p></div>
+    <div class="stations" id="stations"></div>
+
     <section class="brand-intro" aria-labelledby="brandIntroTitle">
       <div class="sh"><h2 id="brandIntroTitle">سكينة قرآن</h2><p>القرآن الكريم والاستماع والإذاعات والأذكار في مكان واحد</p></div>
       <p class="hint">سكينة قرآن موقع عربي مجاني يسهّل الوصول إلى المصحف والتلاوات بأصوات القرّاء، وإذاعات القرآن المباشرة، والرقية الشرعية، والأذكار ومواقيت الصلاة.</p>
@@ -78,9 +82,6 @@
         <a class="chip" href="/quran/">المصحف</a><a class="chip" href="/reciters/">القرّاء</a><a class="chip" href="/surahs/">السور</a><a class="chip" href="/radio/">الإذاعات</a><a class="chip" href="/adhkar/">الأذكار</a><a class="chip" href="/about/">عن سكينة</a><a class="chip" href="/sources/">المصادر والمنهجية</a>
       </div>
     </section>
-
-    <div class="sh"><h2>إذاعات القرآن الكريم</h2><p>بث مباشر على مدار الساعة</p></div>
-    <div class="stations" id="stations"></div>
 
     <section class="sadaqa dedication" aria-labelledby="sadaqaTitle">
       <div class="dedication-frame">
@@ -290,6 +291,6 @@
 <audio id="audio" preload="none" playsinline></audio>
 
 <script src="data.js?v=39" defer></script>
-<script src="app.js?v=47" defer></script>
+<script src="app.js?v=48" defer></script>
 </body>
 </html>

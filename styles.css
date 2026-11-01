@@ -573,3 +573,8 @@ body[data-active-view="quran"] footer .foot-sadaqa { display:none; }
 .footer-links[open] summary::after{content:"⌃"}
 .footer-links-list{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 16px;padding:14px 8px;line-height:1.7}
 .footer-links-list a{color:var(--dim);font-size:.88rem;text-decoration:none}.footer-links-list a:hover,.footer-links-list a:focus-visible{color:var(--gold);text-decoration:underline}
+
+/* Comfortable touch targets and keyboard entry, including narrow phones. */
+.skip-link{position:fixed;inset-block-start:8px;inset-inline-start:12px;z-index:1000;padding:10px 16px;background:var(--panel);color:var(--ink);border:2px solid var(--gold);border-radius:10px;transform:translateY(-160%)}
+.skip-link:focus{transform:translateY(0)}
+@media(pointer:coarse),(max-width:600px){.chip,.footer-links summary,.footer-links-list a{min-height:44px;display:inline-flex;align-items:center;justify-content:center}.radio-controls select{min-height:44px}.reading-controls{flex-wrap:wrap}.reading-controls select{max-width:100%;min-width:0}.item .t{min-width:0}.item .t b{overflow-wrap:anywhere}}
