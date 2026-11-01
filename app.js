@@ -419,7 +419,7 @@ $(".discover-grid").addEventListener("click", e => {
   const b = e.target.closest("[data-discover]"); if (!b) return;
   const type = b.dataset.discover;
   if (type === "stations") { showRadioSection("#stationsHeading"); return; }
-  if (type === "reciters") { store.set("quranOpen", false); closeReciter(); $("#qListen").click(); location.hash = "#quran"; return; }
+  if (type === "reciters") { openReciterList("", false); return; }
   if (type === "surahs") { location.href = "/surahs/"; return; }
   if (type === "favorites") { const panel = $("#favoriteChoices"); panel.hidden = !panel.hidden; b.setAttribute("aria-expanded", String(!panel.hidden)); return; }
   radioFavOnly = type === "favorites"; $("#radFavOnly").setAttribute("aria-pressed", String(radioFavOnly));
