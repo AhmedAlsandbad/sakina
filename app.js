@@ -92,6 +92,8 @@ function paint(st) {
   const heroOn = live;
   $("#heroBtn").innerHTML = heroOn ? icon : IC.play;
   $("#heroBtn").setAttribute("aria-label", heroOn && st === "playing" ? "إيقاف الإذاعة" : "تشغيل الإذاعة");
+  $("#heroAction").textContent = heroOn && st === "playing" ? "إيقاف الإذاعة" : heroOn && st === "loading" ? "جارٍ الاتصال…" : "تشغيل الإذاعة";
+  $("#heroBtn").setAttribute("aria-busy", String(heroOn && st === "loading"));
   $("#hero").classList.toggle("playing", heroOn && st === "playing");
   const hs = $("#heroStatus");
   if (heroOn) {
@@ -281,10 +283,19 @@ $("#sleepSel").onchange = e => setSleep(+e.target.value);
 setInterval(sleepLabel, 20000);
 
 /* sheet */
-function openSheet() { if (!P.cur) { toggle(); return; } const s = $("#sheet"), c = $("#scrim"); if (!s.hidden) return; s.hidden = c.hidden = false;
+let sheetReturnFocus = null;
+function openSheet() { if (!P.cur) { toggle(); return; } const s = $("#sheet"), c = $("#scrim"); if (!s.hidden) return; sheetReturnFocus = document.activeElement; s.hidden = c.hidden = false; $("#sheetClose").focus();
   history.pushState({ sheet: 1 }, "", location.hash || "#radio"); void s.offsetHeight; s.classList.add("show"); c.classList.add("show"); paint(P.state); }
 function closeSheet(fromPop) { const s = $("#sheet"), c = $("#scrim"); if (s.hidden) return;
-  if (fromPop !== true && history.state && history.state.sheet) { history.back(); return; } s.classList.remove("show"); c.classList.remove("show"); setTimeout(() => { s.hidden = c.hidden = true; }, 380); }
+  if (fromPop !== true && history.state && history.state.sheet) { history.back(); return; } s.classList.remove("show"); c.classList.remove("show"); setTimeout(() => { s.hidden = c.hidden = true; if (sheetReturnFocus && sheetReturnFocus.isConnected) sheetReturnFocus.focus(); }, 380); }
+$("#sheet").addEventListener("keydown", e => {
+  if (e.key !== "Tab") return;
+  const controls = [...$("#sheet").querySelectorAll("button,input,select,a[href]")].filter(el => !el.disabled && el.getClientRects().length);
+  if (!controls.length) return;
+  const first = controls[0], last = controls[controls.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
 $("#capOpen").onclick = openSheet; $("#sheetClose").onclick = () => closeSheet(); $("#scrim").onclick = () => closeSheet();
 (() => { let y0 = null; const s = $("#sheet");
   s.addEventListener("touchstart", e => { if (s.scrollTop <= 0) y0 = e.touches[0].clientY; }, { passive: true });

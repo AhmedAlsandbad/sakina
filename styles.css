@@ -581,3 +581,5 @@ body[data-active-view="quran"] footer .foot-sadaqa { display:none; }
 
 /* Grid tracks must shrink when cached reader rows cross responsive breakpoints. */
 .list{grid-template-columns:minmax(0,1fr);min-width:0;max-width:100%}.list>.item{min-width:0;max-width:100%;contain-intrinsic-inline-size:0}.list>.group-h,.list>.letter{min-width:0}
+
+.hero-action{display:block;margin:10px 0 4px;color:var(--ink);font-size:.9rem;font-weight:500}#main{scroll-margin-top:80px}#main:focus{outline:none}
