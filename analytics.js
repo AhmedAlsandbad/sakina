@@ -39,12 +39,23 @@
   if (window.__sakinaPwaLoader) return;
   window.__sakinaPwaLoader = true;
 
+  function loadSmartAudio() {
+    if (!document.getElementById("audio")) return;
+    if (document.querySelector('script[data-sakina-smart-audio]')) return;
+    var a = document.createElement("script");
+    a.src = "/smart-audio-cache.js?v=1";
+    a.defer = true;
+    a.dataset.sakinaSmartAudio = "1";
+    document.head.appendChild(a);
+  }
   function loadUx() {
-    if (document.querySelector('script[data-sakina-ux]')) return;
+    if (document.querySelector('script[data-sakina-ux]')) { loadSmartAudio(); return; }
     var u = document.createElement("script");
     u.src = "/ux-enhancements.js?v=1";
     u.defer = true;
     u.dataset.sakinaUx = "1";
+    u.onload = loadSmartAudio;
+    u.onerror = loadSmartAudio;
     document.head.appendChild(u);
   }
   function loadReminders() {
