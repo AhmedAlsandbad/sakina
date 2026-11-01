@@ -89,6 +89,15 @@
     document.head.appendChild(l);
   }
 
+  function loadUiRefreshCss() {
+    if (document.querySelector('link[data-sakina-ui-refresh]')) return;
+    var l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = "/ui-refresh.css?v=1";
+    l.dataset.sakinaUiRefresh = "1";
+    document.head.appendChild(l);
+  }
+
   function loadSmartAudio() {
     if (!document.getElementById("audio")) return;
     if (document.querySelector('script[data-sakina-smart-audio]')) return;
@@ -98,14 +107,26 @@
     a.dataset.sakinaSmartAudio = "1";
     document.head.appendChild(a);
   }
+
+  function loadUiRefresh() {
+    if (document.querySelector('script[data-sakina-ui-refresh]')) { loadSmartAudio(); return; }
+    var r = document.createElement("script");
+    r.src = "/ui-refresh.js?v=1";
+    r.defer = true;
+    r.dataset.sakinaUiRefresh = "1";
+    r.onload = loadSmartAudio;
+    r.onerror = loadSmartAudio;
+    document.head.appendChild(r);
+  }
+
   function loadUx() {
-    if (document.querySelector('script[data-sakina-ux]')) { loadSmartAudio(); return; }
+    if (document.querySelector('script[data-sakina-ux]')) { loadUiRefresh(); return; }
     var u = document.createElement("script");
     u.src = "/ux-enhancements.js?v=1";
     u.defer = true;
     u.dataset.sakinaUx = "1";
-    u.onload = loadSmartAudio;
-    u.onerror = loadSmartAudio;
+    u.onload = loadUiRefresh;
+    u.onerror = loadUiRefresh;
     document.head.appendChild(u);
   }
   function loadReminders() {
@@ -131,6 +152,7 @@
 
   function initSharedPwa() {
     loadPlayerUi();
+    loadUiRefreshCss();
     ensureInstallShortcut();
     var c = document.createElement("script");
     c.src = "/push-config.js?v=2";
