@@ -57,7 +57,7 @@
     document.head.appendChild(p);
   }
   var c = document.createElement("script");
-  c.src = "/push-config.js?v=1";
+  c.src = "/push-config.js?v=2";
   c.defer = true;
   c.onload = loadPwa;
   c.onerror = loadPwa;
