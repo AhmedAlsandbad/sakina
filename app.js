@@ -284,10 +284,14 @@ setInterval(sleepLabel, 20000);
 
 /* sheet */
 let sheetReturnFocus = null;
-function openSheet() { if (!P.cur) { toggle(); return; } const s = $("#sheet"), c = $("#scrim"); if (!s.hidden) return; sheetReturnFocus = document.activeElement; s.hidden = c.hidden = false; $("#sheetClose").focus();
+let sheetBackground = [], sheetOverflow = "";
+function openSheet() { if (!P.cur) { toggle(); return; } const s = $("#sheet"), c = $("#scrim"); if (!s.hidden) return; sheetReturnFocus = document.activeElement;
+  sheetBackground = [...document.body.children].filter(el => el !== s && el !== c && !["SCRIPT", "AUDIO"].includes(el.tagName)).map(el => ({ el, inert: el.inert }));
+  sheetBackground.forEach(x => { x.el.inert = true; }); sheetOverflow = document.body.style.overflow; document.body.style.overflow = "hidden";
+  s.hidden = c.hidden = false; $("#sheetClose").focus();
   history.pushState({ sheet: 1 }, "", location.hash || "#radio"); void s.offsetHeight; s.classList.add("show"); c.classList.add("show"); paint(P.state); }
 function closeSheet(fromPop) { const s = $("#sheet"), c = $("#scrim"); if (s.hidden) return;
-  if (fromPop !== true && history.state && history.state.sheet) { history.back(); return; } s.classList.remove("show"); c.classList.remove("show"); setTimeout(() => { s.hidden = c.hidden = true; if (sheetReturnFocus && sheetReturnFocus.isConnected) sheetReturnFocus.focus(); }, 380); }
+  if (fromPop !== true && history.state && history.state.sheet) { history.back(); return; } s.classList.remove("show"); c.classList.remove("show"); setTimeout(() => { s.hidden = c.hidden = true; sheetBackground.forEach(x => { x.el.inert = x.inert; }); document.body.style.overflow = sheetOverflow; if (sheetReturnFocus && sheetReturnFocus.isConnected) sheetReturnFocus.focus(); }, 380); }
 $("#sheet").addEventListener("keydown", e => {
   if (e.key !== "Tab") return;
   const controls = [...$("#sheet").querySelectorAll("button,input,select,a[href]")].filter(el => !el.disabled && el.getClientRects().length);
