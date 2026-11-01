@@ -56,7 +56,7 @@ require(index, "apple-mobile-web-app-capable", "index.html")
 require(index, "apple-touch-icon", "index.html")
 
 analytics = text("analytics.js")
-for needle in ("/push-config.js?v=1", "/pwa.js?v=2", "/reminders.js?v=1"):
+for needle in ("/push-config.js?v=2", "/pwa.js?v=2", "/reminders.js?v=1"):
     require(analytics, needle, "analytics.js")
 
 pwa = text("pwa.js")
@@ -68,7 +68,7 @@ for needle in ("Fajr", "Dhuhr", "Asr", "Maghrib", "Isha", "morning", "evening", 
     require(reminders, needle, "reminders.js")
 
 sw = text("sw.js")
-for needle in ('addEventListener("push"', 'addEventListener("notificationclick"', 'addEventListener("periodicsync"', "REMINDER_PREFS", "/pwa.js?v=2", "/reminders.js?v=1", "/offline.html"):
+for needle in ('addEventListener("push"', 'addEventListener("notificationclick"', 'addEventListener("periodicsync"', "REMINDER_PREFS", "/pwa.js?v=2", "/reminders.js?v=1", "/push-config.js?v=2", "/offline.html"):
     require(sw, needle, "sw.js")
 
 push_config = text("push-config.js")
