@@ -445,7 +445,20 @@ $("#quickRadioSearch").addEventListener("input", debounce(e => {
   radioFavOnly = false; $("#radFavOnly").setAttribute("aria-pressed", "false");
   $("#radCategory").value = "all"; $("#radSearch").value = e.target.value; radShown = 12; renderRadios();
 }, 150));
-$("#quickRadioSearch").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); showRadioSection("#radioListHeading"); $("#radSearch").focus({preventScroll:true}); } });
+$("#quickRadioSearch").addEventListener("keydown", e => {
+  if (e.key !== "Enter") return;
+  e.preventDefault(); radioFavOnly = false; $("#radFavOnly").setAttribute("aria-pressed", "false");
+  $("#radCategory").value = "all"; $("#radSearch").value = e.currentTarget.value; radShown = 12;
+  renderRadios(); showRadioSection("#radioListHeading"); $("#radSearch").focus({preventScroll:true});
+});
+$(".brand-intro").addEventListener("click", e => {
+  const link = e.target.closest("a"); if (!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  const dest = link.getAttribute("href");
+  if (dest === "/quran/") { e.preventDefault(); location.hash = "#quran"; }
+  else if (dest === "/reciters/") { e.preventDefault(); openReciterList("", false); }
+  else if (dest === "/radio/") { e.preventDefault(); showRadioSection("#stationsHeading"); }
+  else if (dest === "/adhkar/") { e.preventDefault(); location.hash = "#adhkar"; }
+});
 $("#radSearch").addEventListener("input", e => { $("#quickRadioSearch").value = e.target.value; });
 $("#radSearch").addEventListener("input", debounce(() => { radShown = 12; renderRadios(); }, 150));
 $("#radSearch").addEventListener("input", debounce(e => { const q = e.target.value.trim(); if (q.length > 1) track("search", { area: "radio" }); }, 1500));
