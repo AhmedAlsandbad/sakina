@@ -608,7 +608,7 @@ body[data-active-view="quran"] footer .foot-sadaqa { display:none; }
 @media(max-width:859px){:root{--dock-h:190px}}
 
 /* A calm reading-and-listening surface with one clear active destination. */
-:root{--night:#091b17;--panel:#102b24;--panel-2:#193a30;--rule:#315347;--ink:#f7f0df;--dim:#b3c3b7;--gold:#d9b875}
+
 
 #hero{box-shadow:0 18px 45px #0002}
 .brand-intro{margin-block:28px}
