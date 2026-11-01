@@ -27,4 +27,6 @@ jobs:
         run: |
           node --check app.js
           node --check analytics.js
+          node --check pwa.js
+          node --check push-config.js
           node --check sw.js
