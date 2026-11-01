@@ -419,6 +419,8 @@ $(".discover-grid").addEventListener("click", e => {
   const b = e.target.closest("[data-discover]"); if (!b) return;
   const type = b.dataset.discover;
   if (type === "stations") { showRadioSection("#stationsHeading"); return; }
+  if (type === "reciters") { store.set("quranOpen", false); closeReciter(); $("#qListen").click(); location.hash = "#quran"; return; }
+  if (type === "surahs") { location.href = "/surahs/"; return; }
   radioFavOnly = type === "favorites"; $("#radFavOnly").setAttribute("aria-pressed", String(radioFavOnly));
   $("#radCategory").value = type === "reciters" || type === "surahs" ? type : "all";
   $("#radSearch").value = ""; $("#quickRadioSearch").value = ""; radShown = 12;
