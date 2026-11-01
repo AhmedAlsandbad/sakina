@@ -1,0 +1,84 @@
+#!/usr/bin/env python3
+"""Static PWA/Web Push regression checks for Sakina Quran."""
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+errors: list[str] = []
+
+
+def text(path: str) -> str:
+    p = ROOT / path
+    if not p.exists():
+        errors.append(f"missing required PWA file: {path}")
+        return ""
+    return p.read_text(encoding="utf-8", errors="replace")
+
+
+def require(haystack: str, needle: str, label: str) -> None:
+    if needle not in haystack:
+        errors.append(f"{label}: missing {needle}")
+
+
+manifest_raw = text("manifest.webmanifest")
+try:
+    manifest = json.loads(manifest_raw) if manifest_raw else {}
+except json.JSONDecodeError as exc:
+    errors.append(f"manifest.webmanifest: invalid JSON: {exc}")
+    manifest = {}
+
+if manifest:
+    for key in ("name", "short_name", "start_url", "scope", "display", "icons"):
+        if not manifest.get(key):
+            errors.append(f"manifest.webmanifest: missing {key}")
+    if manifest.get("start_url") != "/":
+        errors.append("manifest.webmanifest: start_url must be /")
+    if manifest.get("scope") != "/":
+        errors.append("manifest.webmanifest: scope must be /")
+    if manifest.get("display") not in {"standalone", "fullscreen", "minimal-ui"}:
+        errors.append("manifest.webmanifest: display must be installable app mode")
+    sizes = {i.get("sizes") for i in manifest.get("icons", []) if isinstance(i, dict)}
+    if "192x192" not in sizes:
+        errors.append("manifest.webmanifest: missing 192x192 icon")
+    if "512x512" not in sizes:
+        errors.append("manifest.webmanifest: missing 512x512 icon")
+
+for asset in ("icon-192.png", "icon-512.png", "offline.html", "pwa.js", "reminders.js", "push-config.js", "sw.js"):
+    if not (ROOT / asset).exists():
+        errors.append(f"missing required PWA asset: {asset}")
+
+index = text("index.html")
+require(index, 'rel="manifest"', "index.html")
+require(index, "apple-mobile-web-app-capable", "index.html")
+require(index, "apple-touch-icon", "index.html")
+
+analytics = text("analytics.js")
+for needle in ("/push-config.js?v=1", "/pwa.js?v=2", "/reminders.js?v=1"):
+    require(analytics, needle, "analytics.js")
+
+pwa = text("pwa.js")
+for needle in ("beforeinstallprompt", "appinstalled", "Notification.requestPermission", "pushManager.subscribe", "syncPushPreferences", "showInstallPrompt"):
+    require(pwa, needle, "pwa.js")
+
+reminders = text("reminders.js")
+for needle in ("Fajr", "Dhuhr", "Asr", "Maghrib", "Isha", "morning", "evening", "periodicSync.register", "REMINDER_PREFS", "showNotification"):
+    require(reminders, needle, "reminders.js")
+
+sw = text("sw.js")
+for needle in ('addEventListener("push"', 'addEventListener("notificationclick"', 'addEventListener("periodicsync"', "REMINDER_PREFS", "/pwa.js?v=2", "/reminders.js?v=1", "/offline.html"):
+    require(sw, needle, "sw.js")
+
+push_config = text("push-config.js")
+require(push_config, "vapidPublicKey", "push-config.js")
+require(push_config, "subscribeEndpoint", "push-config.js")
+
+print("PWA QA checked manifest, install UX, service worker, Web Push and reminders")
+if errors:
+    for error in errors:
+        print(f"ERROR: {error}")
+    print(f"PWA QA failed: {len(errors)} error(s)")
+    sys.exit(1)
+print("PWA QA passed")
