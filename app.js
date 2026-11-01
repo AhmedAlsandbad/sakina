@@ -778,8 +778,15 @@ async function mountMushafPage(host, number, request) {
   try {
     let text = pageCache.get(number);
     if (!text) {
-      const res = await fetch(sourceBase + String(number).padStart(3, "0") + ".svg");
-      if (!res.ok) throw Error("page unavailable");
+      const url = sourceBase + String(number).padStart(3, "0") + ".svg";
+      let res;
+      try { res = await fetch(url); if (!res.ok) throw Error("page unavailable"); }
+      catch (_) {
+        if (request !== readingRequest) return;
+        await new Promise(resolve => setTimeout(resolve, 500));
+        if (request !== readingRequest) return;
+        res = await fetch(url); if (!res.ok) throw Error("page unavailable");
+      }
       text = await res.text(); pageCache.set(number, text);
       if (pageCache.size > 4) pageCache.delete(pageCache.keys().next().value);
     }
@@ -790,7 +797,7 @@ async function mountMushafPage(host, number, request) {
       const box = svg.getBBox(), pad = Math.max(box.width, box.height) * .04;
       if (box.width && box.height) svg.setAttribute("viewBox", [box.x-pad,box.y-pad,box.width+2*pad,box.height+2*pad].join(" "));
     } catch (_) {} });
-  } catch(e) { if (request === readingRequest) host.innerHTML = '<p>تعذّر تحميل الصفحة. تحقق من الاتصال.</p><button class="chip" id="pageRetry">إعادة المحاولة</button>'; }
+  } catch(e) { if (request === readingRequest) host.innerHTML = '<p>تعذّر تحميل الصفحة. تحقق من الاتصال.</p><button class="chip mushaf-retry" data-page-retry>إعادة المحاولة</button>'; }
 }
 function renderMushaf() {
   ++tafsirRequest;
@@ -835,21 +842,37 @@ $("#readingPrev").onclick = () => { if (+readingSelect.value > 1) { readingSelec
 $("#readingNext").onclick = () => { if (+readingSelect.value < 114) { readingSelect.value = String(+readingSelect.value + 1); loadReading(); } };
 pageHost.onclick = e => {
   if (e.target.closest("#readingRetry")) { loadReading(); return; }
-  if (e.target.closest("#pageRetry")) { renderMushaf(); return; }
+  if (e.target.closest("[data-page-retry]")) { renderMushaf(); return; }
   const p = e.target.closest(".ayahPolygon"); if (p) showTafsir(+p.getAttribute("surah"), +p.getAttribute("ayah"), p);
 };
 pageHost.onkeydown = e => { if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("ayahPolygon")) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent("click", {bubbles:true})); } };
 wideReader.addEventListener("change", () => { if (!$("#qReading").hidden) renderMushaf(); });
 
-/* Friday reminder uses the visitor's local day and never sends notifications. */
+/* Short reminders use the visitor's local date and do not send notifications. */
+const everydayReminders = ["أستغفر الله وأتوب إليه", "اللهم صلِّ وسلم على نبينا محمد", "سبحان الله وبحمده، سبحان الله العظيم", "لا إله إلا الله وحده لا شريك له", "الحمد لله على كل حال"];
+const fridayReminders = ["أكثر من الصلاة والسلام على النبي ﷺ", "تذكير بقراءة سورة الكهف يوم الجمعة", "أكثر من الدعاء يوم الجمعة، وتحَرَّ ساعة الإجابة", "لمن يذهب للجمعة: الاغتسال والتبكير والإنصات"];
+let reminderIndex = 0, reminderFriday = null;
 function updateFridayReminder() {
   const friday = new Date().getDay() === 5;
-  $("#fridayLabel").textContent = friday ? "اليوم الجمعة" : "زاد الجمعة";
-  $("#fridayHint").textContent = friday ? "تذكير اليوم: سورة الكهف والصلاة على النبي ﷺ" : "سورة الكهف وآداب الجمعة في مكان واحد";
-  $("#fridayTitle").textContent = friday ? "جمعة مباركة" : "تذكير يوم الجمعة";
+  if (friday !== reminderFriday) { reminderFriday = friday; reminderIndex = 0; }
+  const messages = friday ? fridayReminders : everydayReminders;
+  $("#fridayLabel").textContent = friday ? "اليوم الجمعة" : "ذكر وطمأنينة";
+  $("#fridayTitle").textContent = friday ? "جمعة مباركة" : "استراحة ذكر";
+  $("#fridayHint").textContent = friday ? "سورة الكهف وآداب الجمعة والدعاء" : "لحظات تذكر فيها الله";
+  $("#dailyDhikr").textContent = messages[reminderIndex % messages.length];
+  $("#fridayActions").hidden = !friday;
+  $("#fridayDetails").hidden = !friday;
 }
+function moveReminder(step) {
+  const messages = reminderFriday ? fridayReminders : everydayReminders;
+  reminderIndex = (reminderIndex + step + messages.length) % messages.length;
+  $("#dailyDhikr").textContent = messages[reminderIndex];
+}
+$("#dhikrPrev").onclick = () => moveReminder(-1);
+$("#dhikrNext").onclick = () => moveReminder(1);
 updateFridayReminder();
 setInterval(updateFridayReminder, 60000);
+setInterval(() => { if (!document.hidden && !matchMedia("(prefers-reduced-motion: reduce)").matches) moveReminder(1); }, 15000);
 $("#fridayListen").onclick = () => {
   const item = {kind:"file", key:"friday:kahf:husary", title:"سورة الكهف", sub:"محمود خليل الحصري", eyebrow:"زاد الجمعة", url:"https://cdn.mp3quran.net/audio/mahmoud-husary/r1/018.mp3"};
   if (P.cur && P.cur.key === item.key) toggle(); else play(item);
