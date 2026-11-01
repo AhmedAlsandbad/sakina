@@ -1,7 +1,6 @@
-// Sakina Quran service worker: app shell, explicit offline audio, Web Push and reminder checks.
-const V = "sakina-v78";
+// Sakina Quran service worker: app shell, Web Push and reminder checks.
+const V = "sakina-v79";
 const PREF_CACHE = "sakina-reminders-v1";
-const AUDIO_CACHE = "sakina-audio-v1";
 const PREF_URL = "/__sakina/reminder-settings";
 const STATE_URL = "/__sakina/reminder-state";
 const SHELL = [
@@ -15,7 +14,6 @@ const SHELL = [
   "/pwa.js?v=2",
   "/reminders.js?v=1",
   "/ux-enhancements.js?v=1",
-  "/offline-audio.js?v=1",
   "/push-config.js?v=2",
   "/manifest.webmanifest",
   "/icon.svg",
@@ -32,57 +30,17 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(key => key !== V && key !== PREF_CACHE && key !== AUDIO_CACHE).map(key => caches.delete(key))))
+      .then(keys => Promise.all(keys.filter(key => key !== V && key !== PREF_CACHE).map(key => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });
-
-function isDownloadableAudio(url) {
-  return /\.mp3$/i.test(url.pathname) || /(?:^|\.)mp3quran\.net$/i.test(url.hostname) || /(?:^|\.)cdn\.mp3quran\.net$/i.test(url.hostname);
-}
-
-async function savedAudioResponse(request, url) {
-  const cache = await caches.open(AUDIO_CACHE);
-  const saved = await cache.match(url.href) || await cache.match(url.origin + url.pathname);
-  if (!saved) return fetch(request);
-
-  const range = request.headers.get("range");
-  if (!range) return saved;
-
-  const blob = await saved.blob();
-  const match = /^bytes=(\d+)-(\d*)$/i.exec(range.trim());
-  if (!match) return saved;
-  const start = Number(match[1]);
-  let end = match[2] ? Number(match[2]) : blob.size - 1;
-  if (!Number.isFinite(start) || start < 0 || start >= blob.size) {
-    return new Response(null, { status: 416, headers: { "Content-Range": `bytes */${blob.size}` } });
-  }
-  if (!Number.isFinite(end) || end < start) end = blob.size - 1;
-  end = Math.min(end, blob.size - 1);
-  const part = blob.slice(start, end + 1, blob.type || "audio/mpeg");
-  return new Response(part, {
-    status: 206,
-    statusText: "Partial Content",
-    headers: {
-      "Content-Type": blob.type || saved.headers.get("Content-Type") || "audio/mpeg",
-      "Content-Length": String(part.size),
-      "Content-Range": `bytes ${start}-${end}/${blob.size}`,
-      "Accept-Ranges": "bytes",
-      "Cache-Control": "public, max-age=31536000, immutable",
-      "X-Sakina-Offline": "1"
-    }
-  });
-}
 
 self.addEventListener("fetch", event => {
   const request = event.request;
   const url = new URL(request.url);
   if (request.method !== "GET") return;
 
-  if (isDownloadableAudio(url)) {
-    event.respondWith(savedAudioResponse(request, url));
-    return;
-  }
+  // Never intercept media range requests or cache external audio streams.
   if (request.headers.has("range")) return;
 
   const isFont = /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname);
@@ -191,6 +149,7 @@ const REMINDER_PRAYERS = [
 ];
 const AR = "٠١٢٣٤٥٦٧٨٩";
 const ard = value => String(value).replace(/\d/g, d => AR[d]);
+
 function zoneParts(date, timeZone) {
   const out = {};
   new Intl.DateTimeFormat("en-GB", { timeZone, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" }).formatToParts(date).forEach(p => { if (p.type !== "literal") out[p.type] = Number(p.value); });
@@ -270,8 +229,8 @@ async function checkRemindersNow() {
   const adhkar = prefs.adhkar || {};
   if (adhkar.morning && adhkar.morning.enabled) events.push({ id: `adhkar:morning:${day}`, at: zonedEpoch(day, adhkar.morning.time || "07:00", city.tz), title: "سكينة قرآن · أذكار الصباح", body: "حان وقت أذكار الصباح. ابدأ يومك بذكر الله.", url: "/#adhkar", tag: `sakina-adhkar-morning-${day}` });
   if (adhkar.evening && adhkar.evening.enabled) events.push({ id: `adhkar:evening:${day}`, at: zonedEpoch(day, adhkar.evening.time || "18:00", city.tz), title: "سكينة قرآن · أذكار المساء", body: "حان وقت أذكار المساء. افتح سكينة وأكمل أذكارك.", url: "/#adhkar", tag: `sakina-adhkar-evening-${day}` });
-  for (const event of events) {
-    if (now >= event.at && now - event.at <= grace) await showReminder(event, state);
+  for (const reminder of events) {
+    if (now >= reminder.at && now - reminder.at <= grace) await showReminder(reminder, state);
   }
 }
 
@@ -296,5 +255,7 @@ self.addEventListener("message", event => {
 });
 
 self.addEventListener("pushsubscriptionchange", event => {
-  event.waitUntil(clients.matchAll({ type: "window", includeUncontrolled: true }).then(list => { list.forEach(client => client.postMessage({ type: "PUSH_SUBSCRIPTION_CHANGED" })); }));
+  event.waitUntil(clients.matchAll({ type: "window", includeUncontrolled: true }).then(list => {
+    list.forEach(client => client.postMessage({ type: "PUSH_SUBSCRIPTION_CHANGED" }));
+  }));
 });
