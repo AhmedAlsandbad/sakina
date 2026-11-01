@@ -35,10 +35,11 @@ create table if not exists public.push_delivery_log (
   subscription_id uuid not null references public.push_subscriptions(id) on delete cascade,
   reminder_key text not null,
   reminder_date date not null,
-  status text not null default 'sent' check (status in ('sent','failed')),
+  status text not null default 'pending' check (status in ('pending','sent','failed')),
   http_status integer,
   error_message text,
   created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
   unique (subscription_id, reminder_key, reminder_date)
 );
 
@@ -68,4 +69,9 @@ $$;
 drop trigger if exists push_subscriptions_set_updated_at on public.push_subscriptions;
 create trigger push_subscriptions_set_updated_at
 before update on public.push_subscriptions
+for each row execute function public.set_updated_at();
+
+drop trigger if exists push_delivery_log_set_updated_at on public.push_delivery_log;
+create trigger push_delivery_log_set_updated_at
+before update on public.push_delivery_log
 for each row execute function public.set_updated_at();
