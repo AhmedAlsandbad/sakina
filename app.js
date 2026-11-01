@@ -360,7 +360,7 @@ window.addEventListener("popstate", e => {
    RADIO
    ========================================================= */
 const stationItem = s => ({ kind: "live", key: "st:" + s.id, title: s.full, sub: s.note, eyebrow: "بث مباشر · " + s.tag, url: s.url });
-let RADIOS = [], radShown = 25;
+let RADIOS = [], radShown = 12;
 const INIT = {};
 INIT.radio = () => {
   $("#stations").innerHTML = STATIONS.map(s => `
@@ -394,7 +394,7 @@ function radioCategory(name) {
   if (/(سوره|تلاو|تراتيل|ايات|القران|الرقيه|متنوع)/.test(n)) return "surahs";
   return "reciters";
 }
-$("#radCategory").onchange = $("#radSort").onchange = () => { radShown = 25; renderRadios(); };
+$("#radCategory").onchange = $("#radSort").onchange = () => { radShown = 12; renderRadios(); };
 function renderRadios() {
   const q = norm($("#radSearch").value);
   const qt = q.replace(/\s+/g, "");
@@ -414,10 +414,26 @@ function renderRadios() {
   $("#radMore").hidden = list.length <= radShown;
   paint(P.state);
 }
-$("#radSearch").addEventListener("input", debounce(() => { radShown = 25; renderRadios(); }, 150));
+function showRadioSection(target) { const el = $(target); el.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); }
+$(".discover-grid").addEventListener("click", e => {
+  const b = e.target.closest("[data-discover]"); if (!b) return;
+  const type = b.dataset.discover;
+  if (type === "stations") { showRadioSection("#stationsHeading"); return; }
+  radioFavOnly = type === "favorites"; $("#radFavOnly").setAttribute("aria-pressed", String(radioFavOnly));
+  $("#radCategory").value = type === "reciters" || type === "surahs" ? type : "all";
+  $("#radSearch").value = ""; $("#quickRadioSearch").value = ""; radShown = 12;
+  renderRadios(); showRadioSection("#radioListHeading");
+});
+$("#quickRadioSearch").addEventListener("input", debounce(e => {
+  radioFavOnly = false; $("#radFavOnly").setAttribute("aria-pressed", "false");
+  $("#radCategory").value = "all"; $("#radSearch").value = e.target.value; radShown = 12; renderRadios();
+}, 150));
+$("#quickRadioSearch").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); showRadioSection("#radioListHeading"); $("#radSearch").focus({preventScroll:true}); } });
+$("#radSearch").addEventListener("input", e => { $("#quickRadioSearch").value = e.target.value; });
+$("#radSearch").addEventListener("input", debounce(() => { radShown = 12; renderRadios(); }, 150));
 $("#radSearch").addEventListener("input", debounce(e => { const q = e.target.value.trim(); if (q.length > 1) track("search", { area: "radio" }); }, 1500));
 $("#radMore").onclick = () => { radShown += 60; renderRadios(); };
-$("#radFavOnly").onclick = e => { radioFavOnly = !radioFavOnly; e.currentTarget.setAttribute("aria-pressed", radioFavOnly); radShown = 25; renderRadios(); };
+$("#radFavOnly").onclick = e => { radioFavOnly = !radioFavOnly; e.currentTarget.setAttribute("aria-pressed", radioFavOnly); radShown = 12; renderRadios(); };
 $("#recFavOnly").onclick = e => { recFavOnly = !recFavOnly; e.currentTarget.setAttribute("aria-pressed", recFavOnly); if (recFavOnly) { rwSel = "all"; store.set("rw", rwSel); renderRw(); } recShown = 25; renderRecs(); };
 $("#radList").onclick = e => { const f = e.target.closest("[data-fav-kind]"); if (f) { toggleFavorite(f.dataset.favKind, f.dataset.favId); if (f.dataset.favKind === "station") { const tile = $("#stations").querySelector(`[data-fav-kind="station"][data-fav-id="${CSS.escape(f.dataset.favId)}"]`); const s = STATIONS.find(x => x.id === f.dataset.favId); if (tile && s) tile.outerHTML = favoriteButton("station", s.id, s.full); } renderRadios(); return; } const st = e.target.closest("[data-fav-station]"); if (st) { const s = STATIONS.find(x => x.id === st.dataset.favStation); if (s) { store.set("lastStation", s.id); if (P.cur && P.cur.key === "st:" + s.id) toggle(); else play(stationItem(s)); } return; } const b = e.target.closest("[data-rad]"); if (!b) return;
   const r = RADIOS.find(x => String(x.id) === b.dataset.rad);
