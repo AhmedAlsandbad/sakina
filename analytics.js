@@ -34,16 +34,26 @@
   }, true);
 })();
 
-/* Load shared PWA, push configuration and prayer/adhkar reminders on every page. */
+/* Load shared PWA, push configuration, reminders and UX enhancements on every page. */
 (function () {
   if (window.__sakinaPwaLoader) return;
   window.__sakinaPwaLoader = true;
+  function loadUx() {
+    if (document.querySelector('script[data-sakina-ux]')) return;
+    var u = document.createElement("script");
+    u.src = "/ux-enhancements.js?v=1";
+    u.defer = true;
+    u.dataset.sakinaUx = "1";
+    document.head.appendChild(u);
+  }
   function loadReminders() {
-    if (document.querySelector('script[data-sakina-reminders]')) return;
+    if (document.querySelector('script[data-sakina-reminders]')) { loadUx(); return; }
     var r = document.createElement("script");
     r.src = "/reminders.js?v=1";
     r.defer = true;
     r.dataset.sakinaReminders = "1";
+    r.onload = loadUx;
+    r.onerror = loadUx;
     document.head.appendChild(r);
   }
   function loadPwa() {
