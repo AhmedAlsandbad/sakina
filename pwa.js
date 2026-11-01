@@ -21,7 +21,8 @@
     style.textContent = `
       .sakina-pwa-sheet{position:fixed;z-index:100000;inset:auto 14px calc(14px + env(safe-area-inset-bottom)) 14px;max-width:520px;margin:auto;background:#0c211c;color:#fff;border:1px solid rgba(224,184,92,.34);border-radius:22px;box-shadow:0 20px 60px rgba(0,0,0,.34);padding:18px;font-family:"Readex Pro",system-ui,sans-serif;direction:rtl}
       .sakina-pwa-head{display:flex;align-items:flex-start;gap:12px}.sakina-pwa-icon{width:52px;height:52px;border-radius:15px;background:#fff;padding:5px;flex:0 0 auto}.sakina-pwa-copy{flex:1;min-width:0}.sakina-pwa-copy h2{font-size:18px;line-height:1.4;margin:0 0 5px}.sakina-pwa-copy p{font-size:13px;line-height:1.75;margin:0;color:#d7e2de}.sakina-pwa-close{border:0;background:transparent;color:#c8d4d0;font-size:24px;cursor:pointer}.sakina-pwa-actions{display:flex;gap:9px;margin-top:15px;flex-wrap:wrap}.sakina-pwa-btn{border:0;border-radius:12px;padding:11px 15px;font:inherit;font-size:14px;cursor:pointer}.sakina-pwa-btn.primary{background:#e2b85c;color:#12251f;font-weight:700}.sakina-pwa-btn.secondary{background:rgba(255,255,255,.09);color:#fff;border:1px solid rgba(255,255,255,.12)}.sakina-pwa-steps{margin:11px 0 0;padding:0 20px 0 0;color:#e7efec;font-size:13px;line-height:1.8}.sakina-pwa-toast{position:fixed;z-index:100004;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:#10251f;color:#fff;border:1px solid rgba(224,184,92,.35);border-radius:999px;padding:10px 16px;opacity:0;pointer-events:none;transition:.22s ease;font:13px "Readex Pro",system-ui,sans-serif;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}.sakina-pwa-toast.show{opacity:1;transform:translate(-50%,0)}
-      .sakina-reminder-fab{position:fixed;z-index:99990;right:16px;bottom:calc(82px + env(safe-area-inset-bottom));width:48px;height:48px;border-radius:50%;border:1px solid rgba(226,184,92,.45);background:#102a23;color:#f2d487;box-shadow:0 10px 28px rgba(0,0,0,.3);display:grid;place-items:center;cursor:pointer;font-size:22px}.sakina-reminder-fab:hover{transform:translateY(-1px)}
+      .sakina-reminder-head{flex:none}.sakina-reminder-head svg{width:18px;height:18px}
+      .sakina-reminder-fab{position:fixed;z-index:99990;right:16px;top:calc(72px + env(safe-area-inset-top));bottom:auto;width:46px;height:46px;border-radius:50%;border:1px solid rgba(226,184,92,.45);background:#102a23;color:#f2d487;box-shadow:0 10px 28px rgba(0,0,0,.3);display:grid;place-items:center;cursor:pointer}.sakina-reminder-fab svg{width:20px;height:20px}.sakina-reminder-fab:hover{transform:translateY(-1px)}
     `;
     document.head.appendChild(style);
   }
@@ -42,11 +43,12 @@
     actions.forEach(a => { const b = document.createElement("button"); b.type = "button"; b.className = "sakina-pwa-btn " + (a.primary ? "primary" : "secondary"); b.textContent = a.label; b.addEventListener("click", a.onClick); box.appendChild(b); });
     document.body.appendChild(el); if (kind === "install") installSheet = el; else notifySheet = el; return el;
   }
-  function hideLegacyInstallButton() { const btn = document.getElementById("installBtn"); if (btn) btn.hidden = true; }
+  function hideInstallButton() { const btn = document.getElementById("installBtn"); if (btn) btn.hidden = true; }
+  function showInstallButton() { const btn = document.getElementById("installBtn"); if (btn && !isStandalone() && isMobile) btn.hidden = false; }
   function showInstallSheet(force) {
     if (isStandalone() || !isMobile) return;
     try { if (!force && sessionStorage.getItem("sakina:pwa-install-shown") === "1") return; sessionStorage.setItem("sakina:pwa-install-shown", "1"); } catch (e) {}
-    hideLegacyInstallButton();
+    showInstallButton();
     if (isIOS) {
       createSheet("install", "ثبّت سكينة قرآن على الآيفون", "افتح سكينة كتطبيق مستقل لتفعيل الإشعارات والوصول السريع للقرآن والأذكار والصلاة.", [{ label: "فهمت", primary: true, onClick: () => closeSheet(installSheet) }], ["اضغط زر المشاركة في المتصفح.", "اختر «إضافة إلى الشاشة الرئيسية» ثم «إضافة»."]);
       track("pwa_install_message", { platform: "ios" }); return;
@@ -62,8 +64,8 @@
     const ev = deferredPrompt; deferredPrompt = null;
     try { await ev.prompt(); const choice = ev.userChoice ? await ev.userChoice : null; const outcome = choice && choice.outcome ? choice.outcome : "unknown"; track("pwa_install", { outcome }); closeSheet(installSheet); if (outcome === "accepted") setTimeout(showNotificationOffer, 1200); } catch (e) { closeSheet(installSheet); }
   }
-  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferredPrompt = e; const btn = document.getElementById("installBtn"); if (btn) btn.hidden = false; if (isMobile && !isStandalone()) setTimeout(() => showInstallSheet(false), 350); });
-  window.addEventListener("appinstalled", () => { deferredPrompt = null; hideLegacyInstallButton(); closeSheet(installSheet); track("pwa_installed", { platform: isIOS ? "ios" : isAndroid ? "android" : "other" }); toast("تم تثبيت سكينة قرآن 🤍"); setTimeout(showNotificationOffer, 1200); });
+  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferredPrompt = e; showInstallButton(); if (isMobile && !isStandalone()) setTimeout(() => showInstallSheet(false), 350); });
+  window.addEventListener("appinstalled", () => { deferredPrompt = null; hideInstallButton(); closeSheet(installSheet); track("pwa_installed", { platform: isIOS ? "ios" : isAndroid ? "android" : "other" }); toast("تم تثبيت سكينة قرآن 🤍"); setTimeout(showNotificationOffer, 1200); });
   document.addEventListener("click", e => { const btn = e.target && e.target.closest ? e.target.closest("#installBtn") : null; if (!btn) return; e.preventDefault(); e.stopImmediatePropagation(); showInstallSheet(true); }, true);
 
   async function getRegistration() {
@@ -108,12 +110,26 @@
   function ensureReminderButton() {
     addStyles();
     if (document.getElementById("remindersBtn") || document.getElementById("sakinaReminderFab")) return;
-    const btn = document.createElement("button"); btn.id = "sakinaReminderFab"; btn.className = "sakina-reminder-fab"; btn.type = "button"; btn.setAttribute("aria-label", "إعدادات تنبيهات الصلاة والأذكار"); btn.title = "تنبيهات الصلاة والأذكار"; btn.textContent = "🔔";
+    const btn = document.createElement("button");
+    btn.id = "remindersBtn";
+    btn.type = "button";
+    btn.setAttribute("aria-label", "إعدادات تنبيهات الصلاة والأذكار");
+    btn.title = "تنبيهات الصلاة والأذكار";
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>';
     btn.addEventListener("click", () => { if (window.SakinaReminders) window.SakinaReminders.showSettings(); else toast("جارٍ تحميل إعدادات التنبيهات…"); });
-    document.body.appendChild(btn);
+    const host = document.querySelector("header .hd, .hd");
+    if (host) {
+      btn.className = "icon-btn sakina-reminder-head";
+      const theme = document.getElementById("themeBtn");
+      if (theme && theme.parentNode === host) host.insertBefore(btn, theme); else host.appendChild(btn);
+    } else {
+      btn.className = "sakina-reminder-fab";
+      document.body.appendChild(btn);
+    }
   }
   function initPwaUi() {
     ensureReminderButton();
+    showInstallButton();
     if (!isStandalone() && isMobile) setTimeout(() => showInstallSheet(false), 1500);
     if (isStandalone()) setTimeout(() => showNotificationOffer(false), 1800);
     if ("Notification" in window && Notification.permission === "granted") getRegistration().then(reg => { if (reg) subscribeRemotePush(reg, window.SakinaReminders && window.SakinaReminders.getPreferences ? window.SakinaReminders.getPreferences() : null); });
