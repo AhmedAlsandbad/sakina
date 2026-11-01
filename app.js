@@ -421,11 +421,26 @@ $(".discover-grid").addEventListener("click", e => {
   if (type === "stations") { showRadioSection("#stationsHeading"); return; }
   if (type === "reciters") { store.set("quranOpen", false); closeReciter(); $("#qListen").click(); location.hash = "#quran"; return; }
   if (type === "surahs") { location.href = "/surahs/"; return; }
+  if (type === "favorites") { const panel = $("#favoriteChoices"); panel.hidden = !panel.hidden; b.setAttribute("aria-expanded", String(!panel.hidden)); return; }
   radioFavOnly = type === "favorites"; $("#radFavOnly").setAttribute("aria-pressed", String(radioFavOnly));
   $("#radCategory").value = type === "reciters" || type === "surahs" ? type : "all";
   $("#radSearch").value = ""; $("#quickRadioSearch").value = ""; radShown = 12;
   renderRadios(); showRadioSection("#radioListHeading");
 });
+function openReciterList(query, favoritesOnly) {
+  closeReciter(); $("#qListen").click();
+  recFavOnly = favoritesOnly; $("#recFavOnly").setAttribute("aria-pressed", String(recFavOnly));
+  $("#recSearch").value = query; rwSel = "all"; recShown = 25;
+  if (RECITERS.length) { renderRw(); renderRecs(); }
+  location.hash = "#quran";
+}
+$("#favoriteRadios").onclick = () => {
+  radioFavOnly = true; $("#radFavOnly").setAttribute("aria-pressed", "true");
+  $("#radCategory").value = "all"; $("#radSearch").value = ""; $("#quickRadioSearch").value = "";
+  radShown = 12; renderRadios(); showRadioSection("#radioListHeading");
+};
+$("#favoriteReciters").onclick = () => openReciterList("", true);
+$("#searchReciters").onclick = () => openReciterList($("#quickRadioSearch").value.trim(), false);
 $("#quickRadioSearch").addEventListener("input", debounce(e => {
   radioFavOnly = false; $("#radFavOnly").setAttribute("aria-pressed", "false");
   $("#radCategory").value = "all"; $("#radSearch").value = e.target.value; radShown = 12; renderRadios();
