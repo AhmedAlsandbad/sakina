@@ -8,19 +8,23 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
   "background_color": "#071512",
   "theme_color": "#071512",
+  "prefer_related_applications": false,
   "categories": ["education", "lifestyle"],
   "shortcuts": [
     {"name": "القرآن الكريم", "short_name": "القرآن", "url": "/quran/", "icons": [{"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"}]},
     {"name": "إذاعات القرآن", "short_name": "الإذاعات", "url": "/radio/", "icons": [{"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"}]},
     {"name": "الرقية الشرعية", "short_name": "الرقية", "url": "/ruqyah/", "icons": [{"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"}]},
-    {"name": "الأذكار", "short_name": "الأذكار", "url": "/adhkar/", "icons": [{"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"}]}
+    {"name": "الأذكار", "short_name": "الأذكار", "url": "/adhkar/", "icons": [{"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"}]},
+    {"name": "مواقيت الصلاة", "short_name": "الصلاة", "url": "/prayer-times/", "icons": [{"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"}]}
   ],
   "icons": [
-    {"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"},
-    {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
     {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
-    {"src": "/icon.svg", "sizes": "any", "type": "image/svg+xml"}
+    {"src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}
   ]
 }
