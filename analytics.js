@@ -43,3 +43,23 @@
     });
   }, true);
 })();
+
+/* Load the shared PWA layer on the homepage and every crawlable content page. */
+(function () {
+  if (window.__sakinaPwaLoader) return;
+  window.__sakinaPwaLoader = true;
+  function loadPwa() {
+    if (document.querySelector('script[data-sakina-pwa]')) return;
+    var p = document.createElement("script");
+    p.src = "/pwa.js?v=1";
+    p.defer = true;
+    p.dataset.sakinaPwa = "1";
+    document.head.appendChild(p);
+  }
+  var c = document.createElement("script");
+  c.src = "/push-config.js?v=1";
+  c.defer = true;
+  c.onload = loadPwa;
+  c.onerror = loadPwa;
+  document.head.appendChild(c);
+})();
