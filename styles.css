@@ -628,3 +628,15 @@ body[data-active-view="quran"] footer .foot-sadaqa { display:none; }
 body{background-image:radial-gradient(ellipse 85% 52% at 50% -8%,color-mix(in srgb,var(--gold) 5%,var(--night)),transparent 72%)}
 body::after{background-size:96px 96px}
 @media(max-width:600px){header.top,.tabs-bottom{backdrop-filter:none;-webkit-backdrop-filter:none} .view{animation-duration:.18s}}
+
+.fav-row{display:flex;align-items:stretch;min-width:0;gap:8px}
+.fav-row>.item{flex:1;min-width:0}
+.fav-btn,.fav-filter{border:1px solid var(--rule);background:var(--panel);color:var(--dim);border-radius:14px}
+.fav-btn{flex:0 0 48px;min-height:48px;font-size:1.45rem;line-height:1}
+.fav-btn[aria-pressed="true"],.fav-filter[aria-pressed="true"]{color:var(--gold);border-color:var(--gold);background:var(--panel-2)}
+.fav-filter{min-height:44px;padding:8px 16px;margin:8px 0 14px;font-size:.88rem}
+@media(hover:hover){.fav-btn:hover,.fav-filter:hover{border-color:var(--gold);color:var(--gold)}.st:hover,.fav-row>.item:hover{transform:translateY(-2px)}}
+@media(prefers-reduced-motion:no-preference){.fav-btn,.fav-filter,.st,.fav-row>.item{transition:transform .18s ease,background-color .18s ease,border-color .18s ease,color .18s ease}.fav-btn:active{transform:scale(.9)}}
+@media(prefers-reduced-motion:reduce){.fav-btn,.fav-filter,.st,.fav-row>.item{transition:none!important}}
+
+.station-fav{position:relative;min-width:0}.station-fav>.st{width:100%;height:100%}.station-fav>.fav-btn{position:absolute;inset-block-start:8px;inset-inline-start:8px;z-index:2;width:44px;min-height:44px;background:var(--panel);border-radius:50%}

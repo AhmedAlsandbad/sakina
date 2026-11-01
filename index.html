@@ -32,7 +32,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="styles.css?v=52">
+<link rel="stylesheet" href="styles.css?v=53">
 <script src="/analytics.js?v=2" defer></script>
 <script>try{var t=localStorage.getItem("sakina:theme");if(t)document.documentElement.dataset.theme=JSON.parse(t)}catch(e){}</script>
 </head>
@@ -107,6 +107,7 @@
       <input id="radSearch" type="search" placeholder="ابحث باسم القارئ أو الإذاعة" autocomplete="off" aria-label="بحث في الإذاعات"></div>
     <div class="radio-controls"><label>التصنيف <select id="radCategory"><option value="all">كل الإذاعات</option><option value="reciters">القرّاء</option><option value="surahs">سور وتلاوات</option><option value="other">أذكار وقصص وغيرها</option></select></label><label>الترتيب <select id="radSort"><option value="az">أبجديًا</option><option value="za">أبجديًا بالعكس</option></select></label></div>
     <p class="hint">التصنيف حسب اسم الإذاعة.</p>
+    <button class="fav-filter" id="radFavOnly" aria-pressed="false">♡ الإذاعات المفضلة</button>
     <div class="list" id="radList"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
     <button class="more" id="radMore" hidden>عرض المزيد</button>
   </section>
@@ -120,6 +121,7 @@
         <input id="recSearch" type="search" placeholder="ابحث عن قارئ" autocomplete="off" aria-label="بحث عن قارئ"></div>
       <div class="chips" id="rwChips" role="group" aria-label="الرواية"></div>
       <p class="hint" id="rwHint"></p>
+      <button class="fav-filter" id="recFavOnly" aria-pressed="false">♡ القرّاء المفضلون</button>
       <div class="list" id="recList"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
       <button class="more" id="recMore" hidden>عرض المزيد</button>
     </div>
@@ -290,6 +292,6 @@
 <audio id="audio" preload="none" playsinline></audio>
 
 <script src="data.js?v=39" defer></script>
-<script src="app.js?v=51" defer></script>
+<script src="app.js?v=52" defer></script>
 </body>
 </html>

@@ -33,6 +33,18 @@ const todayKey = () => { const d = new Date(); return d.getFullYear() + "-" + (d
 let toastT;
 function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2400); }
 
+const favs = store.get("favorites", {});
+let radioFavOnly = false, recFavOnly = false;
+function isFavorite(kind, id) { return Array.isArray(favs[kind]) && favs[kind].includes(String(id)); }
+function favoriteButton(kind, id, name) {
+  const on = isFavorite(kind, id);
+  return `<button class="fav-btn" data-fav-kind="${kind}" data-fav-id="${esc(id)}" aria-pressed="${on}" aria-label="${on ? "إزالة" : "إضافة"} ${esc(name)} ${on ? "من" : "إلى"} المفضلة" title="${on ? "إزالة من المفضلة" : "إضافة للمفضلة"}">${on ? "♥" : "♡"}</button>`;
+}
+function toggleFavorite(kind, id) {
+  const items = Array.isArray(favs[kind]) ? favs[kind] : [];
+  favs[kind] = items.includes(String(id)) ? items.filter(x => x !== String(id)) : [...items, String(id)];
+  store.set("favorites", favs);
+}
 async function getJSON(url, cacheKey, maxAgeH) {
   if (cacheKey) { const c = store.get(cacheKey, null); if (c && Date.now() - c.t < maxAgeH * 3600e3) return c.d; }
   const r = await fetch(url); if (!r.ok) throw new Error(r.status);
@@ -352,11 +364,11 @@ let RADIOS = [], radShown = 25;
 const INIT = {};
 INIT.radio = () => {
   $("#stations").innerHTML = STATIONS.map(s => `
-    <button class="st" data-key="st:${s.id}" data-st="${s.id}" aria-label="تشغيل ${s.full}">
+    <div class="station-fav"><button class="st" data-key="st:${s.id}" data-st="${s.id}" aria-label="تشغيل ${s.full}">
       <span class="flag">${s.tag}</span><h3>${s.name}</h3><small>${s.note}</small>
       <span class="mini pi">${IC.play}</span>
-    </button>`).join("");
-  $("#stations").onclick = e => { const b = e.target.closest("[data-st]"); if (!b) return;
+    </button>${favoriteButton("station", s.id, s.full)}</div>`).join("");
+  $("#stations").onclick = e => { const f = e.target.closest("[data-fav-kind]"); if (f) { toggleFavorite(f.dataset.favKind, f.dataset.favId); const s = STATIONS.find(x => x.id === f.dataset.favId); if (s) f.outerHTML = favoriteButton("station", s.id, s.full); if (radioFavOnly) renderRadios(); return; } const b = e.target.closest("[data-st]"); if (!b) return;
     const s = STATIONS.find(x => x.id === b.dataset.st); store.set("lastStation", s.id);
     if (P.cur && P.cur.key === "st:" + s.id) toggle(); else play(stationItem(s));
     window.scrollTo({ top: 0, behavior: "smooth" }); };
@@ -387,23 +399,27 @@ function renderRadios() {
   const q = norm($("#radSearch").value);
   const qt = q.replace(/\s+/g, "");
   const cat = $("#radCategory").value;
-  let list = RADIOS.filter(r => (cat === "all" || radioCategory(r.name) === cat) && matches(q, r.name));
+  let list = RADIOS.filter(r => (!radioFavOnly || isFavorite("radio", r.id)) && (cat === "all" || radioCategory(r.name) === cat) && matches(q, r.name));
   if (q) list.sort((a,b) => (tight(b.name).startsWith(qt)-tight(a.name).startsWith(qt)) || sortKey(a.name).localeCompare(sortKey(b.name),"ar"));
   else if ($("#radSort").value === "za") list.reverse();
-  $("#radCount").textContent = ard(list.length) + " إذاعة";
+  const favoriteStations = radioFavOnly ? STATIONS.filter(s => isFavorite("station", s.id) && matches(q, s.full) && (cat === "all" || radioCategory(s.full) === cat)) : [];
+  $("#radCount").textContent = ard(list.length + favoriteStations.length) + " إذاعة";
   const shown = list.slice(0, radShown);
-  $("#radList").innerHTML = shown.length ? shown.map(r => `
-    <button class="item" data-key="rad:${r.id}" data-rad="${r.id}" aria-label="تشغيل إذاعة ${esc(r.name)}">
+  const stationRows = favoriteStations.map(s => `<div class="fav-row"><button class="item" data-fav-station="${esc(s.id)}"><span class="t"><b>${esc(s.full)}</b><small>${esc(s.tag)}</small></span><span class="ic">${IC.play}</span></button>${favoriteButton("station", s.id, s.full)}</div>`).join("");
+  $("#radList").innerHTML = (shown.length || stationRows) ? stationRows + shown.map(r => `
+    <div class="fav-row"><button class="item" data-key="rad:${r.id}" data-rad="${r.id}" aria-label="تشغيل إذاعة ${esc(r.name)}">
       <span class="medal">${IC.radio.replace('aria-hidden="true"', 'aria-hidden="true" width="18" height="18"')}</span>
       <span class="t"><b>${esc(r.name)}</b><small>إذاعة متواصلة</small></span><span class="ic pi">${IC.play}</span>
-    </button>`).join("") : `<div class="empty">لا توجد إذاعة بهذا الاسم</div>`;
+    </button>${favoriteButton("radio", r.id, r.name)}</div>`).join("") : `<div class="empty">${radioFavOnly ? "لا توجد إذاعات مفضلة مطابقة." : "لا توجد إذاعة بهذا الاسم"}</div>`;
   $("#radMore").hidden = list.length <= radShown;
   paint(P.state);
 }
 $("#radSearch").addEventListener("input", debounce(() => { radShown = 25; renderRadios(); }, 150));
 $("#radSearch").addEventListener("input", debounce(e => { const q = e.target.value.trim(); if (q.length > 1) track("search", { area: "radio" }); }, 1500));
 $("#radMore").onclick = () => { radShown += 60; renderRadios(); };
-$("#radList").onclick = e => { const b = e.target.closest("[data-rad]"); if (!b) return;
+$("#radFavOnly").onclick = e => { radioFavOnly = !radioFavOnly; e.currentTarget.setAttribute("aria-pressed", radioFavOnly); radShown = 25; renderRadios(); };
+$("#recFavOnly").onclick = e => { recFavOnly = !recFavOnly; e.currentTarget.setAttribute("aria-pressed", recFavOnly); if (recFavOnly) { rwSel = "all"; store.set("rw", rwSel); renderRw(); } recShown = 25; renderRecs(); };
+$("#radList").onclick = e => { const f = e.target.closest("[data-fav-kind]"); if (f) { toggleFavorite(f.dataset.favKind, f.dataset.favId); if (f.dataset.favKind === "station") { const tile = $("#stations").querySelector(`[data-fav-kind="station"][data-fav-id="${CSS.escape(f.dataset.favId)}"]`); const s = STATIONS.find(x => x.id === f.dataset.favId); if (tile && s) tile.outerHTML = favoriteButton("station", s.id, s.full); } renderRadios(); return; } const st = e.target.closest("[data-fav-station]"); if (st) { const s = STATIONS.find(x => x.id === st.dataset.favStation); if (s) { store.set("lastStation", s.id); if (P.cur && P.cur.key === "st:" + s.id) toggle(); else play(stationItem(s)); } return; } const b = e.target.closest("[data-rad]"); if (!b) return;
   const r = RADIOS.find(x => String(x.id) === b.dataset.rad);
   if (P.cur && P.cur.key === "rad:" + r.id) { toggle(); return; }
   play({ kind: "live", key: "rad:" + r.id, title: "إذاعة " + r.name, sub: "إذاعة متواصلة", eyebrow: "الإذاعات والقرّاء", url: r.url }); };
@@ -445,7 +461,7 @@ function renderRw() {
 $("#rwChips").onclick = e => { const b = e.target.closest("[data-rw]"); if (!b) return; rwSel = b.dataset.rw; track("riwaya_select", { riwaya: rwSel }); store.set("rw", rwSel); recShown = 25; renderRw(); renderRecs(); };
 function renderRecs() {
   const q = norm($("#recSearch").value);
-  let list = RECITERS.filter(r => (rwSel === "all" || r.moshaf.some(m => rwGroup(m.rw) === rwSel)) && matches(q, r.name));
+  let list = RECITERS.filter(r => (!recFavOnly || isFavorite("reciter", r.id)) && (rwSel === "all" || r.moshaf.some(m => rwGroup(m.rw) === rwSel)) && matches(q, r.name));
   $("#recCount").textContent = ard(list.length) + " قارئ";
   let fam = [];
   if (q) list.sort((a, b) => (tight(b.name).startsWith(q.replace(/\s+/g, "")) - tight(a.name).startsWith(q.replace(/\s+/g, ""))) || ((a.fam < 0 ? 99 : a.fam) - (b.fam < 0 ? 99 : b.fam)));
@@ -455,21 +471,22 @@ function renderRecs() {
     const ms = rwSel === "all" ? r.moshaf : r.moshaf.filter(m => rwGroup(m.rw) === rwSel);
     const types = [...new Set(ms.map(m => m.type).filter(Boolean))].join(" · ");
     const rws = rwSel === "all" ? [...new Set(r.moshaf.map(m => m.rw))].length : 0;
-    return `<button class="item" data-rec="${r.id}">
+    return `<div class="fav-row"><button class="item" data-rec="${r.id}">
       <span class="medal">${esc(r.name.replace(/^(ال)/, "").trim()[0] || "")}</span>
-      <span class="t"><b>${esc(r.name)}</b><small>${esc(types || "تلاوة")}${rws > 1 ? ` · ${ard(rws)} روايات` : ""}</small></span>${IC.arrow}</button>`;
+      <span class="t"><b>${esc(r.name)}</b><small>${esc(types || "تلاوة")}${rws > 1 ? ` · ${ard(rws)} روايات` : ""}</small></span>${IC.arrow}</button>${favoriteButton("reciter", r.id, r.name)}</div>`;
   };
   let html = "";
   if (fam.length) html += `<div class="group-h">الأشهر</div>` + fam.map(row).join("") + `<div class="group-h">كل القرّاء أبجديًا</div>`;
   let lastL = "";
   html += shown.map(r => { let h = ""; if (!q && r.letter !== lastL) { lastL = r.letter; h = `<div class="letter">${esc(r.letter)}</div>`; } return h + row(r); }).join("");
-  $("#recList").innerHTML = (fam.length || shown.length) ? html : `<div class="empty">لا يوجد قارئ بهذا الاسم${rwSel !== "all" ? ` في رواية ${esc(rwSel)}. <button class="link-btn" data-rw="all">ابحث في كل الروايات</button>` : ""}</div>`;
+  $("#recList").innerHTML = (fam.length || shown.length) ? html : `<div class="empty">${recFavOnly ? "لا يوجد قراء مفضلون مطابقون." : "لا يوجد قارئ بهذا الاسم"}${rwSel !== "all" ? ` في رواية ${esc(rwSel)}. <button class="link-btn" data-rw="all">ابحث في كل الروايات</button>` : ""}</div>`;
   $("#recMore").hidden = list.length <= recShown;
 }
 $("#recSearch").addEventListener("input", debounce(() => { recShown = 25; renderRecs(); }, 150));
 $("#recSearch").addEventListener("input", debounce(e => { const q = e.target.value.trim(); if (q.length > 1) track("search", { area: "reciters" }); }, 1500));
 $("#recMore").onclick = () => { recShown += 60; renderRecs(); };
 $("#recList").onclick = e => {
+  const f = e.target.closest("[data-fav-kind]"); if (f) { toggleFavorite(f.dataset.favKind, f.dataset.favId); renderRecs(); return; }
   const a = e.target.closest("[data-rw]"); if (a) { rwSel = "all"; store.set("rw", rwSel); renderRw(); renderRecs(); return; }
   const b = e.target.closest("[data-rec]"); if (b) { const r = RECITERS.find(x => x.id === +b.dataset.rec); if (r) track("reciter_select", { reciter: r.name, riwaya: rwSel }); openReciter(+b.dataset.rec); } };
 function openReciter(id, moshafId) {
