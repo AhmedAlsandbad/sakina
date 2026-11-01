@@ -398,7 +398,7 @@ $("#radList").onclick = e => { const b = e.target.closest("[data-rad]"); if (!b)
    ========================================================= */
 /* best-known reciters shown first, in this order (matched on name words) */
 const FAMOUS = [["عبدالباسط"], ["الحصري"], ["المنشاوي"], ["مصطفي", "اسماعيل"], ["البنا"], ["الطبلاوي"], ["العفاسي"], ["المعيقلي"], ["السديس"], ["الشريم"],
-  ["الغامدي"], ["ياسر", "الدوسري"], ["العجمي"], ["فارس", "عباد"], ["القطامي"], ["الشاطري"], ["الحذيفي"], ["محمد", "ايوب"], ["خالد", "الجليل"], ["محمد", "جبريل"], ["البلوشي"], ["ادريس", "ابكر"], ["اسلام", "صبحي"], ["علي", "جابر"], ["محمد", "اللحيدان"], ["بندر", "بليله"], ["عبدالله", "الجهني"]]
+  ["سعد", "الغامدي"], ["ياسر", "الدوسري"], ["العجمي"], ["فارس", "عباد"], ["القطامي"], ["الشاطري"], ["علي", "الحذيفي"], ["محمد", "ايوب"], ["خالد", "الجليل"], ["محمد", "جبريل"], ["البلوشي"], ["ادريس", "ابكر"], ["اسلام", "صبحي"], ["علي", "جابر"], ["محمد", "اللحيدان"], ["بندر", "بليله"], ["عبدالله", "الجهني"]]
   .map(a => a.map(w => w.replace(/[أإآ]/g, "ا").replace(/ى/g, "ي")));
 const rwGroup = rw => rw.startsWith("حفص عن عاصم") ? "حفص عن عاصم" : rw.startsWith("ورش عن نافع") ? "ورش عن نافع" : "";
 let RECITERS = [], SUWAR = {}, RW = [], rwSel = store.get("rw", "حفص عن عاصم"), recShown = 25, curRec = null, curMoshaf = null;
@@ -853,6 +853,9 @@ let deferred = null;
 addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; $("#installBtn").hidden = false; });
 $("#installBtn").onclick = async () => { if (!deferred) return; deferred.prompt(); const choice = await deferred.userChoice; track("pwa_install", { outcome: choice && choice.outcome ? choice.outcome : "unknown" }); deferred = null; $("#installBtn").hidden = true; };
 if ("serviceWorker" in navigator && location.protocol === "https:") { let hadController = !!navigator.serviceWorker.controller; navigator.serviceWorker.addEventListener("controllerchange", () => { if (hadController) toast("يتوفر تحديث للموقع، أعد تحميل الصفحة لتطبيقه."); hadController = true; }); addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {})); }
+
+/* Keep the skip link within the current section instead of changing the route. */
+$(".skip-link").addEventListener("click", e => { e.preventDefault(); const main = $("#main"); main.setAttribute("tabindex", "-1"); main.focus(); main.scrollIntoView({ block: "start" }); });
 
 /* boot */
 if (!location.hash) { const v = store.get("view", "radio"); history.replaceState(null, "", "#" + v); }
