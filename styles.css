@@ -583,3 +583,24 @@ body[data-active-view="quran"] footer .foot-sadaqa { display:none; }
 .list{grid-template-columns:minmax(0,1fr);min-width:0;max-width:100%}.list>.item{min-width:0;max-width:100%;contain-intrinsic-inline-size:0}.list>.group-h,.list>.letter{min-width:0}
 
 .hero-action{display:block;margin:10px 0 4px;color:var(--ink);font-size:.9rem;font-weight:500}#main{scroll-margin-top:80px}#main:focus{outline:none}
+
+/* Navigation hierarchy: primary destinations, local modes, then content choices. */
+.tabs-top{gap:5px;padding:5px;background:color-mix(in srgb,var(--panel) 65%,transparent);border:1px solid var(--rule);border-radius:18px}
+.tabs-top a{min-height:44px;padding:8px 16px;border:0;border-radius:13px}
+.tabs-top a[aria-current="page"]{background:var(--panel-2);box-shadow:inset 0 -2px 0 var(--gold);border-color:transparent}
+.tabs-bottom{gap:4px;padding:9px 10px max(8px,env(safe-area-inset-bottom,0px));box-shadow:0 -4px 20px #0001}
+.tabs-bottom a{min-height:56px;gap:5px;border:0;border-radius:15px;font-size:.73rem;line-height:1.4}
+.tabs-bottom a[aria-current="page"]{background:color-mix(in srgb,var(--gold) 10%,var(--night));border-color:transparent;font-weight:500}
+.tabs-bottom a[aria-current="page"] svg{transform:none;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--gold) 22%,transparent))}
+.seg{padding:5px;gap:5px;background:var(--panel);border-color:var(--rule)}
+.seg button{padding:9px 18px}
+.section-guide{margin:6px 0 22px;color:var(--dim);font-size:.88rem;line-height:1.8}
+#v-adhkar .seg{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#v-adhkar .seg button{min-height:88px;padding:15px 12px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;text-align:start;border-radius:16px;background:var(--panel-2);border:1px solid var(--rule);color:var(--ink)}
+.period-name{font-size:1rem;font-weight:500}.period-hint{font-size:.76rem;line-height:1.6;color:var(--dim);font-weight:400}
+#v-adhkar .seg button[aria-selected="true"]{background:color-mix(in srgb,var(--gold) 10%,var(--panel));color:var(--gold);border-color:var(--gold);box-shadow:inset -3px 0 0 var(--gold);font-weight:500}
+#v-adhkar .seg button[aria-selected="true"] .period-hint{color:var(--ink)}
+#rwChips{gap:10px;margin-block:14px 6px;padding-block:3px 8px}
+#rwChips .chip{display:inline-flex;align-items:center;gap:8px;padding-inline:16px}
+@media(min-width:700px){#v-adhkar .seg{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}#v-adhkar .seg button{min-height:100px;padding:18px}}
+@media(max-width:480px){.tabs-bottom a{font-size:.7rem}.tabs-bottom svg{width:22px;height:22px}.capsule{margin-bottom:8px}#v-adhkar .adh-disclosure{padding:22px 16px}}

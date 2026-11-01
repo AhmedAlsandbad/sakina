@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="styles.css?v=47">
+<link rel="stylesheet" href="styles.css?v=48">
 <script src="/analytics.js?v=2" defer></script>
 <script>try{var t=localStorage.getItem("sakina:theme");if(t)document.documentElement.dataset.theme=JSON.parse(t)}catch(e){}</script>
 </head>
@@ -175,12 +175,12 @@
   <!-- ADHKAR -->
   <section class="view" id="v-adhkar" data-view="adhkar" hidden>
     <div class="adh-disclosure">
-    <div class="sh"><h2 id="adhTitle">الأذكار</h2>
+    <div class="sh"><h2 id="adhTitle">الأذكار</h2><p class="section-guide">اختر أذكار وقتك، وتابع قراءتك بهدوء</p>
       <div class="seg" role="tablist">
-        <button role="tab" aria-selected="false" data-period="m" id="ad-m">الصباح</button>
-        <button role="tab" aria-selected="false" data-period="e" id="ad-e">المساء</button>
-        <button role="tab" aria-selected="false" data-period="sleep">النوم</button>
-        <button role="tab" aria-selected="false" data-period="prayer">بعد الصلاة</button>
+        <button role="tab" aria-selected="false" data-period="m" id="ad-m"><span class="period-name">الصباح</span><small class="period-hint">لبداية يومك</small></button>
+        <button role="tab" aria-selected="false" data-period="e" id="ad-e"><span class="period-name">المساء</span><small class="period-hint">لسكينة مسائك</small></button>
+        <button role="tab" aria-selected="false" data-period="sleep"><span class="period-name">النوم</span><small class="period-hint">قبل أن تنام</small></button>
+        <button role="tab" aria-selected="false" data-period="prayer"><span class="period-name">بعد الصلاة</span><small class="period-hint">بعد كل فريضة</small></button>
       </div>
     </div>
     <div id="adhContent" hidden>
