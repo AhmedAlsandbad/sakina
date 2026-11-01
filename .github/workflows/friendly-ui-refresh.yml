@@ -1,0 +1,50 @@
+name: Sakina friendly UI refresh
+
+on:
+  push:
+    paths:
+      - '.github/workflows/friendly-ui-refresh.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply UI patch
+        run: python scripts/patch_friendly_ui.py
+
+      - name: Install browser tooling
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Capture PWA screenshots
+        run: |
+          python -m http.server 8000 > /tmp/sakina-http.log 2>&1 &
+          SERVER_PID=$!
+          sleep 2
+          python scripts/capture_pwa.py
+          kill $SERVER_PID || true
+
+      - name: Commit refreshed UI
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html app.js styles.css manifest.webmanifest sw.js pwa-screenshot-mobile.png pwa-screenshot-wide.png
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Refresh PWA UI and install experience"
+            git push
+          fi
