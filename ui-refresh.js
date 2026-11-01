@@ -4,6 +4,8 @@
   window.__sakinaUiRefresh = true;
 
   const $ = s => document.querySelector(s);
+  const ua = navigator.userAgent || "";
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const isStandalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
   const ICONS = {
     stations:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><rect x="4" y="9" width="16" height="10" rx="3"/><path d="M8 9l8-5"/><circle cx="9" cy="14" r="2"/><path d="M14 13h3M14 16h3"/></svg>',
@@ -32,7 +34,7 @@
   }
 
   function installCard() {
-    if (isStandalone() || $("#sakinaHomeInstall")) return;
+    if (!isMobile || isStandalone() || $("#sakinaHomeInstall")) return;
     const home = $("#v-radio");
     const hero = $("#hero");
     if (!home || !hero) return;
