@@ -23,6 +23,8 @@ jobs:
         run: python scripts/seo_qa.py
       - name: Check duplicate structured data
         run: python scripts/schema_qa.py
+      - name: Check PWA and notification configuration
+        run: python scripts/pwa_qa.py
       - name: Validate JavaScript syntax
         run: |
           node --check app.js
