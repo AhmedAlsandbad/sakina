@@ -7,12 +7,15 @@ on:
       - 'scripts/runtime_loader_patch.py'
       - 'scripts/runtime_loader_qa.py'
       - '.github/workflows/apply-runtime-loader.yml'
+  issues:
+    types: [opened]
 
 permissions:
   contents: write
 
 jobs:
   migrate:
+    if: github.event_name != 'issues' || github.event.issue.title == '[ops] apply runtime loader'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
