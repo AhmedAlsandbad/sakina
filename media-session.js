@@ -24,7 +24,7 @@
     var title = text("shTitle");
     var artist = text("shSub");
     var eyebrow = text("shEyebrow");
-    var joined = (title + " " + artist + " " + eyebrow);
+    var joined = title + " " + artist + " " + eyebrow;
     if (isLive()) return { title: title || "إذاعة القرآن الكريم", artist: artist || "بث مباشر", album: "بث مباشر • سكينة قرآن" };
     if (/رقية|الرقيه/.test(joined)) return { title: title || "الرقية الشرعية", artist: artist || "سكينة قرآن", album: "الرقية الشرعية • سكينة قرآن" };
     return { title: title || "القرآن الكريم", artist: artist || "سكينة قرآن", album: "القرآن الكريم • سكينة قرآن" };
@@ -83,32 +83,22 @@
     syncPosition(true);
   }
 
-  function clickControl(id) {
-    var el = document.getElementById(id);
-    if (!el || el.hidden || el.disabled) return;
-    el.click();
-  }
-
   function action(name, handler) {
     try { ms.setActionHandler(name, handler); } catch (e) {}
   }
 
-  action("play", function () {
-    var p = audio.play();
-    if (p && p.catch) p.catch(function () {});
+  /*
+   * Do not override play/pause/next/previous here. app-core.js owns those
+   * actions because it must update P.want, queue state and Sakina's UI too.
+   * This enhancer only replaces seek actions with live-safe versions and
+   * synchronizes metadata/playback state with the operating system.
+   */
+  action("seekforward", function (event) {
+    safeSeek(event && isFinite(event.seekOffset) ? event.seekOffset : 15);
   });
-  action("pause", function () { audio.pause(); });
-  action("stop", function () {
-    audio.pause();
-    if (!isLive() && isFinite(audio.duration)) {
-      try { audio.currentTime = 0; } catch (e) {}
-    }
-    syncPlaybackState("none");
+  action("seekbackward", function (event) {
+    safeSeek(-(event && isFinite(event.seekOffset) ? event.seekOffset : 15));
   });
-  action("nexttrack", function () { if (!isLive()) clickControl("shNext"); });
-  action("previoustrack", function () { if (!isLive()) clickControl("shPrev"); });
-  action("seekforward", function (event) { safeSeek(event && isFinite(event.seekOffset) ? event.seekOffset : 15); });
-  action("seekbackward", function (event) { safeSeek(-(event && isFinite(event.seekOffset) ? event.seekOffset : 15)); });
   action("seekto", function (event) {
     if (isLive() || !event || !isFinite(event.seekTime) || !isFinite(audio.duration) || audio.duration <= 0) return;
     audio.currentTime = Math.max(0, Math.min(event.seekTime, audio.duration));
@@ -130,7 +120,9 @@
       lastMeta = "";
       refreshMetadata();
     });
-    watched.forEach(function (el) { observer.observe(el, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ["hidden"] }); });
+    watched.forEach(function (el) {
+      observer.observe(el, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ["hidden"] });
+    });
   }
 
   refreshMetadata();
