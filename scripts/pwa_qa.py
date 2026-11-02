@@ -56,7 +56,7 @@ loader = text("app-loader.js")
 for needle in (
     "/push-config.js?v=2", "/pwa.js?v=3", "/reminders.js?v=1",
     "/smart-audio-cache.js?v=1", "/player-ui.css?v=1", "/ui-refresh.js?v=2",
-    "/media-session.js?v=2", "loadMediaSession", "ensureInstallShortcut", "ثبّت سكينة"
+    "/media-session.js?v=3", "loadMediaSession", "ensureInstallShortcut", "ثبّت سكينة"
 ):
     require(loader, needle, "app-loader.js")
 
@@ -77,7 +77,7 @@ for needle in (".capsule", ".sheet", ".pb.big2", "@media(max-width:560px)"):
     require(player_ui, needle, "player-ui.css")
 
 media_session = text("media-session.js")
-for needle in ("playbackState", "setPositionState", 'setActionHandler(name, handler)', "safeSeek", "Do not override play/pause/next/previous", "بث مباشر • سكينة قرآن"):
+for needle in ("playbackState", "setPositionState", 'setActionHandler(name, handler)', "safeSeek", "configureSeekActions", 'action("seekforward", null)', "Do not override play/pause/next/previous", "بث مباشر • سكينة قرآن"):
     require(media_session, needle, "media-session.js")
 for forbidden in ('action("play"', 'action("pause"', 'action("nexttrack"', 'action("previoustrack"', 'action("stop"'):
     if forbidden in media_session:
