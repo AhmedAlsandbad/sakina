@@ -27,6 +27,8 @@ jobs:
         run: python scripts/pwa_qa.py
       - name: Check analytics/runtime separation
         run: python scripts/runtime_loader_qa.py
+      - name: Check push deployment contract
+        run: python scripts/push_qa.py
       - name: Validate every JavaScript file
         shell: bash
         run: |
