@@ -32,7 +32,7 @@ for token in ("/seo-core.js?v=4", "/app-loader.js?v=1"):
     if token not in seo_boot:
         errors.append(f"seo.js bootstrap missing: {token}")
 
-for token in ("__sakinaPwaLoader", "/pwa.js?v=3", "/reminders.js?v=1", "/ui-refresh.js?v=2", "/push-config.js?v=2", "/media-session.js?v=2"):
+for token in ("__sakinaPwaLoader", "/pwa.js?v=3", "/reminders.js?v=1", "/ui-refresh.js?v=2", "/push-config.js?v=2", "/media-session.js?v=3"):
     if token not in loader:
         errors.append(f"app-loader.js missing: {token}")
 
