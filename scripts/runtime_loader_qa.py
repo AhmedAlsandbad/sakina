@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
+import re
 import sys
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -31,20 +32,20 @@ for token in ("/seo-core.js?v=4", "/app-loader.js?v=1"):
     if token not in seo_boot:
         errors.append(f"seo.js bootstrap missing: {token}")
 
-for token in ("__sakinaPwaLoader", "/pwa.js?v=3", "/reminders.js?v=1", "/ui-refresh.js?v=2", "/push-config.js?v=2"):
+for token in ("__sakinaPwaLoader", "/pwa.js?v=3", "/reminders.js?v=1", "/ui-refresh.js?v=2", "/push-config.js?v=2", "/media-session.js?v=1"):
     if token not in loader:
         errors.append(f"app-loader.js missing: {token}")
 
-if 'importScripts("/sw-core.js?v=2")' not in sw_boot:
-    errors.append("sw.js is not using the current sw-core bootstrap")
+if not re.search(r'importScripts\("/sw-core\.js\?v=\d+"\)', sw_boot):
+    errors.append("sw.js is not using a versioned sw-core bootstrap")
 
 for token in ('const V = "sakina-v87"', '"/app-core.js?v=61"', '"/app-loader.js?v=1"', '"/seo-core.js?v=4"'):
     if token not in sw_core:
         errors.append(f"sw-core.js missing cache/runtime requirement: {token}")
 
-for path in ("app-core.js", "seo-core.js", "sw-core.js"):
+for path in ("app-core.js", "seo-core.js", "sw-core.js", "media-session.js"):
     if not (ROOT / path).exists():
-        errors.append(f"missing preserved core file: {path}")
+        errors.append(f"missing preserved core/runtime file: {path}")
 
 index = read("index.html")
 if 'app.js?v=61' not in index:
