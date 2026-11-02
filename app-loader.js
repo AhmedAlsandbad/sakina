@@ -63,6 +63,16 @@
     document.head.appendChild(l);
   }
 
+  function loadMediaSession() {
+    if (!document.getElementById("audio") || !("mediaSession" in navigator)) return;
+    if (document.querySelector('script[data-sakina-media-session]')) return;
+    var m = document.createElement("script");
+    m.src = "/media-session.js?v=1";
+    m.defer = true;
+    m.dataset.sakinaMediaSession = "1";
+    document.head.appendChild(m);
+  }
+
   function loadSmartAudio() {
     if (!document.getElementById("audio")) return;
     if (document.querySelector('script[data-sakina-smart-audio]')) return;
@@ -120,6 +130,7 @@
   function initSharedPwa() {
     loadPlayerUi();
     loadUiRefreshCss();
+    loadMediaSession();
     ensureInstallShortcut();
     var c = document.createElement("script");
     c.src = "/push-config.js?v=2";
