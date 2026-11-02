@@ -76,16 +76,21 @@ for needle in (".capsule", ".sheet", ".pb.big2", "@media(max-width:560px)"):
     require(player_ui, needle, "player-ui.css")
 
 sw_boot = text("sw.js")
-require(sw_boot, 'importScripts("/sw-core.js?v=1")', "sw.js")
+require(sw_boot, 'importScripts("/sw-core.js?v=2")', "sw.js")
 sw = text("sw-core.js")
-for needle in ('addEventListener("push"', 'addEventListener("notificationclick"', 'addEventListener("periodicsync"', "REMINDER_PREFS", "/pwa.js?v=3", "/reminders.js?v=1", "/offline.html"):
+for needle in (
+    'const V = "sakina-v87"', 'addEventListener("push"', 'addEventListener("notificationclick"',
+    'addEventListener("periodicsync"', "REMINDER_PREFS", "/pwa.js?v=3", "/reminders.js?v=1",
+    '"/app.js?v=61"', '"/app-core.js?v=61"', '"/app-loader.js?v=1"',
+    '"/seo.js?v=4"', '"/seo-core.js?v=4"', "/offline.html"
+):
     require(sw, needle, "sw-core.js")
 
 push_config = text("push-config.js")
 require(push_config, "vapidPublicKey", "push-config.js")
 require(push_config, "subscribeEndpoint", "push-config.js")
 
-print("PWA QA checked manifest, screenshots, safe loader bootstrap, service worker, Web Push, reminders and smart audio replay")
+print("PWA QA checked manifest, screenshots, safe loader bootstrap, cache v87, service worker, Web Push, reminders and smart audio replay")
 if errors:
     for error in errors: print(f"ERROR: {error}")
     print(f"PWA QA failed: {len(errors)} error(s)")
