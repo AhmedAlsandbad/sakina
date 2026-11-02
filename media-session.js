@@ -30,25 +30,8 @@
     return { title: title || "القرآن الكريم", artist: artist || "سكينة قرآن", album: "القرآن الكريم • سكينة قرآن" };
   }
 
-  function refreshMetadata() {
-    try {
-      var info = classify();
-      var signature = [info.title, info.artist, info.album, isLive() ? "live" : "file"].join("|");
-      if (signature === lastMeta) return;
-      lastMeta = signature;
-      ms.metadata = new MediaMetadata({
-        title: info.title,
-        artist: info.artist,
-        album: info.album,
-        artwork: [
-          { src: location.origin + "/icon-192.png", sizes: "192x192", type: "image/png" },
-          { src: location.origin + "/icon-512.png", sizes: "512x512", type: "image/png" }
-        ]
-      });
-      if (isLive() && ms.setPositionState) {
-        try { ms.setPositionState(); } catch (e) {}
-      }
-    } catch (e) {}
+  function action(name, handler) {
+    try { ms.setActionHandler(name, handler); } catch (e) {}
   }
 
   function syncPlaybackState(state) {
@@ -83,27 +66,61 @@
     syncPosition(true);
   }
 
-  function action(name, handler) {
-    try { ms.setActionHandler(name, handler); } catch (e) {}
+  function seekForward(event) {
+    safeSeek(event && isFinite(event.seekOffset) ? event.seekOffset : 15);
+  }
+
+  function seekBackward(event) {
+    safeSeek(-(event && isFinite(event.seekOffset) ? event.seekOffset : 15));
+  }
+
+  function seekTo(event) {
+    if (isLive() || !event || !isFinite(event.seekTime) || !isFinite(audio.duration) || audio.duration <= 0) return;
+    audio.currentTime = Math.max(0, Math.min(event.seekTime, audio.duration));
+    syncPosition(true);
+  }
+
+  function configureSeekActions() {
+    if (isLive()) {
+      action("seekforward", null);
+      action("seekbackward", null);
+      action("seekto", null);
+      if (ms.setPositionState) {
+        try { ms.setPositionState(); } catch (e) {}
+      }
+      return;
+    }
+    action("seekforward", seekForward);
+    action("seekbackward", seekBackward);
+    action("seekto", seekTo);
+  }
+
+  function refreshMetadata() {
+    try {
+      configureSeekActions();
+      var info = classify();
+      var signature = [info.title, info.artist, info.album, isLive() ? "live" : "file"].join("|");
+      if (signature === lastMeta) return;
+      lastMeta = signature;
+      ms.metadata = new MediaMetadata({
+        title: info.title,
+        artist: info.artist,
+        album: info.album,
+        artwork: [
+          { src: location.origin + "/icon-192.png", sizes: "192x192", type: "image/png" },
+          { src: location.origin + "/icon-512.png", sizes: "512x512", type: "image/png" }
+        ]
+      });
+    } catch (e) {}
   }
 
   /*
    * Do not override play/pause/next/previous here. app-core.js owns those
    * actions because it must update P.want, queue state and Sakina's UI too.
-   * This enhancer only replaces seek actions with live-safe versions and
-   * synchronizes metadata/playback state with the operating system.
+   * This enhancer only owns seek actions, hiding them entirely for live radio,
+   * and synchronizes metadata/playback state with the operating system.
    */
-  action("seekforward", function (event) {
-    safeSeek(event && isFinite(event.seekOffset) ? event.seekOffset : 15);
-  });
-  action("seekbackward", function (event) {
-    safeSeek(-(event && isFinite(event.seekOffset) ? event.seekOffset : 15));
-  });
-  action("seekto", function (event) {
-    if (isLive() || !event || !isFinite(event.seekTime) || !isFinite(audio.duration) || audio.duration <= 0) return;
-    audio.currentTime = Math.max(0, Math.min(event.seekTime, audio.duration));
-    syncPosition(true);
-  });
+  configureSeekActions();
 
   audio.addEventListener("play", function () { refreshMetadata(); syncPlaybackState("playing"); syncPosition(true); });
   audio.addEventListener("playing", function () { refreshMetadata(); syncPlaybackState("playing"); });
