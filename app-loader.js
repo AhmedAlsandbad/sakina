@@ -67,7 +67,7 @@
     if (!document.getElementById("audio") || !("mediaSession" in navigator)) return;
     if (document.querySelector('script[data-sakina-media-session]')) return;
     var m = document.createElement("script");
-    m.src = "/media-session.js?v=1";
+    m.src = "/media-session.js?v=2";
     m.defer = true;
     m.dataset.sakinaMediaSession = "1";
     document.head.appendChild(m);
