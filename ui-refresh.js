@@ -251,11 +251,11 @@
 
     const artistText = String(artist || "سكينة قرآن").replace(/^اضغط للمتابعة\s*·\s*/, "").trim();
     ctx.font = '500 25px "Readex Pro", Arial, sans-serif';
-    let artist = artistText;
-    while (artist.length > 3 && ctx.measureText(artist).width > 390) artist = artist.slice(0, -1);
-    if (artist !== artistText) artist = artist.trim() + "…";
+    let artistLine = artistText;
+    while (artistLine.length > 3 && ctx.measureText(artistLine).width > 390) artistLine = artistLine.slice(0, -1);
+    if (artistLine !== artistText) artistLine = artistLine.trim() + "…";
     ctx.fillStyle = "#b8c9c0";
-    ctx.fillText(artist || "سكينة قرآن", 256, 365);
+    ctx.fillText(artistLine || "سكينة قرآن", 256, 365);
 
     ctx.strokeStyle = "rgba(224,180,94,.26)"; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(116, 404); ctx.lineTo(396, 404); ctx.stroke();
