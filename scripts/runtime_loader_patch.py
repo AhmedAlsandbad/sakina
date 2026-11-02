@@ -53,7 +53,28 @@ if '"/app-loader.js?v=1"' not in sw:
         sw = sw.replace(needle, needle + '  "/app-loader.js?v=1",\n', 1)
 sw_path.write_text(sw, encoding="utf-8")
 
-# 5) Make JS syntax validation future-proof and include runtime architecture QA.
+# 5) Update existing PWA QA so it validates the new separation instead of analytics.js.
+pwa_qa_path = ROOT / "scripts" / "pwa_qa.py"
+pwa_qa = pwa_qa_path.read_text(encoding="utf-8")
+pwa_qa = pwa_qa.replace(
+    '"smart-audio-cache.js", "push-config.js", "player-ui.css", "sw.js"',
+    '"smart-audio-cache.js", "push-config.js", "app-loader.js", "player-ui.css", "sw.js"'
+)
+old_block = '''analytics = text("analytics.js")
+for needle in ("/push-config.js?v=2", "/pwa.js?v=3", "/reminders.js?v=1", "/smart-audio-cache.js?v=1", "/player-ui.css?v=1", "ensureInstallShortcut", "ثبّت سكينة"):
+    require(analytics, needle, "analytics.js")
+'''
+new_block = '''runtime_loader = text("app-loader.js")
+for needle in ("/push-config.js?v=2", "/pwa.js?v=3", "/reminders.js?v=1", "/smart-audio-cache.js?v=1", "/player-ui.css?v=1", "ensureInstallShortcut", "ثبّت سكينة"):
+    require(runtime_loader, needle, "app-loader.js")
+'''
+if old_block in pwa_qa:
+    pwa_qa = pwa_qa.replace(old_block, new_block, 1)
+if '"/app-loader.js?v=1"' not in pwa_qa:
+    pwa_qa = pwa_qa.replace('"/push-config.js?v=2", "/offline.html")', '"/push-config.js?v=2", "/app-loader.js?v=1", "/offline.html")', 1)
+pwa_qa_path.write_text(pwa_qa, encoding="utf-8")
+
+# 6) Make JS syntax validation future-proof and include runtime architecture QA.
 qa_path = ROOT / ".github" / "workflows" / "seo-qa.yml"
 qa_path.write_text('''name: SEO QA\n\non:\n  push:\n    branches: [main]\n  pull_request:\n    branches: [main]\n\npermissions:\n  contents: read\n\njobs:\n  seo-qa:\n    runs-on: ubuntu-latest\n    steps:\n      - name: Checkout repository\n        uses: actions/checkout@v4\n      - name: Set up Python\n        uses: actions/setup-python@v5\n        with:\n          python-version: '3.12'\n      - name: Run static SEO checks\n        run: python scripts/seo_qa.py\n      - name: Check duplicate structured data\n        run: python scripts/schema_qa.py\n      - name: Check PWA and notification configuration\n        run: python scripts/pwa_qa.py\n      - name: Check runtime loader architecture\n        run: python scripts/runtime_loader_qa.py\n      - name: Validate every JavaScript file\n        shell: bash\n        run: |\n          set -euo pipefail\n          while IFS= read -r -d '' file; do\n            echo "Checking $file"\n            node --check "$file"\n          done < <(find . -type f -name '*.js' -not -path './.git/*' -print0)\n''', encoding="utf-8")
 
