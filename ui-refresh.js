@@ -126,7 +126,6 @@
     if (!sel || !btn) return;
     ensureSleepCountdown();
     sel.addEventListener("change", () => setTimeout(syncSleepFromSelect, 0));
-    btn.addEventListener("click", () => setTimeout(syncSleepFromSelect, 0));
     clearInterval(ticker); ticker = setInterval(renderSleepCountdown, 1000);
   }
 

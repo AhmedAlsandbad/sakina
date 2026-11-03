@@ -58,7 +58,7 @@
     if (document.querySelector('link[data-sakina-ui-refresh]')) return;
     var l = document.createElement("link");
     l.rel = "stylesheet";
-    l.href = "/ui-refresh.css?v=1";
+    l.href = "/ui-refresh.css?v=2";
     l.dataset.sakinaUiRefresh = "1";
     document.head.appendChild(l);
   }
@@ -86,7 +86,7 @@
   function loadUiRefresh() {
     if (document.querySelector('script[data-sakina-ui-refresh]')) { loadSmartAudio(); return; }
     var r = document.createElement("script");
-    r.src = "/ui-refresh.js?v=2";
+    r.src = "/ui-refresh.js?v=3";
     r.defer = true;
     r.dataset.sakinaUiRefresh = "1";
     r.onload = loadSmartAudio;

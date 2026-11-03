@@ -293,20 +293,14 @@ function sleepLabel() {
   if (!P.sleepEnd) { b.classList.remove("on"); t.textContent = ""; return; }
   b.classList.add("on"); t.textContent = ard(Math.max(0, Math.ceil((P.sleepEnd - Date.now()) / 60000))) + "د";
 }
-const SLEEP_CYCLE = [0, 15, 30, 60];
-$("#sleepBtn").onclick = () => {
-  const curMin = P.sleepEnd ? Math.round((P.sleepEnd - Date.now()) / 60000) : 0;
-  const i = SLEEP_CYCLE.findIndex(m => m > curMin + 1);
-  const m = P.sleepAtEnd ? 0 : (i === -1 ? 0 : SLEEP_CYCLE[i]);
-  setSleep(m); toast(m ? `سيتوقف التشغيل بعد ${ard(m)} دقيقة` : "تم إلغاء مؤقت النوم");
-};
+$("#sleepBtn").onclick = () => { openSheet(true); $("#sleepSel").focus(); };
 $("#sleepSel").onchange = e => setSleep(+e.target.value);
 setInterval(sleepLabel, 20000);
 
 /* sheet */
 let sheetReturnFocus = null;
 let sheetBackground = [], sheetOverflow = "";
-function openSheet() { if (!P.cur) { toggle(); return; } const s = $("#sheet"), c = $("#scrim"); if (!s.hidden) return; sheetReturnFocus = document.activeElement;
+function openSheet(allowEmpty) { if (!P.cur && allowEmpty !== true) { toggle(); return; } const s = $("#sheet"), c = $("#scrim"); if (!s.hidden) return; sheetReturnFocus = document.activeElement;
   sheetBackground = [...document.body.children].filter(el => el !== s && el !== c && !["SCRIPT", "AUDIO"].includes(el.tagName)).map(el => ({ el, inert: el.inert }));
   sheetBackground.forEach(x => { x.el.inert = true; }); sheetOverflow = document.body.style.overflow; document.body.style.overflow = "hidden";
   s.hidden = c.hidden = false; $("#sheetClose").focus();
