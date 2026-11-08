@@ -18,8 +18,8 @@
   let current = null;
 
   document.querySelectorAll(".seo-content audio").forEach(a => {
-    const src = a.getAttribute("src") || (a.querySelector("source") || {}).src || "";
-    const live = isLive(src), title = titleFor(a);
+    let src = a.getAttribute("src") || (a.querySelector("source") || {}).src || "";
+    const live = isLive(src); let title = titleFor(a);
     a.removeAttribute("controls"); a.preload = "none";
     const wrap = document.createElement("div"); wrap.className = "sp";
     wrap.innerHTML = `<button class="sp-btn" type="button" aria-label="تشغيل ${title}">${IC.play}</button>
@@ -51,6 +51,59 @@
       if (window.sakinaTrack) window.sakinaTrack("play", { content_type: live ? "station_page" : "surah_page", item_name: title, page: location.pathname });
       if ("mediaSession" in navigator) try { navigator.mediaSession.metadata = new MediaMetadata({ title, artist: "سكينة قرآن", artwork: [{ src: "/icon-512.png", sizes: "512x512", type: "image/png" }] }); } catch (e) {}
     });
+
+    /* On an individual reciter/surah page, use the provider's actual surah list.
+       Keep the original page and reciter while advancing audio in place. */
+    const match = src.match(/^(https:\/\/cdn\.mp3quran\.net\/audio\/[^/]+\/r\d+\/)(\d{3})\.mp3$/i);
+    const detailPage = /^\/reciters\/[^/]+\/[^/]+\/$/.test(location.pathname);
+    if (match && detailPage) {
+      const base = match[1]; let number = +match[2], list = [], names = {}, reciterName = "", loadingList = null;
+      const seq = document.createElement("div");
+      seq.className = "chips sp-sequence";
+      seq.setAttribute("role", "group"); seq.setAttribute("aria-label", "الانتقال بين السور");
+      const prev = document.createElement("button"), next = document.createElement("button"), label = document.createElement("span");
+      prev.type = next.type = "button"; prev.className = next.className = "chip";
+      prev.textContent = "السورة السابقة"; next.textContent = "السورة التالية";
+      prev.disabled = next.disabled = true; label.className = "dim"; label.setAttribute("aria-live", "polite"); label.textContent = "جارٍ تجهيز قائمة السور…";
+      seq.append(prev, next, label); wrap.after(seq);
+      function update() {
+        const i = list.indexOf(number);
+        prev.disabled = i <= 0; next.disabled = i < 0 || i >= list.length - 1;
+        label.textContent = "سورة " + (names[number] || ard(number)) + (reciterName ? " · " + reciterName : "");
+      }
+      function prepare() {
+        if (loadingList) return loadingList;
+        loadingList = Promise.all([
+          fetch("https://mp3quran.net/api/v3/reciters?language=ar").then(r => { if (!r.ok) throw Error("reciters"); return r.json(); }),
+          fetch("https://mp3quran.net/api/v3/suwar?language=ar").then(r => { if (!r.ok) throw Error("suwar"); return r.json(); })
+        ]).then(([data, surahs]) => {
+          let owner, moshaf;
+          for (const r of data.reciters || []) { const m = (r.moshaf || []).find(x => x.server === base); if (m) { owner = r; moshaf = m; break; } }
+          if (!moshaf) throw Error("moshaf");
+          list = String(moshaf.surah_list).split(",").map(Number).filter(n => n >= 1 && n <= 114);
+          if (!list.includes(number)) throw Error("surah");
+          (surahs.suwar || []).forEach(x => { names[x.id] = x.name; });
+          reciterName = owner.name.trim(); update(); return true;
+        }).catch(() => { label.textContent = "تعذّر تحميل قائمة السور. اضغط المحاولة مرة أخرى."; next.textContent = "إعادة المحاولة"; next.disabled = false; loadingList = null; return false; });
+        return loadingList;
+      }
+      async function advance(delta) {
+        if (!list.length && !(await prepare())) return;
+        const i = list.indexOf(number), n = list[i + delta];
+        if (!n) return;
+        number = n; src = base + String(n).padStart(3, "0") + ".mp3";
+        title = "سورة " + (names[n] || ard(n)) + (reciterName ? " · " + reciterName : "");
+        next.textContent = "السورة التالية"; retried = false;
+        if (current && current !== a) current.pause(); current = a;
+        a.pause(); a.src = src; a.load(); update(); set("loading");
+        if ("mediaSession" in navigator) try { navigator.mediaSession.metadata = new MediaMetadata({ title, artist: reciterName, artwork: [{ src: "/icon-512.png", sizes: "512x512", type: "image/png" }] }); } catch (e) {}
+        a.play().catch(() => retry());
+      }
+      prev.addEventListener("click", () => advance(-1));
+      next.addEventListener("click", () => { if (!list.length) { next.disabled = true; next.textContent = "السورة التالية"; label.textContent = "جارٍ تجهيز قائمة السور…"; prepare(); } else advance(1); });
+      a.addEventListener("ended", () => advance(1));
+      prepare();
+    }
     a.addEventListener("playing", () => set("playing"));
     a.addEventListener("waiting", () => set("loading"));
     a.addEventListener("pause", () => set("idle"));

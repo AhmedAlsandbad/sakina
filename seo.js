@@ -17,7 +17,7 @@
     return;
   }
   var core = document.createElement("script");
-  core.src = "/seo-core.js?v=4";
+  core.src = "/seo-core.js?v=5";
   core.async = false;
   core.dataset.sakinaSeoCore = "1";
   core.onload = loadRuntime;

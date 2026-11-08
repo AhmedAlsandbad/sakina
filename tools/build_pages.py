@@ -49,7 +49,7 @@ HEADER = f'''<header class="top"><div class="wrap">
 </div></header>'''
 
 HEAD_ADD = f'''<meta name="theme-color" content="#071512">
-<link rel="icon" href="/icon.svg?v={CSS_V}" type="image/svg+xml">
+<link rel="icon" href="/sakina-favicon.png" type="image/png" sizes="360x360">
 <link rel="apple-touch-icon" href="/icon-192.png?v={CSS_V}">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
