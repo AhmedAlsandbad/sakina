@@ -33,9 +33,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="styles.css?v=59">
-<link rel="stylesheet" href="/polish.css?v=6">
+<link rel="stylesheet" href="/polish.css?v=7">
 <script src="/analytics.js?v=2" defer></script>
-<script>try{var t=localStorage.getItem("sakina:theme");if(t)document.documentElement.dataset.theme=JSON.parse(t)}catch(e){}</script>
+<script>try{var t=localStorage.getItem("sakina:theme"),mode=JSON.parse(localStorage.getItem("sakina:themeMode")||"\"manual\"");if(mode==="time"){var hr=new Date().getHours();document.documentElement.dataset.theme=(hr>=6&&hr<18)?"light":"dark"}else if(t)document.documentElement.dataset.theme=JSON.parse(t);if(JSON.parse(localStorage.getItem("sakina:reduceMotion")||"false"))document.documentElement.dataset.motion="reduce"}catch(e){}</script>
 </head>
 <body>
 <a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
@@ -68,12 +68,13 @@
           <div class="eyebrow" id="heroEyebrow">بث مباشر · ٢٤ ساعة</div>
           <h1 class="now-title" id="heroTitle">إذاعة القرآن الكريم</h1>
           <div class="now-sub" id="heroSub">اختر الإذاعة واضغط تشغيل</div>
+          <div class="radio-station-controls" role="group" aria-label="تغيير الإذاعة"><button type="button" id="radioPrev" aria-label="الإذاعة السابقة"><span aria-hidden="true">‹</span></button><span>تغيير المحطة</span><button type="button" id="radioNext" aria-label="الإذاعة التالية"><span aria-hidden="true">›</span></button></div>
         </div>
         <div class="radio-speaker" aria-hidden="true"><span></span></div>
       </div>
       <div class="radio-console">
         <button class="big" id="heroBtn" aria-label="تشغيل الإذاعة" aria-describedby="heroTitle"></button>
-        <div class="radio-console-copy"><span class="radio-brand">سَكِينَة</span><span class="status" id="heroStatus">جاهز</span></div>
+        <div class="radio-console-copy"><span class="radio-brand">سَكِينَة</span><span class="radio-status"><span class="radio-live-light" aria-hidden="true"></span><span class="status" id="heroStatus">جاهز</span></span></div>
         <span class="hero-action" id="heroAction">تشغيل الإذاعة</span>
         <button type="button" class="radio-knob" id="radioVolumeBtn" role="slider" aria-label="مستوى الصوت، لف المقبض" aria-valuemin="0" aria-valuemax="100" aria-valuenow="90" title="لف المقبض للتحكم في الصوت"></button>
       </div>
@@ -246,6 +247,7 @@
 </main>
 
 <footer><div class="wrap">
+  <details class="appearance-options"><summary>المظهر والحركة</summary><div class="appearance-controls"><label for="themeSchedule">المظهر</label><select id="themeSchedule"><option value="manual">يدوي أو حسب الجهاز</option><option value="time">تلقائي حسب الوقت (٦ صباحًا–٦ مساءً)</option></select><label class="motion-choice"><input type="checkbox" id="reduceMotion"> تقليل الحركة</label></div></details>
   <details class="foot-sadaqa footer-links"><summary>روابط الموقع</summary>
   <nav class="footer-links-list" aria-label="روابط سكينة قرآن">
     <a href="/quran/">القرآن الكريم</a>
@@ -322,6 +324,6 @@
 <audio id="audio" preload="none" playsinline></audio>
 
 <script src="data.js?v=40" defer></script>
-<script src="app.js?v=68" defer></script>
+<script src="app.js?v=69" defer></script>
 </body>
 </html>

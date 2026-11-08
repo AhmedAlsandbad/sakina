@@ -155,3 +155,27 @@ body #hero button.radio-knob::after{content:"";position:absolute;top:3px;left:ca
 /* Keep the radio display balanced after removing the decorative scale. */
 body #hero .radio-display{display:flex;flex-direction:column;justify-content:center;min-height:112px}
 @media(max-width:600px){body #hero .radio-display{min-height:100px}}
+
+/* Small, purposeful interactions that keep the listening surface calm. */
+body #hero .radio-station-controls{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:8px;color:#e4d6b9;font-size:.72rem}
+body #hero .radio-station-controls button{display:grid;place-items:center;min-width:40px;min-height:40px;border:1px solid #c1a16a;border-radius:50%;background:#234537;color:#fff2d0;font-size:1.45rem;line-height:1;cursor:pointer}
+body #hero .radio-station-controls button:focus-visible{outline:2px solid #fff2d0;outline-offset:2px}
+body #hero .radio-status{display:flex;align-items:center;gap:6px}
+body #hero .radio-live-light{width:7px;height:7px;border-radius:50%;background:#9d8060;flex:none}
+body #hero.playing .radio-live-light{background:#e66a51;box-shadow:0 0 8px #e66a51aa}
+body #hero.playing .radio-live-light{animation:radio-glow 2.4s ease-in-out infinite}
+@keyframes radio-glow{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes page-enter{from{opacity:.8;transform:translateX(9px)}to{opacity:1;transform:translateX(0)}}
+body #qReading .page-arrive{animation:page-enter .22s ease-out}
+body #adhList .dhikr.bump .ring{transform:scale(1.1);transition:transform .12s ease}
+body #adhList .dhikr.done .ring{box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 15%,transparent)}
+.appearance-options{margin:0 0 16px;border:1px solid var(--rule);border-radius:14px;background:var(--panel)}
+.appearance-options summary{cursor:pointer;min-height:44px;padding:8px 15px;color:var(--ink)}
+.appearance-controls{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 12px;align-items:center;padding:0 15px 15px}
+.appearance-controls select{min-width:0;min-height:44px;border:1px solid var(--rule);border-radius:10px;background:var(--panel-2);color:var(--ink);padding:7px;font:inherit}
+.appearance-controls .motion-choice{grid-column:1 / -1;display:flex;align-items:center;gap:8px;min-height:40px}
+@media(max-width:380px){body #hero .radio-station-controls{gap:6px}body #hero .radio-station-controls button{min-width:36px;min-height:36px}}
+@media(prefers-reduced-motion:reduce){body #hero.playing .radio-live-light,body #qReading .page-arrive{animation:none!important}body #adhList .dhikr.bump .ring{transition:none!important;transform:none}}
+html[data-motion="reduce"] *,html[data-motion="reduce"] *::before,html[data-motion="reduce"] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+
+body #hero .radio-status .status.live::before{display:none}

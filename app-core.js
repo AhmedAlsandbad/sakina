@@ -424,6 +424,16 @@ INIT.radio = () => {
   loadRadios();
   paint(P.state);
 };
+function changeStation(step) {
+  const saved = store.get("lastStation", "cairo");
+  const current = P.cur && P.cur.key && P.cur.key.startsWith("st:") ? P.cur.key.slice(3) : saved;
+  let index = STATIONS.findIndex(s => s.id === current);
+  if (index < 0) index = 0;
+  const s = STATIONS[(index + step + STATIONS.length) % STATIONS.length];
+  store.set("lastStation", s.id); play(stationItem(s));
+}
+$("#radioPrev").onclick = () => changeStation(-1);
+$("#radioNext").onclick = () => changeStation(1);
 async function loadRadios() {
   try {
     const d = await getJSON(API + "radios?language=ar", "c:radios", 24);
@@ -870,7 +880,7 @@ function renderMushaf() {
   $("#pageNext").disabled = pages[pages.length-1] >= 604;
   store.set("mushafPage", currentPage);
   pageHost.innerHTML = "";
-  const list = document.createElement("div"); list.className = "mushaf-spread";
+  const list = document.createElement("div"); list.className = "mushaf-spread page-arrive";
   pages.forEach(number => {
     const page = document.createElement("div"); page.className = "mushaf-sheet";
     const body = document.createElement("div"); body.className = "mushaf-art-host"; body.textContent = "جارٍ تحميل الصفحة…";
@@ -1025,9 +1035,30 @@ $("#fatihaBtn").onclick = () => {
 /* =========================================================
    APP CHROME
    ========================================================= */
+const themeSchedule = $("#themeSchedule"), reduceMotion = $("#reduceMotion");
+function updateAutoTheme() {
+  if (store.get("themeMode", "manual") !== "time") return;
+  const hour = new Date().getHours(), theme = hour >= 6 && hour < 18 ? "light" : "dark";
+  document.documentElement.dataset.theme = theme;
+  document.querySelector('meta[name="theme-color"]').content = theme === "light" ? "#f5efe0" : "#071512";
+}
+themeSchedule.value = store.get("themeMode", "manual") === "time" ? "time" : "manual";
+reduceMotion.checked = !!store.get("reduceMotion", false);
+themeSchedule.onchange = () => {
+  store.set("themeMode", themeSchedule.value);
+  if (themeSchedule.value === "time") updateAutoTheme();
+  else { const saved = store.get("theme", null); if (saved) document.documentElement.dataset.theme = saved; else delete document.documentElement.dataset.theme; }
+};
+reduceMotion.onchange = () => {
+  store.set("reduceMotion", reduceMotion.checked);
+  if (reduceMotion.checked) document.documentElement.dataset.motion = "reduce"; else delete document.documentElement.dataset.motion;
+};
+setInterval(updateAutoTheme, 60000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) updateAutoTheme(); });
 $("#themeBtn").onclick = () => { const r = document.documentElement;
   const dark = r.dataset.theme ? r.dataset.theme === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
   r.dataset.theme = dark ? "light" : "dark"; store.set("theme", r.dataset.theme);
+  store.set("themeMode", "manual"); themeSchedule.value = "manual";
   document.querySelector('meta[name="theme-color"]').content = dark ? "#f5efe0" : "#071512"; };
 
 let deferred = null;
