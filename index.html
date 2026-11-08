@@ -33,7 +33,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="styles.css?v=59">
-<link rel="stylesheet" href="/polish.css?v=4">
+<link rel="stylesheet" href="/polish.css?v=5">
 <script src="/analytics.js?v=2" defer></script>
 <script>try{var t=localStorage.getItem("sakina:theme");if(t)document.documentElement.dataset.theme=JSON.parse(t)}catch(e){}</script>
 </head>
@@ -76,7 +76,7 @@
         <button class="big" id="heroBtn" aria-label="تشغيل الإذاعة" aria-describedby="heroTitle"></button>
         <div class="radio-console-copy"><span class="radio-brand">سَكِينَة</span><span class="status" id="heroStatus">جاهز</span></div>
         <span class="hero-action" id="heroAction">تشغيل الإذاعة</span>
-        <button type="button" class="radio-knob" id="radioVolumeBtn" aria-label="التحكم في الصوت" aria-expanded="false" aria-controls="radioVolumePanel"></button>
+        <button type="button" class="radio-knob" id="radioVolumeBtn" role="slider" aria-label="مستوى الصوت، لف المقبض" aria-valuemin="0" aria-valuemax="100" aria-valuenow="90" title="لف المقبض للتحكم في الصوت"></button>
       </div>
       <div class="radio-volume-panel" id="radioVolumePanel" hidden><label for="radioVolume">مستوى الصوت</label><input type="range" id="radioVolume" min="0" max="1" step="0.05" value="0.9" aria-label="مستوى الصوت"><output id="radioVolumeValue"></output><p id="radioVolumeHint" hidden>استخدم أزرار الصوت على الآيفون للتحكم في مستوى الصوت.</p></div>
       <button class="link-btn" id="retryBtn" hidden>إعادة المحاولة</button>
@@ -323,6 +323,6 @@
 <audio id="audio" preload="none" playsinline></audio>
 
 <script src="data.js?v=40" defer></script>
-<script src="app.js?v=67" defer></script>
+<script src="app.js?v=68" defer></script>
 </body>
 </html>

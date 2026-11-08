@@ -247,16 +247,48 @@ rate.onchange = () => { store.set("rate", +rate.value); if (P.cur && P.cur.kind 
 const vol = $("#vol"), radioVol = $("#radioVolume"), radioVolBtn = $("#radioVolumeBtn"), radioVolPanel = $("#radioVolumePanel"), radioVolValue = $("#radioVolumeValue");
 const iPhoneVolume = /iPhone|iPod/i.test(navigator.userAgent);
 vol.value = store.get("vol", .9); audio.volume = +vol.value;
-function showVolume(value) { vol.value = radioVol.value = String(value); radioVolValue.textContent = ard(Math.round(value * 100)) + "٪"; }
+function showVolume(value) { const percent = Math.round(value * 100); vol.value = radioVol.value = String(value); radioVolValue.textContent = ard(percent) + "٪"; radioVolBtn.style.setProperty("--radio-angle", (value * 270 - 135) + "deg"); if (!iPhoneVolume) { radioVolBtn.setAttribute("aria-valuenow", String(percent)); radioVolBtn.setAttribute("aria-valuetext", ard(percent) + " بالمئة"); } }
 function setVolume(value) { const v = Math.max(0, Math.min(1, Number(value))); audio.volume = v; store.set("vol", v); showVolume(v); }
 showVolume(+vol.value);
 vol.oninput = () => setVolume(vol.value);
 radioVol.oninput = () => setVolume(radioVol.value);
 audio.addEventListener("volumechange", () => { if (!iPhoneVolume) showVolume(audio.volume); });
-radioVolBtn.onclick = () => { const opening = radioVolPanel.hidden; radioVolPanel.hidden = !opening; radioVolBtn.setAttribute("aria-expanded", String(opening)); };
 if (iPhoneVolume) {
   radioVol.hidden = true; radioVolValue.hidden = true; $("#radioVolumeHint").hidden = false;
   vol.hidden = true; document.querySelector('label[for="vol"]').textContent = "الصوت من أزرار الآيفون";
+  radioVolBtn.setAttribute("role", "button"); radioVolBtn.setAttribute("aria-label", "كيفية التحكم في الصوت على الآيفون");
+  ["aria-valuemin", "aria-valuemax", "aria-valuenow", "aria-valuetext"].forEach(x => radioVolBtn.removeAttribute(x));
+  radioVolBtn.onclick = () => { radioVolPanel.hidden = !radioVolPanel.hidden; };
+} else {
+  let lastAngle = null, pointerId = null;
+  function angle(e) {
+    const r = radioVolBtn.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+    return Math.atan2(dy, dx) * 180 / Math.PI;
+  }
+  radioVolBtn.addEventListener("pointerdown", e => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    e.preventDefault(); pointerId = e.pointerId; lastAngle = angle(e);
+    radioVolBtn.setPointerCapture(e.pointerId);
+  });
+  radioVolBtn.addEventListener("pointermove", e => {
+    if (e.pointerId !== pointerId || lastAngle === null) return;
+    const nextAngle = angle(e); let delta = nextAngle - lastAngle;
+    if (delta > 180) delta -= 360; else if (delta < -180) delta += 360;
+    lastAngle = nextAngle; setVolume(+radioVol.value + delta / 270);
+  });
+  function finishKnob(e) { if (e.pointerId === pointerId) { pointerId = null; lastAngle = null; } }
+  radioVolBtn.addEventListener("pointerup", finishKnob);
+  radioVolBtn.addEventListener("pointercancel", finishKnob);
+  radioVolBtn.addEventListener("lostpointercapture", finishKnob);
+  radioVolBtn.addEventListener("keydown", e => {
+    const key = e.key; let value = +radioVol.value;
+    if (key === "ArrowUp" || key === "ArrowRight") value += .05;
+    else if (key === "ArrowDown" || key === "ArrowLeft") value -= .05;
+    else if (key === "Home") value = 0;
+    else if (key === "End") value = 1;
+    else return;
+    e.preventDefault(); setVolume(value);
+  });
 }
 
 document.addEventListener("keydown", e => {

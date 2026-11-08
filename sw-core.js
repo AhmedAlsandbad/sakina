@@ -1,5 +1,5 @@
 // Sakina Quran service worker: app shell, Web Push and reminder checks.
-const V = "sakina-v96";
+const V = "sakina-v97";
 const PREF_CACHE = "sakina-reminders-v1";
 const PREF_URL = "/__sakina/reminder-settings";
 const STATE_URL = "/__sakina/reminder-state";
@@ -8,12 +8,12 @@ const SHELL = [
   "/index.html",
   "/offline.html",
   "/styles.css?v=59",
-  "/polish.css?v=4",
+  "/polish.css?v=5",
   "/player-ui.css?v=1",
   "/ui-refresh.css?v=2",
   "/data.js?v=40",
-  "/app.js?v=67",
-  "/app-core.js?v=67",
+  "/app.js?v=68",
+  "/app-core.js?v=68",
   "/app-loader.js?v=1",
   "/app-loader.js?v=2",
   "/seo.js?v=4",
