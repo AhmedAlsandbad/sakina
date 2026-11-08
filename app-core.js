@@ -679,13 +679,16 @@ function setPeriod(p) {
   $$("#v-adhkar .seg button").forEach(b => b.setAttribute("aria-selected", b.dataset.period === p));
   $("#adhTitle").textContent = adhLabels[p];
   $("#sleepAudio").hidden = p !== "sleep";
+  $("#adhAudio").hidden = p !== "m" && p !== "e";
+  if (p === "m" || p === "e") { $("#adhAudioTitle").textContent = "استمع إلى " + adhLabels[p]; $("#adhAudioSource").href = p === "m" ? "https://islamhouse.com/ar/audios/92368/" : "https://islamhouse.com/ar/audios/327603/"; }
   renderAdhkar();
 }
 function renderAdhkar() {
   const st = store.get(adhKey(), {});
-  $("#adhList").innerHTML = adhItems().map(d => {
+  $("#adhList").innerHTML = adhItems().map((d, index) => {
     const n = Math.min(st[d.id] || 0, d.c), txt = period === "e" && d.e ? d.e : d.m;
     return `<button class="dhikr${n >= d.c ? " done" : ""}" data-dh="${d.id}">
+      <span class="dhikr-heading"><span>الذكر ${ard(index + 1)} من ${ard(adhItems().length)}</span><span>التكرار ${ard(d.c)} ${d.c === 1 ? "مرة" : "مرات"}</span></span>
       ${d.title ? `<span class="ttl">${d.title}</span>` : ""}
       <p class="${d.q ? "q" : "q naskh"}">${txt}</p>
       <span class="dt"><span class="src">${d.q ? "القرآن الكريم · " + d.src : d.src}${d.c > 1 ? ` · ${ard(d.c)} ${d.c >= 11 ? "مرة" : "مرات"}` : ""}</span>
@@ -719,6 +722,13 @@ $("#adhList").onclick = e => {
 };
 $$("#v-adhkar .seg button").forEach(b => b.onclick = () => { track("adhkar_period_select", { period: b.dataset.period }); $("#adhContent").hidden = false; setPeriod(b.dataset.period); });
 $("#sleepReader").innerHTML = RUQYAH_RECITERS.map(r => `<option value="${esc(r.id)}">${esc(r.name)}</option>`).join("");
+$("#adhAudioPlay").onclick = () => {
+  const morning = period === "m";
+  if (!morning && period !== "e") return;
+  const key = "adhkar:" + period;
+  if (P.cur && P.cur.key === key) { toggle(); return; }
+  play({kind:"file", key, title:adhLabels[period], sub:"مشاري العفاسي", eyebrow:"أذكار مسموعة · دار الإسلام", url:"https://d1.islamhouse.com/data/ar/ih_sounds/chain_01/Mishari_Raashid/Azkar_AlSba7_w_AlMsa/" + (morning ? "ar_1419_Azkar_AlSba7.mp3" : "ar_1419_Azkar_AlMsa.mp3")});
+};
 $("#sleepPlay").onclick = () => {
   const r = RUQYAH_RECITERS.find(x => x.id === $("#sleepReader").value); if (!r) return;
   const q = [112,113,114].map((n,i) => ({kind:"file", key:"sleep:"+n, title:["سورة الإخلاص","سورة الفلق","سورة الناس"][i], sub:r.name, eyebrow:"قبل النوم", url:r.base + String(n).padStart(3,"0") + ".mp3"}));

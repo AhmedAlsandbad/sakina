@@ -32,7 +32,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="styles.css?v=57">
+<link rel="stylesheet" href="styles.css?v=58">
 <script src="/analytics.js?v=2" defer></script>
 <script>try{var t=localStorage.getItem("sakina:theme");if(t)document.documentElement.dataset.theme=JSON.parse(t)}catch(e){}</script>
 </head>
@@ -65,6 +65,7 @@
       <div class="eyebrow" id="heroEyebrow">بث مباشر · ٢٤ ساعة</div>
       <h1 class="now-title" id="heroTitle">إذاعة القرآن الكريم</h1>
       <div class="now-sub" id="heroSub">اختر الإذاعة واضغط تشغيل</div>
+      <div class="radio-dial" aria-hidden="true"><span></span></div>
       <button class="big" id="heroBtn" aria-label="تشغيل الإذاعة" aria-describedby="heroTitle"></button>
       <span class="hero-action" id="heroAction">تشغيل الإذاعة</span>
       <div><span class="status" id="heroStatus">جاهز</span></div>
@@ -204,6 +205,7 @@
       </div>
     </div>
     <div id="adhContent" hidden>
+    <div class="adh-audio" id="adhAudio" hidden><div><strong id="adhAudioTitle">استمع للأذكار</strong><p>بصوت مشاري العفاسي · التسجيل مستقل عن عدّاد القراءة</p></div><button type="button" class="chip primary" id="adhAudioPlay">▶ استمع الآن</button><a id="adhAudioSource" target="_blank" rel="noopener noreferrer">المصدر: دار الإسلام</a></div>
     <div id="sleepAudio" class="sleep-listen" hidden>
       <h3>استمع قبل النوم</h3><p>تشغيل سور الإخلاص والفلق والناس كاملة. آية الكرسي وخواتيم البقرة متاحتان للقراءة أدناه.</p>
       <div class="sleep-options"><label>القارئ <select id="sleepReader"></select></label><label>مؤقت النوم <select id="sleepTimer"><option value="0">بدون مؤقت</option><option value="15">١٥ دقيقة</option><option value="30">٣٠ دقيقة</option><option value="60">ساعة</option></select></label></div>
@@ -312,6 +314,6 @@
 <audio id="audio" preload="none" playsinline></audio>
 
 <script src="data.js?v=39" defer></script>
-<script src="app.js?v=63" defer></script>
+<script src="app.js?v=64" defer></script>
 </body>
 </html>
