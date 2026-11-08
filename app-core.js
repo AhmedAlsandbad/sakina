@@ -244,8 +244,21 @@ $("#shFwd").onclick = () => { audio.currentTime = Math.min((audio.duration || 0)
 $("#shBack").onclick = () => { audio.currentTime = Math.max(0, audio.currentTime - 15); };
 const rate = $("#rate"); rate.value = String(store.get("rate", 1));
 rate.onchange = () => { store.set("rate", +rate.value); if (P.cur && P.cur.kind === "file") audio.playbackRate = +rate.value; };
-const vol = $("#vol"); vol.value = store.get("vol", .9); audio.volume = +vol.value;
-vol.oninput = () => { audio.volume = +vol.value; store.set("vol", +vol.value); };
+const vol = $("#vol"), radioVol = $("#radioVolume"), radioVolBtn = $("#radioVolumeBtn"), radioVolPanel = $("#radioVolumePanel"), radioVolValue = $("#radioVolumeValue");
+const iPhoneVolume = /iPhone|iPod/i.test(navigator.userAgent);
+vol.value = store.get("vol", .9); audio.volume = +vol.value;
+function showVolume(value) { vol.value = radioVol.value = String(value); radioVolValue.textContent = ard(Math.round(value * 100)) + "٪"; }
+function setVolume(value) { const v = Math.max(0, Math.min(1, Number(value))); audio.volume = v; store.set("vol", v); showVolume(v); }
+showVolume(+vol.value);
+vol.oninput = () => setVolume(vol.value);
+radioVol.oninput = () => setVolume(radioVol.value);
+audio.addEventListener("volumechange", () => { if (!iPhoneVolume) showVolume(audio.volume); });
+radioVolBtn.onclick = () => { const opening = radioVolPanel.hidden; radioVolPanel.hidden = !opening; radioVolBtn.setAttribute("aria-expanded", String(opening)); };
+if (iPhoneVolume) {
+  radioVol.hidden = true; radioVolValue.hidden = true; $("#radioVolumeHint").hidden = false;
+  vol.hidden = true; document.querySelector('label[for="vol"]').textContent = "الصوت من أزرار الآيفون";
+}
+
 document.addEventListener("keydown", e => {
   if (e.code === "Space" && !/INPUT|SELECT|TEXTAREA|BUTTON/.test(e.target.tagName)) { e.preventDefault(); toggle(); }
   if (e.key === "Escape") closeSheet();
@@ -353,6 +366,7 @@ function route() {
   track("view_section", { section: v });
 }
 window.addEventListener("hashchange", route);
+window.addEventListener("load", () => { if (location.hash === "#radio" && window.scrollY > 0 && window.scrollY < 160) requestAnimationFrame(() => window.scrollTo(0, 0)); }, { once: true });
 window.addEventListener("popstate", e => {
   const st = e.state || {};
   if (!st.sheet && !$("#sheet").hidden) closeSheet(true);

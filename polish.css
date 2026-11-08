@@ -127,3 +127,22 @@ body #v-radio .dedication-details{grid-column:1 / -1;grid-row:5}
  body #v-radio .dedication-names{gap:2px 5px}
 }
 @media(max-width:350px){body #v-radio .dedication-names li,body #v-radio .dedication-names li:nth-child(n){align-items:center}}
+
+/* The left radio knob opens accessible volume controls. */
+body #hero button.radio-knob{cursor:pointer;min-width:44px;min-height:44px;padding:0;touch-action:manipulation}
+body #hero button.radio-knob:focus-visible{outline:3px solid #fff2c8;outline-offset:4px}
+body #hero .radio-volume-panel{position:relative;display:flex;align-items:center;gap:10px;margin:12px 2px 2px;padding:10px 12px;border:1px solid #b99a62;border-radius:10px;background:#14372b;color:#fff5de;text-align:start}
+body #hero .radio-volume-panel[hidden]{display:none}
+body #hero .radio-volume-panel label{font-size:.78rem;white-space:nowrap}
+body #hero .radio-volume-panel input{min-width:0;flex:1;accent-color:#e2bd79;touch-action:pan-y}
+body #hero .radio-volume-panel output{min-width:34px;font-size:.8rem}
+body #hero .radio-volume-panel p{margin:0;color:#fff5de;font-size:.8rem;line-height:1.6}
+body #hero.playing .radio-speaker span{box-shadow:0 0 0 4px #4b3320,inset 0 0 18px #0008,0 0 12px #e6b75c77}
+@media(max-width:859px){
+ header.top{top:0;padding-top:env(safe-area-inset-top,0px)}
+ body #main{padding-top:18px}
+ body #v-radio .radio-basmala{position:relative;display:block;margin:2px auto 12px;line-height:1.5}
+ body #dock{position:fixed;left:0;right:0;bottom:0;width:100%;padding-bottom:0;z-index:30}
+ body #dock .tabs-bottom{padding-bottom:max(8px,env(safe-area-inset-bottom,0px))}
+}
+@supports(overflow:clip){body{overflow-x:clip}}
