@@ -172,7 +172,7 @@ function fail() {
 function stop() { playbackEpoch++; clearTimeout(retryTimer); retryPending = false; P.want = false; clearTimeout(P.stallT); audio.pause(); paint("idle"); }
 function toggle() {
   if (!P.cur) {
-    const it = store.get("lastItem", null) || stationItem(STATIONS[0]), lq = store.get("lastQueue", null);
+    const saved = store.get("lastItem", null), it = saved && saved.key === "st:roqiah" ? stationItem(STATIONS.find(s => s.id === "roqiah")) : (saved || stationItem(STATIONS[0])), lq = store.get("lastQueue", null);
     if (it.moshaf && lq && lq.moshaf === it.moshaf) {
       const q = lq.list.map(n => ({ kind: "file", key: `q:${lq.moshaf}:${n}`, title: "سورة " + (lq.names[n] || n), sub: lq.recName, eyebrow: it.eyebrow,
         url: lq.server + String(n).padStart(3, "0") + ".mp3", rec: lq.rec, moshaf: lq.moshaf, n }));
@@ -995,7 +995,8 @@ $(".skip-link").addEventListener("click", e => { e.preventDefault(); const main 
 /* boot */
 if (!location.hash) { const v = store.get("view", "radio"); history.replaceState(null, "", "#" + v); }
 route();
-const last = store.get("lastItem", null);
+const savedLast = store.get("lastItem", null);
+const last = savedLast && savedLast.key === "st:roqiah" ? stationItem(STATIONS.find(s => s.id === "roqiah")) : savedLast;
 if (last) { P.cur = null; setMeta(last); $("#capSub").textContent = "اضغط للمتابعة · " + last.sub; }
 if (!last || last.kind !== "live") { const s = STATIONS.find(x => x.id === store.get("lastStation", "cairo")) || STATIONS[0];
   $("#heroEyebrow").textContent = "بث مباشر · " + s.tag; $("#heroTitle").textContent = s.full; $("#heroSub").textContent = s.note; }

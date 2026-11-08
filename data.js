@@ -7,7 +7,7 @@ SAKINA.STATIONS = [
   { id: "riyadh",  name: "الرياض",  full: "إذاعة القرآن الكريم من الرياض",  tag: "السعودية", note: "الإذاعة الرسمية", url: "https://stream.radiojar.com/0tpy1h0kxtzuv" },
   { id: "makkah",  name: "مكة",     full: "إذاعة القرآن الكريم من مكة المكرمة", tag: "السعودية", note: "مكة المكرمة", url: "https://edge.mixlr.com/channel/rwumx" },
   { id: "sharjah", name: "الشارقة", full: "إذاعة القرآن الكريم من الشارقة", tag: "الإمارات", note: "102.7 FM",       url: "https://l3.itworkscdn.net/smcquranlive/quranradiolive/icecast.audio" },
-  { id: "roqiah",  name: "الرقية",  full: "إذاعة الرقية الشرعية",           tag: "متواصلة",  note: "على مدار الساعة", url: "https://backup.qurango.net/radio/roqiah" }
+  { id: "roqiah",  name: "الرقية",  full: "إذاعة الرقية الشرعية",           tag: "متواصلة",  note: "بصوت مشاري العفاسي", url: "https://serverkw.quran-uni.com:8028/stream?type=http" }
 ];
 
 SAKINA.RUQYAH_RECITERS = [

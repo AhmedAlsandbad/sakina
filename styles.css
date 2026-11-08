@@ -703,3 +703,8 @@ body::after{background-size:96px 96px}
 .dhikr-heading{display:flex;justify-content:space-between;gap:12px;margin-bottom:12px;color:var(--gold);font-size:.76rem;font-family:var(--f-body)}
 .dhikr{border-radius:16px}.dhikr .q{line-height:2.15}.dhikr.done{opacity:.72}
 @media(max-width:380px){.adh-audio{grid-template-columns:1fr}.adh-audio .chip{justify-self:start}.dedication-frame{grid-template-columns:minmax(80px,.7fr) minmax(0,1.8fr)}.dedication-names li span{font-size:.88rem}}
+
+/* Keep source details tucked away until requested. */
+.dhikr .src{display:none}.dhikr .dt{justify-content:flex-end}.adh-audio-details{grid-column:1 / -1;font-size:.78rem;color:var(--dim)}.adh-audio-details summary{cursor:pointer}.adh-audio-details a{display:inline-block;margin-top:7px;color:var(--gold)}
+
+#rReader .part h3 span{display:none}
