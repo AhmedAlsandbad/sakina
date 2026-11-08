@@ -300,7 +300,7 @@ setInterval(sleepLabel, 20000);
 /* sheet */
 let sheetReturnFocus = null;
 let sheetBackground = [], sheetOverflow = "";
-function openSheet(allowEmpty) { if (!P.cur && allowEmpty !== true) { toggle(); return; } const s = $("#sheet"), c = $("#scrim"); if (!s.hidden) return; sheetReturnFocus = document.activeElement;
+function openSheet(allowEmpty) { const s = $("#sheet"), c = $("#scrim"); if (!s.hidden) return; sheetReturnFocus = document.activeElement;
   sheetBackground = [...document.body.children].filter(el => el !== s && el !== c && !["SCRIPT", "AUDIO"].includes(el.tagName)).map(el => ({ el, inert: el.inert }));
   sheetBackground.forEach(x => { x.el.inert = true; }); sheetOverflow = document.body.style.overflow; document.body.style.overflow = "hidden";
   s.hidden = c.hidden = false; $("#sheetClose").focus();

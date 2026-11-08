@@ -1,0 +1,78 @@
+
+/* Calm, readable listening layout. */
+body #v-radio #hero{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto auto auto;gap:2px 16px;align-items:center;text-align:start;padding:18px 22px;margin:0 auto 16px;border-radius:20px;min-height:0;background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 12%,var(--panel-2)),var(--panel));border:1px solid color-mix(in srgb,var(--gold) 40%,var(--rule))}
+body #v-radio #hero:before{inset:6px;border-radius:15px;opacity:.16;pointer-events:none}
+body #hero #heroEyebrow{grid-column:1;grid-row:1;text-align:start;margin:0}
+body #hero #heroTitle{grid-column:1;grid-row:2;text-align:start;font-size:clamp(1.22rem,3.4vw,1.8rem);line-height:1.5;margin:0}
+body #hero #heroSub{grid-column:1;grid-row:3;text-align:start;font-size:.85rem;line-height:1.5}
+body #hero .radio-dial{grid-column:1;grid-row:4;width:min(100%,250px);height:17px;margin:10px 0 0;border-radius:4px;opacity:1;background:repeating-linear-gradient(90deg,transparent 0 9px,color-mix(in srgb,var(--gold) 55%,transparent) 9px 10px,transparent 10px 18px);border:1px solid color-mix(in srgb,var(--gold) 70%,var(--rule))}
+body #hero .radio-dial span{width:3px;left:45%;top:2px;bottom:2px}
+body #hero #heroBtn{grid-column:2;grid-row:1 / 5;width:58px;height:58px;margin:0;border-radius:50%;box-shadow:0 0 0 5px color-mix(in srgb,var(--gold) 13%,transparent)}
+body #hero .hero-action{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}
+body #hero > div:has(> #heroStatus){grid-column:1 / -1;grid-row:5;text-align:start;margin-top:6px}
+body #hero .wave{display:none}
+body #v-radio .dedication{width:100%;max-width:720px;margin:0 auto 20px;padding:5px;border-radius:18px}
+body #v-radio .dedication-frame{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:center;padding:12px 14px;text-align:start}
+body #v-radio .dedication-eyebrow,body #v-radio .dedication-divider{display:none}
+body #v-radio .dedication h2{grid-column:1;grid-row:1;font-size:1.28rem;line-height:1.5;white-space:nowrap;margin:0}
+body #v-radio .dedication-sub{grid-column:2;grid-row:1;text-align:start;font-size:.85rem;margin:0}
+body #v-radio .dedication-names{grid-column:1 / -1;grid-row:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;max-width:none;gap:2px 10px;margin:4px 0}
+body #v-radio .dedication-names li,body #v-radio .dedication-names li:nth-child(n){display:flex;align-items:baseline;gap:5px;border:0;padding:3px 0;min-width:0;text-align:start;line-height:1.5}
+body #v-radio .dedication-names small{display:inline;flex:none;font-size:.67rem;line-height:1.5}
+body #v-radio .dedication-names li span{display:inline;font-size:clamp(.9rem,3.7vw,1.05rem);line-height:1.5;overflow-wrap:normal}
+body #v-radio .dedication-prayer{grid-column:1 / -1;grid-row:3;font-size:.9rem;line-height:1.55;margin:2px 0;text-align:center}
+body #v-radio .dedication-details{grid-column:1 / -1;grid-row:4;text-align:center}
+body #v-radio .dedication-details summary{min-height:40px;margin:0;padding:4px 15px}
+body #v-radio .friday-card{padding:16px;border-radius:18px}
+body #v-radio .daily-dhikr{margin-top:10px;padding:10px 12px}
+body #v-adhkar .adh-disclosure{padding:20px;border-radius:20px}
+body #v-adhkar .seg{gap:8px}
+body #v-adhkar .seg button{min-height:72px;padding:12px;border-radius:14px}
+body #v-adhkar .adh-audio{padding:13px;gap:8px;margin:12px 0}
+body #v-adhkar .adh-audio-details[hidden]{display:none!important}
+body #v-adhkar .dhikr{padding:16px;border-radius:16px}
+body #v-adhkar .dhikr-heading{padding-bottom:8px;border-bottom:1px solid var(--rule);margin-bottom:10px}
+body #v-adhkar .dhikr .q{line-height:2}
+body #capsule{background:var(--panel-2);border-radius:16px;box-shadow:0 10px 30px #0003;min-height:60px;gap:10px}
+body #capsule #capBtn{border-radius:50%;width:46px;height:46px}
+body #capsule .info b{font-family:var(--f-body);font-size:.91rem}
+body #capsule .info small{color:var(--dim)}
+body #sheet{max-height:min(88dvh,740px);padding:4px 20px calc(18px + env(safe-area-inset-bottom,0px));border-radius:24px 24px 0 0}
+body #sheet .sheet-art{width:112px;height:112px;border-radius:22px;margin:4px auto 12px}
+body #sheet .sheet-art img{width:74px;height:74px}
+body #sheet .sheet-title{font-size:1.25rem;line-height:1.45}
+body #sheet .ctrl{margin:8px 0 12px;gap:8px}
+body #sheet .pb.big2{width:64px;height:64px}
+body #sheet .sheet-row{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+body #sheet .sheet-row .field:not([hidden]){flex:1 1 135px;max-width:240px;padding:8px}
+body #sheet .sheet-row .field[hidden]{display:none}
+body #sheet .sheet-row .field label{margin-bottom:3px}
+@media(min-width:860px){
+ body #dock{background:color-mix(in srgb,var(--night) 96%,transparent);border-top:1px solid var(--rule);padding:8px 18px}
+ body #capsule{max-width:none;width:100%;margin:0;min-height:60px;background:transparent;border:0;box-shadow:none;border-radius:0}
+ body #capsule .info{max-width:320px}
+ body #capsule #sleepBtn{margin-inline-start:auto}
+ body #sheet{inset:50% auto auto 50%;transform:translate(-50%,-44%);width:min(560px,calc(100% - 40px));border-radius:24px;border:1px solid var(--rule);opacity:0}
+ body #sheet.show{transform:translate(-50%,-50%);opacity:1}
+}
+@media(max-width:600px){
+ body #v-radio #hero{padding:14px 16px;gap:2px 12px}
+ body #hero #heroBtn{width:52px;height:52px}
+ body #v-radio .dedication-frame{padding:10px;column-gap:8px}
+ body #v-radio .dedication h2{font-size:1.15rem}
+ body #v-radio .dedication-names{column-gap:7px}
+ body #v-radio .dedication-names li span{font-size:.9rem}
+ body #v-radio .dedication-names small{font-size:.6rem}
+ body #v-adhkar .adh-disclosure{padding:16px}
+ body #sheet{width:100%;max-height:88dvh}
+ body #sheet .sheet-art{width:94px;height:94px;margin-bottom:8px}
+ body #sheet .sheet-art img{width:64px;height:64px}
+ body #capsule{width:calc(100% - 14px);margin-bottom:5px}
+ body #capsule .info small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+@media(max-width:350px){
+ body #v-radio .dedication-names li{display:block!important}
+ body #v-radio .dedication-names small{margin-inline-end:3px}
+ body #v-radio .dedication-names li span{font-size:.86rem}
+ body #capsule .info small{display:none}
+}

@@ -21,7 +21,7 @@
 <meta name="twitter:image" content="https://sakinaquran.net/icon-512.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://sakinaquran.net/#website","url":"https://sakinaquran.net/","name":"سكينة قرآن","alternateName":["سكينة","Sakina Quran","SakinaQuran"],"inLanguage":"ar","description":"موقع عربي مجاني للاستماع إلى القرآن الكريم وإذاعات القرآن والمصحف والرقية الشرعية والأذكار ومواقيت الصلاة.","image":{"@id":"https://sakinaquran.net/#logo"},"creator":{"@id":"https://sakinaquran.net/#creator"},"publisher":{"@id":"https://sakinaquran.net/#creator"},"about":[{"@type":"Thing","name":"القرآن الكريم"},{"@type":"Thing","name":"إذاعة القرآن الكريم"},{"@type":"Thing","name":"الرقية الشرعية"},{"@type":"Thing","name":"الأذكار"},{"@type":"Thing","name":"مواقيت الصلاة"}]},{"@type":"ImageObject","@id":"https://sakinaquran.net/#logo","url":"https://sakinaquran.net/icon-512.png","contentUrl":"https://sakinaquran.net/icon-512.png"},{"@type":"Person","@id":"https://sakinaquran.net/#creator","name":"Ahmed Gamal","url":"https://www.linkedin.com/in/ahmeddakhly/","sameAs":["https://www.facebook.com/Ahmed.Alsandbad7","https://www.instagram.com/ahmedalsandbad","https://www.linkedin.com/in/ahmeddakhly/","https://twitter.com/AhmedAlsandbad","https://www.tiktok.com/@ahmed.alsandbad7"]}]}</script>
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="/sakina-logo.svg?v=38" type="image/svg+xml">
+<link rel="icon" href="/sakina-favicon.png" type="image/png" sizes="360x360">
 <link rel="apple-touch-icon" href="icon-192.png?v=38">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -33,6 +33,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="styles.css?v=59">
+<link rel="stylesheet" href="/polish.css?v=1">
 <script src="/analytics.js?v=2" defer></script>
 <script>try{var t=localStorage.getItem("sakina:theme");if(t)document.documentElement.dataset.theme=JSON.parse(t)}catch(e){}</script>
 </head>
@@ -205,7 +206,7 @@
       </div>
     </div>
     <div id="adhContent" hidden>
-    <div class="adh-audio" id="adhAudio" hidden><div><strong id="adhAudioTitle">استمع للأذكار</strong><p>بصوت مشاري العفاسي · التسجيل مستقل عن عدّاد القراءة</p></div><button type="button" class="chip primary" id="adhAudioPlay">▶ استمع الآن</button><details class="adh-audio-details"><summary>تفاصيل التسجيل</summary><a id="adhAudioSource" target="_blank" rel="noopener noreferrer">المصدر: دار الإسلام</a></details></div>
+    <div class="adh-audio" id="adhAudio" hidden><div><strong id="adhAudioTitle">استمع للأذكار</strong><p>بصوت مشاري العفاسي · التسجيل مستقل عن عدّاد القراءة</p></div><button type="button" class="chip primary" id="adhAudioPlay">▶ استمع الآن</button><details class="adh-audio-details" hidden><summary>تفاصيل التسجيل</summary><a id="adhAudioSource" target="_blank" rel="noopener noreferrer">المصدر: دار الإسلام</a></details></div>
     <div id="sleepAudio" class="sleep-listen" hidden>
       <h3>استمع قبل النوم</h3><p>تشغيل سور الإخلاص والفلق والناس كاملة. آية الكرسي وخواتيم البقرة متاحتان للقراءة أدناه.</p>
       <div class="sleep-options"><label>القارئ <select id="sleepReader"></select></label><label>مؤقت النوم <select id="sleepTimer"><option value="0">بدون مؤقت</option><option value="15">١٥ دقيقة</option><option value="30">٣٠ دقيقة</option><option value="60">ساعة</option></select></label></div>
@@ -314,6 +315,6 @@
 <audio id="audio" preload="none" playsinline></audio>
 
 <script src="data.js?v=40" defer></script>
-<script src="app.js?v=65" defer></script>
+<script src="app.js?v=66" defer></script>
 </body>
 </html>
