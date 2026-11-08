@@ -76,3 +76,14 @@ body #sheet .sheet-row .field label{margin-bottom:3px}
  body #v-radio .dedication-names li span{font-size:.86rem}
  body #capsule .info small{display:none}
 }
+
+body #v-radio .dedication-prayer{justify-self:center;max-width:none;width:100%;margin:2px auto}
+@media(max-width:600px){
+ body #v-radio .dedication-names li,body #v-radio .dedication-names li:nth-child(n){gap:2px}
+ body #v-radio .dedication-names li span{font-size:.84rem;white-space:nowrap}
+ body #v-radio .dedication-names small{font-size:.58rem}
+}
+@media(max-width:350px){
+ body #v-radio .dedication-names li,body #v-radio .dedication-names li:nth-child(n){display:flex!important;flex-direction:column;align-items:flex-start;gap:0}
+ body #v-radio .dedication-names li span{font-size:.9rem}
+}
