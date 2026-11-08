@@ -179,3 +179,27 @@ body #adhList .dhikr.done .ring{box-shadow:0 0 0 3px color-mix(in srgb,var(--ok)
 html[data-motion="reduce"] *,html[data-motion="reduce"] *::before,html[data-motion="reduce"] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 
 body #hero .radio-status .status.live::before{display:none}
+
+/* Quiet, tactile feedback shared across navigation and listening controls. */
+body #hero .radio-station-controls button{min-width:44px;min-height:44px;transition:background-color .18s ease,transform .18s ease,box-shadow .18s ease}
+body #hero .radio-station-controls button svg{width:20px;height:20px;display:block}
+body #hero .radio-station-controls button:active{transform:scale(.92);background:#315a48}
+body #hero #heroBtn,body #hero .radio-knob{transition:transform .18s ease,box-shadow .18s ease}
+body #hero #heroBtn:active{transform:scale(.94)}
+body .discover-card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+body .discover-card>span svg{stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s ease}
+body .discover-card:active{transform:scale(.975)}
+body .discover-card:active>span svg{transform:scale(1.1)}
+body #dock .tabs-bottom a svg{stroke-linecap:round;stroke-linejoin:round;transition:transform .2s ease}
+body #dock .tabs-bottom a[aria-current="page"] svg{transform:translateY(-2px)}
+body #dock .tabs-bottom a:active svg{transform:scale(.9)}
+body #dock .tabs-bottom a:focus-visible,body .discover-card:focus-visible{outline:3px solid var(--gold,#b58c4b);outline-offset:2px}
+@media(hover:hover) and (pointer:fine){
+ body .discover-card:hover{transform:translateY(-3px)}
+ body .discover-card:hover>span svg{transform:scale(1.08)}
+ body #hero .radio-station-controls button:hover{background:#315a48;box-shadow:0 0 0 3px #e7c98a26}
+}
+@media(prefers-reduced-motion:reduce){
+ body #hero .radio-station-controls button,body #hero #heroBtn,body #hero .radio-knob,body .discover-card,body .discover-card>span svg,body #dock .tabs-bottom a svg{transition:none}
+ body .discover-card:hover,body .discover-card:active,body .discover-card:hover>span svg,body .discover-card:active>span svg,body #dock .tabs-bottom a:active svg,body #hero .radio-station-controls button:active,body #hero #heroBtn:active{transform:none}
+}
