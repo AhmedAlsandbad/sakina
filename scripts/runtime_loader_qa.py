@@ -39,7 +39,7 @@ for token in ("__sakinaPwaLoader", "/pwa.js?v=3", "/reminders.js?v=1", "/ui-refr
 if not re.search(r'importScripts\("/sw-core\.js\?v=\d+"\)', sw_boot):
     errors.append("sw.js is not using a versioned sw-core bootstrap")
 
-for token in ('const V = "sakina-v93"', '"/app-core.js?v=66"', '"/app-loader.js?v=1"', '"/app-loader.js?v=2"', '"/seo-core.js?v=4"'):
+for token in ('const V = "sakina-v94"', '"/app-core.js?v=66"', '"/app-loader.js?v=1"', '"/app-loader.js?v=2"', '"/seo-core.js?v=4"'):
     if token not in sw_core:
         errors.append(f"sw-core.js missing cache/runtime requirement: {token}")
 
@@ -66,4 +66,4 @@ if errors:
     for error in errors:
         print(" -", error)
     sys.exit(1)
-print(f"Runtime loader QA passed; {seo_pages} SEO pages use the safe bootstrap and PWA cache v93.")
+print(f"Runtime loader QA passed; {seo_pages} SEO pages use the safe bootstrap and PWA cache v94.")

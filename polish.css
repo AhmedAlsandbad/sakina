@@ -87,3 +87,43 @@ body #v-radio .dedication-prayer{justify-self:center;max-width:none;width:100%;m
  body #v-radio .dedication-names li,body #v-radio .dedication-names li:nth-child(n){display:flex!important;flex-direction:column;align-items:flex-start;gap:0}
  body #v-radio .dedication-names li span{font-size:.9rem}
 }
+
+/* A complete radio cabinet, with working play control and a decorative speaker. */
+body #v-radio #hero{display:block;max-width:660px;padding:15px 17px 12px;margin:0 auto 18px;border:2px solid #a77b36;border-radius:22px;background:linear-gradient(120deg,#47351f,#71522f 24%,#49341f 54%,#6a4a28 80%,#3d2c1c);box-shadow:0 12px 28px #0003,inset 0 1px 0 #e3c88e66}
+body #v-radio #hero:before{inset:5px;border:1px solid #e8c98955;border-radius:16px;opacity:1}
+body #hero .radio-front{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(100px,28%);gap:13px;align-items:stretch}
+body #hero .radio-display{min-width:0;text-align:center;padding:13px 14px 11px;border:2px solid #b99453;border-radius:10px;background:linear-gradient(150deg,#183e31,#09261e);box-shadow:inset 0 2px 12px #0007}
+body #hero #heroEyebrow{color:#d9bd83;text-align:center;font-size:.72rem;line-height:1.5}
+body #hero #heroTitle{color:#fff8e8;text-align:center;font-size:clamp(1.15rem,3.2vw,1.65rem);line-height:1.45;margin:3px 0}
+body #hero #heroSub{color:#e4d6b9;text-align:center;font-size:.82rem;line-height:1.5}
+body #hero .radio-dial{width:100%;max-width:330px;height:19px;margin:12px auto 0;background:repeating-linear-gradient(90deg,transparent 0 11px,#d7b67880 11px 12px,transparent 12px 22px);border:1px solid #c4a365;border-radius:3px}
+body #hero .radio-dial span{background:#f7d88a;left:49%}
+body #hero .radio-speaker{display:grid;place-items:center;border:2px solid #b38a4b;border-radius:10px;background:repeating-linear-gradient(90deg,#392a1c 0 2px,#987047 2px 4px,#4c3520 4px 6px);box-shadow:inset 0 1px 9px #0008}
+body #hero .radio-speaker span{display:block;width:min(72%,104px);aspect-ratio:1;border-radius:50%;border:4px solid #b58c4b;background:repeating-linear-gradient(45deg,#2d271d 0 2px,#8f7451 2px 3px,#3d3225 3px 5px);box-shadow:0 0 0 4px #4b3320,inset 0 0 18px #0008}
+body #hero .radio-console{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 2px 0}
+body #hero #heroBtn{flex:none;width:48px;height:48px;margin:0;color:#241b0d;background:linear-gradient(#f0d596,#ba8e46);border:3px solid #5a3c20;box-shadow:0 0 0 2px #dfbd7c;border-radius:50%}
+body #hero .radio-console-copy{display:flex;flex:1;flex-direction:column;align-items:center;min-width:0;color:#f4dfb6}
+body #hero .radio-brand{font:700 1.1rem/1.3 var(--f-naskh);color:#f5dfb0}
+body #hero #heroStatus{color:#ead7af;font-size:.75rem;line-height:1.4}
+body #hero #heroStatus.err{color:#ffd0be}
+body #hero .radio-knob{display:block;flex:none;width:38px;height:38px;border:3px solid #4d351f;border-radius:50%;background:radial-gradient(circle,#e1bd7d 0 20%,#8c622d 24% 58%,#d4b06c 62% 70%,#533a20 72%);box-shadow:0 0 0 1px #d4b171}
+body #hero #retryBtn{position:relative;color:#fff4d8}
+body #v-radio .dedication-frame{grid-template-columns:1fr 1fr;gap:3px 8px;text-align:center}
+body #v-radio .dedication h2{grid-column:1 / -1;grid-row:1;text-align:center;justify-self:center}
+body #v-radio .dedication-sub{grid-column:1 / -1;grid-row:2;text-align:center;justify-self:center}
+body #v-radio .dedication-names{grid-column:1 / -1;grid-row:3;width:100%;max-width:510px;margin:6px auto}
+body #v-radio .dedication-names li,body #v-radio .dedication-names li:nth-child(n){justify-content:center}
+body #v-radio .dedication-prayer{grid-column:1 / -1;grid-row:4;justify-self:stretch;width:100%;max-width:none;margin:4px 0;text-align:center}
+body #v-radio .dedication-details{grid-column:1 / -1;grid-row:5}
+@media(max-width:600px){
+ body #v-radio #hero{padding:11px;margin-bottom:16px;border-radius:17px}
+ body #hero .radio-front{grid-template-columns:minmax(0,1fr) minmax(70px,26%);gap:9px}
+ body #hero .radio-display{padding:10px 8px}
+ body #hero #heroTitle{font-size:1.13rem}
+ body #hero .radio-speaker span{width:70%;border-width:3px}
+ body #hero #heroBtn{width:44px;height:44px}
+ body #hero .radio-knob{width:34px;height:34px}
+ body #hero .radio-console{margin-top:10px}
+ body #v-radio .dedication-names{gap:2px 5px}
+}
+@media(max-width:350px){body #v-radio .dedication-names li,body #v-radio .dedication-names li:nth-child(n){align-items:center}}
