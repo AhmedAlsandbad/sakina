@@ -405,7 +405,7 @@ function renderRadios() {
   let list = RADIOS.filter(r => (!radioFavOnly || isFavorite("radio", r.id)) && (cat === "all" || radioCategory(r.name) === cat) && matches(q, r.name));
   if (q) list.sort((a,b) => (tight(b.name).startsWith(qt)-tight(a.name).startsWith(qt)) || sortKey(a.name).localeCompare(sortKey(b.name),"ar"));
   else if ($("#radSort").value === "za") list.reverse();
-  const favoriteStations = radioFavOnly ? STATIONS.filter(s => isFavorite("station", s.id) && matches(q, s.full) && (cat === "all" || radioCategory(s.full) === cat)) : [];
+  const favoriteStations = (q || radioFavOnly) ? STATIONS.filter(s => (!radioFavOnly || isFavorite("station", s.id)) && matches(q, `${s.full} ${s.name} ${s.tag} ${s.note}`) && (cat === "all" || radioCategory(s.full) === cat)) : [];
   $("#radCount").textContent = ard(list.length + favoriteStations.length) + " إذاعة";
   const shown = list.slice(0, radShown);
   const stationRows = favoriteStations.map(s => `<div class="fav-row"><button class="item" data-fav-station="${esc(s.id)}"><span class="t"><b>${esc(s.full)}</b><small>${esc(s.tag)}</small></span><span class="ic">${IC.play}</span></button>${favoriteButton("station", s.id, s.full)}</div>`).join("");
