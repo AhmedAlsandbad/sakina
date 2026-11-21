@@ -6,7 +6,7 @@
   function loadRuntime() {
     if (window.__sakinaPwaLoader || document.querySelector('script[data-sakina-runtime-loader]')) return;
     var runtime = document.createElement("script");
-    runtime.src = "/app-loader.js?v=1";
+    runtime.src = "/app-loader.js?v=4";
     runtime.async = false;
     runtime.dataset.sakinaRuntimeLoader = "1";
     document.head.appendChild(runtime);

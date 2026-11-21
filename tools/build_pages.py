@@ -14,8 +14,8 @@ from bs4 import BeautifulSoup, NavigableString
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = "https://sakinaquran.net"
-CSS_V = "44"     # styles.css version used by index.html
-SEO_V = "4"
+CSS_V = "60"     # styles.css version used by index.html
+SEO_V = "5"
 GA_V = "2"      # bump when analytics.js changes      # bump when seo.css / seo.js change
 
 SECTION = {
@@ -38,7 +38,7 @@ FOOTER = re.search(r"<footer>.*?</footer>", index_html, re.S).group(0)
 BOTTOM_NAV = re.search(r'<nav class="tabs-bottom".*?</nav>', index_html, re.S).group(0).replace('href="#', 'href="/#')
 
 HEADER = f'''<header class="top"><div class="wrap">
-  <a class="logo" href="/" aria-label="سكينة قرآن، الصفحة الرئيسية"><span>سكينة</span><img src="/sakina-logo.svg?v={CSS_V}" alt="" width="52" height="52"></a>
+  <a class="logo" href="/" aria-label="سكينة قرآن، الصفحة الرئيسية"><span>سكينة</span><img src="/icon.svg?v=2" alt="" width="36" height="36"></a>
   <nav class="tabs-top" aria-label="الأقسام">
     <a href="/#radio">الإذاعات</a><a href="/quran/">المصحف</a><a href="/reciters/">القرّاء</a><a href="/ruqyah/">الرقية</a><a href="/adhkar/">الأذكار</a><a href="/prayer-times/">الصلاة</a>
   </nav>
@@ -49,8 +49,9 @@ HEADER = f'''<header class="top"><div class="wrap">
 </div></header>'''
 
 HEAD_ADD = f'''<meta name="theme-color" content="#071512">
-<link rel="icon" href="/sakina-favicon.png" type="image/png" sizes="360x360">
-<link rel="apple-touch-icon" href="/icon-192.png?v={CSS_V}">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

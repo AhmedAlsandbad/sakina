@@ -1,5 +1,5 @@
 // Sakina Quran service worker: app shell, Web Push and reminder checks.
-const V = "sakina-v104";
+const V = "sakina-v105";
 const PREF_CACHE = "sakina-reminders-v1";
 const PREF_URL = "/__sakina/reminder-settings";
 const STATE_URL = "/__sakina/reminder-state";
@@ -7,27 +7,30 @@ const SHELL = [
   "/",
   "/index.html",
   "/offline.html",
-  "/styles.css?v=59",
+  "/styles.css?v=60",
   "/polish.css?v=10",
   "/player-ui.css?v=1",
-  "/ui-refresh.css?v=2",
+  "/ui-refresh.css?v=3",
   "/data.js?v=40",
-  "/app.js?v=70",
+  "/app.js?v=71",
   "/app-core.js?v=70",
-  "/app-loader.js?v=1",
-  "/app-loader.js?v=3",
-  "/seo.js?v=4",
+  "/app-loader.js?v=4",
+  "/seo.js?v=5",
   "/seo-core.js?v=5",
   "/analytics.js?v=2",
-  "/pwa.js?v=3",
-  "/reminders.js?v=1",
+  "/pwa.js?v=4",
+  "/reminders.js?v=2",
   "/ux-enhancements.js?v=2",
   "/ui-refresh.js?v=3",
   "/smart-audio-cache.js?v=1",
   "/push-config.js?v=2",
   "/manifest.webmanifest",
   "/icon.svg",
-  "/sakina-logo.svg?v=38",
+  "/icon.svg?v=2",
+  "/icon-maskable-512.png",
+  "/favicon.svg",
+  "/apple-touch-icon.png",
+  "/badge-96.png",
   "/icon-192.png",
   "/icon-512.png"
 ];
@@ -97,7 +100,7 @@ self.addEventListener("push", event => {
   const options = {
     body: data.body || "لديك تذكير جديد من سكينة قرآن.",
     icon: data.icon || "/icon-192.png",
-    badge: data.badge || "/icon-192.png",
+    badge: data.badge || "/badge-96.png",
     image: data.image || undefined,
     tag: data.tag || "sakina-quran",
     renotify: !!data.renotify,
@@ -207,7 +210,7 @@ async function showReminder(event, state) {
   await self.registration.showNotification(event.title, {
     body: event.body,
     icon: "/icon-192.png",
-    badge: "/icon-192.png",
+    badge: "/badge-96.png",
     tag: event.tag,
     renotify: false,
     dir: "rtl",
@@ -259,7 +262,7 @@ self.addEventListener("message", event => {
   if (data.type === "SHOW_NOTIFICATION") {
     const p = data.payload || {};
     event.waitUntil(self.registration.showNotification(p.title || "سكينة قرآن", {
-      body: p.body || "", icon: p.icon || "/icon-192.png", badge: p.badge || "/icon-192.png", tag: p.tag || "sakina-local", dir: "rtl", lang: "ar", data: { url: p.url || "/" }
+      body: p.body || "", icon: p.icon || "/icon-192.png", badge: p.badge || "/badge-96.png", tag: p.tag || "sakina-local", dir: "rtl", lang: "ar", data: { url: p.url || "/" }
     }));
   }
 });

@@ -23,6 +23,23 @@
     }
 
     if (document.getElementById("sakinaInstallShortcut")) return;
+    var hd = document.querySelector("header.top .hd");
+    if (hd) {
+      var hb = document.createElement("button");
+      hb.id = "sakinaInstallShortcut";
+      hb.className = "icon-btn";
+      hb.type = "button";
+      hb.setAttribute("aria-label", "إضافة سكينة إلى الشاشة الرئيسية");
+      hb.title = "ثبّت سكينة";
+      hb.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>';
+      hb.addEventListener("click", function () {
+        try { if (window.sakinaTrack) window.sakinaTrack("pwa_install_shortcut_click", { page_path: location.pathname }); } catch (e) {}
+        if (window.SakinaPWA && window.SakinaPWA.showInstallPrompt) window.SakinaPWA.showInstallPrompt();
+      });
+      hd.insertBefore(hb, hd.firstChild);
+      window.addEventListener("appinstalled", function () { if (hb && hb.remove) hb.remove(); });
+      return;
+    }
     if (!document.getElementById("sakinaInstallShortcutStyle")) {
       var style = document.createElement("style");
       style.id = "sakinaInstallShortcutStyle";
@@ -58,7 +75,7 @@
     if (document.querySelector('link[data-sakina-ui-refresh]')) return;
     var l = document.createElement("link");
     l.rel = "stylesheet";
-    l.href = "/ui-refresh.css?v=2";
+    l.href = "/ui-refresh.css?v=3";
     l.dataset.sakinaUiRefresh = "1";
     document.head.appendChild(l);
   }
@@ -108,7 +125,7 @@
   function loadReminders() {
     if (document.querySelector('script[data-sakina-reminders]')) { loadUx(); return; }
     var r = document.createElement("script");
-    r.src = "/reminders.js?v=1";
+    r.src = "/reminders.js?v=2";
     r.defer = true;
     r.dataset.sakinaReminders = "1";
     r.onload = loadUx;
@@ -119,7 +136,7 @@
   function loadPwa() {
     if (document.querySelector('script[data-sakina-pwa]')) { loadReminders(); return; }
     var p = document.createElement("script");
-    p.src = "/pwa.js?v=3";
+    p.src = "/pwa.js?v=4";
     p.defer = true;
     p.dataset.sakinaPwa = "1";
     p.onload = loadReminders;

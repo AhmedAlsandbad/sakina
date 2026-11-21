@@ -22,7 +22,7 @@
   function loadRuntime() {
     if (window.__sakinaPwaLoader || document.querySelector('script[data-sakina-runtime-loader]')) return;
     var s = document.createElement("script");
-    s.src = "/app-loader.js?v=3";
+    s.src = "/app-loader.js?v=4";
     s.async = false;
     s.dataset.sakinaRuntimeLoader = "1";
     document.head.appendChild(s);

@@ -708,3 +708,9 @@ body::after{background-size:96px 96px}
 .dhikr .src{display:none}.dhikr .dt{justify-content:flex-end}.adh-audio-details{grid-column:1 / -1;font-size:.78rem;color:var(--dim)}.adh-audio-details summary{cursor:pointer}.adh-audio-details a{display:inline-block;margin-top:7px;color:var(--gold)}
 
 #rReader .part h3 span{display:none}
+
+/* Brand mark + wordmark in the header (unified icon set, Nov 2026) */
+.logo{display:flex;align-items:center;gap:8px;color:var(--gold);text-decoration:none;min-width:max-content}
+.logo span{display:inline;font-family:'Aref Ruqaa',serif;font-weight:700;font-size:1.6rem;line-height:1.2;color:var(--gold);text-shadow:none}
+.logo img{display:block;width:38px;height:38px;border-radius:11px;background:none;opacity:1;object-fit:contain;box-shadow:0 0 0 1px color-mix(in srgb,var(--gold) 28%,transparent)}
+@media(max-width:600px){.logo span{font-size:1.42rem}.logo img{width:36px;height:36px;border-radius:10px}header.top{background:var(--night)}}

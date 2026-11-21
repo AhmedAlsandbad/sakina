@@ -183,7 +183,7 @@
     el.innerHTML = `
       <div class="sakina-reminder-card">
         <div class="sakina-reminder-head">
-          <img src="/icon-192.png" width="48" height="48" alt="">
+          <img src="/icon.svg?v=2" width="48" height="48" alt="">
           <div class="sakina-reminder-title"><h2>تنبيهات الصلاة والأذكار</h2><p>اختر ما تريد أن يذكّرك به سكينة على هذا الجهاز.</p></div>
           <button type="button" class="sakina-reminder-close" aria-label="إغلاق">×</button>
         </div>
@@ -302,7 +302,7 @@
     await reg.showNotification("سكينة قرآن · اختبار التنبيهات", {
       body: "الإشعارات تعمل على هذا الجهاز. يمكنك الآن حفظ مواعيد الصلاة والأذكار.",
       icon: "/icon-192.png",
-      badge: "/icon-192.png",
+      badge: "/badge-96.png",
       tag: "sakina-reminder-test",
       dir: "rtl",
       lang: "ar",
@@ -398,7 +398,7 @@
     await reg.showNotification(event.title, {
       body: event.body,
       icon: "/icon-192.png",
-      badge: "/icon-192.png",
+      badge: "/badge-96.png",
       tag: event.tag,
       renotify: false,
       dir: "rtl",
