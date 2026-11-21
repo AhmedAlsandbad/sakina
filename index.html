@@ -33,7 +33,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="styles.css?v=59">
-<link rel="stylesheet" href="/polish.css?v=9">
+<link rel="stylesheet" href="/polish.css?v=10">
 <script src="/analytics.js?v=2" defer></script>
 <script>try{var t=localStorage.getItem("sakina:theme"),mode=JSON.parse(localStorage.getItem("sakina:themeMode")||"\"manual\"");if(mode==="time"){var hr=new Date().getHours();document.documentElement.dataset.theme=(hr>=6&&hr<18)?"light":"dark"}else if(t)document.documentElement.dataset.theme=JSON.parse(t);if(JSON.parse(localStorage.getItem("sakina:reduceMotion")||"false"))document.documentElement.dataset.motion="reduce"}catch(e){}</script>
 </head>
@@ -84,6 +84,16 @@
 
     <div class="search discover-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="quickRadioSearch" type="search" placeholder="ابحث في الإذاعات أو إذاعات القراء" aria-label="ابحث في الإذاعات أو إذاعات القراء"></div>
     <div class="chips"><button class="chip" id="searchReciters">ابحث عن قارئ في المصحف</button></div>
+    <section class="discover" aria-labelledby="discoverTitle">
+      <div class="discover-heading"><h2 id="discoverTitle">وصول سريع</h2></div>
+      <div class="discover-grid">
+        <button class="discover-card" data-discover="stations"><span aria-hidden="true">◉</span><b>المحطات</b></button>
+        <button class="discover-card" data-discover="favorites" aria-expanded="false" aria-controls="favoriteChoices"><span aria-hidden="true">♡</span><b>المفضلة</b></button>
+        <button class="discover-card" data-discover="reciters"><span aria-hidden="true">♬</span><b>القرّاء</b></button>
+        <button class="discover-card" data-discover="surahs"><span aria-hidden="true">☷</span><b>السور</b></button>
+      </div>
+      <div id="favoriteChoices" class="chips" hidden aria-label="اختيارات المفضلة"><button class="chip" id="favoriteRadios">إذاعاتي المفضلة</button><button class="chip" id="favoriteReciters">قرائي المفضلون</button></div>
+    </section>
     <div class="sh" id="stationsHeading"><h2>إذاعات القرآن الكريم</h2><p>بث مباشر على مدار الساعة</p></div>
     <div class="stations" id="stations"></div>
 
@@ -114,16 +124,7 @@
         <ul><li>قراءة سورة الكهف يوم الجمعة.</li><li>الإكثار من الصلاة على النبي ﷺ.</li><li>الاغتسال والتطيب والتبكير للجمعة لمن يذهب للصلاة، والإنصات للخطبة.</li><li>الإكثار من الدعاء وتحري ساعة الإجابة.</li></ul>
       </details>
     </section>
-    <section class="discover" aria-labelledby="discoverTitle">
-      <div class="discover-heading"><h2 id="discoverTitle">ماذا تحب أن تستمع؟</h2><p>اختر ما يناسبك، واستمع بهدوء</p></div>
-      <div class="discover-grid">
-        <button class="discover-card" data-discover="stations"><span aria-hidden="true">◉</span><b>المحطات المباشرة</b><small>إذاعات من حول العالم</small></button>
-        <button class="discover-card" data-discover="favorites" aria-expanded="false" aria-controls="favoriteChoices"><span aria-hidden="true">♡</span><b>المفضلة</b><small>القراء والإذاعات</small></button>
-        <button class="discover-card" data-discover="reciters"><span aria-hidden="true">♬</span><b>القرّاء</b><small>اختر قارئًا وسورة</small></button>
-        <button class="discover-card" data-discover="surahs"><span aria-hidden="true">☷</span><b>السور</b><small>سور مختارة والمصحف الكامل</small></button>
-      </div>
-      <div id="favoriteChoices" class="chips" hidden aria-label="اختيارات المفضلة"><button class="chip" id="favoriteRadios">إذاعاتي المفضلة</button><button class="chip" id="favoriteReciters">قرائي المفضلون</button></div>
-    </section>
+
 
 
     <section class="brand-intro" aria-labelledby="brandIntroTitle">

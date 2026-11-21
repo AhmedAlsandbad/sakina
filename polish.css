@@ -218,3 +218,16 @@ body #adhList .dhikr{scroll-margin-block-start:96px}
  html:not([data-motion="reduce"]) body #v-radio .station-fav .st:active svg{transform:scale(.9)}
  html:not([data-motion="reduce"]) body #v-radio .station-fav .st svg{transition:transform .16s ease}
 }
+
+/* Compact shortcuts keep the search and station list close to the radio. */
+body #v-radio .discover{margin:12px 0 18px}
+body #v-radio .discover-heading{margin-bottom:8px}
+body #v-radio .discover-heading h2{font-size:1rem}
+body #v-radio .discover-grid{gap:8px}
+body #v-radio .discover-card{display:flex;min-height:48px;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;padding:8px 10px;text-align:start}
+body #v-radio .discover-card>span{width:30px;height:30px;flex:0 0 30px}
+body #v-radio .discover-card>span svg{width:20px;height:20px}
+body #v-radio .discover-card b{font-size:.86rem}
+@media(max-width:600px){body #v-radio .discover-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){body #v-radio .discover-card:hover{transform:none}}
+html[data-motion="reduce"] body #v-radio .discover-card:hover{transform:none}

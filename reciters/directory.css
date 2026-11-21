@@ -1,0 +1,13 @@
+.reciter-directory{margin-block:18px 28px}
+.directory-search{display:grid;gap:6px;max-width:28rem;margin-block:0 14px}
+.directory-search[hidden],.seo-content .directory-card[hidden],#directoryStatus[hidden]{display:none}
+.directory-search label{font-weight:600}
+.directory-search input{width:100%;min-height:48px;padding:8px 12px;color:var(--ink);background:var(--panel);border:1px solid var(--rule);border-radius:12px;font:inherit}
+.directory-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,175px),1fr));gap:8px}
+.seo-content a.directory-card{display:flex;gap:8px;justify-content:space-between;align-items:center;min-height:48px;padding:9px 12px}
+.directory-card b{overflow-wrap:anywhere}
+.directory-arrow{color:var(--gold);font-size:1.25rem;line-height:1}
+.directory-search input:focus-visible,.seo-content a.directory-card:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media(max-width:540px){.directory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.seo-content a.directory-card{font-size:.88rem}}
+@media(prefers-reduced-motion:reduce){.seo-content a.directory-card:hover{transform:none}}
+html[data-motion="reduce"] .seo-content a.directory-card:hover{transform:none}
