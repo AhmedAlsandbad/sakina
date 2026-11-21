@@ -136,7 +136,7 @@
   function loadPwa() {
     if (document.querySelector('script[data-sakina-pwa]')) { loadReminders(); return; }
     var p = document.createElement("script");
-    p.src = "/pwa.js?v=4";
+    p.src = "/pwa.js?v=5";
     p.defer = true;
     p.dataset.sakinaPwa = "1";
     p.onload = loadReminders;

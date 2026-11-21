@@ -24,22 +24,22 @@ for token in ("__sakinaPwaLoader", "/pwa.js", "/reminders.js", "/ui-refresh.js",
     if token in analytics:
         errors.append(f"analytics.js still owns critical runtime token: {token}")
 
-for token in ("/app-core.js?v=71", "/app-loader.js?v=4"):
+for token in ("/app-core.js?v=71", "/app-loader.js?v=5"):
     if token not in app_boot:
         errors.append(f"app.js bootstrap missing: {token}")
 
-for token in ("/seo-core.js?v=5", "/app-loader.js?v=4"):
+for token in ("/seo-core.js?v=5", "/app-loader.js?v=5"):
     if token not in seo_boot:
         errors.append(f"seo.js bootstrap missing: {token}")
 
-for token in ("__sakinaPwaLoader", "/pwa.js?v=4", "/reminders.js?v=2", "/ui-refresh.js?v=3", "/push-config.js?v=2", "/media-session.js?v=3"):
+for token in ("__sakinaPwaLoader", "/pwa.js?v=5", "/reminders.js?v=2", "/ui-refresh.js?v=3", "/push-config.js?v=2", "/media-session.js?v=3"):
     if token not in loader:
         errors.append(f"app-loader.js missing: {token}")
 
 if not re.search(r'importScripts\("/sw-core\.js\?v=\d+"\)', sw_boot):
     errors.append("sw.js is not using a versioned sw-core bootstrap")
 
-for token in ('const V = "sakina-v106"', '"/app-core.js?v=71"', '"/app-loader.js?v=4"', '"/seo-core.js?v=5"'):
+for token in ('const V = "sakina-v107"', '"/app-core.js?v=71"', '"/app-loader.js?v=5"', '"/seo-core.js?v=5"'):
     if token not in sw_core:
         errors.append(f"sw-core.js missing cache/runtime requirement: {token}")
 
@@ -48,7 +48,7 @@ for path in ("app-core.js", "seo-core.js", "sw-core.js", "media-session.js"):
         errors.append(f"missing preserved core/runtime file: {path}")
 
 index = read("index.html")
-if 'app.js?v=72' not in index:
+if 'app.js?v=73' not in index:
     errors.append("index.html no longer loads app.js bootstrap")
 
 seo_pages = 0
@@ -66,4 +66,4 @@ if errors:
     for error in errors:
         print(" -", error)
     sys.exit(1)
-print(f"Runtime loader QA passed; {seo_pages} SEO pages use the safe bootstrap and PWA cache v106.")
+print(f"Runtime loader QA passed; {seo_pages} SEO pages use the safe bootstrap and PWA cache v107.")

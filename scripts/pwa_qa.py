@@ -54,7 +54,7 @@ require(index, "apple-touch-icon", "index.html")
 
 loader = text("app-loader.js")
 for needle in (
-    "/push-config.js?v=2", "/pwa.js?v=4", "/reminders.js?v=2",
+    "/push-config.js?v=2", "/pwa.js?v=5", "/reminders.js?v=2",
     "/smart-audio-cache.js?v=1", "/player-ui.css?v=1", "/ui-refresh.js?v=3",
     "/media-session.js?v=3", "loadMediaSession", "ensureInstallShortcut", "ثبّت سكينة"
 ):
@@ -89,10 +89,10 @@ if not re.search(r'importScripts\("/sw-core\.js\?v=\d+"\)', sw_boot):
 
 sw = text("sw-core.js")
 for needle in (
-    'const V = "sakina-v106"', 'addEventListener("push"', 'addEventListener("notificationclick"',
-    'addEventListener("periodicsync"', "REMINDER_PREFS", "/pwa.js?v=4", "/reminders.js?v=2",
-    '"/app.js?v=72"', '"/app-core.js?v=71"', '"/app-loader.js?v=4"',
-    '"/seo.js?v=5"', '"/seo-core.js?v=5"', "/offline.html"
+    'const V = "sakina-v107"', 'addEventListener("push"', 'addEventListener("notificationclick"',
+    'addEventListener("periodicsync"', "REMINDER_PREFS", "/pwa.js?v=5", "/reminders.js?v=2",
+    '"/app.js?v=73"', '"/app-core.js?v=71"', '"/app-loader.js?v=5"',
+    '"/seo.js?v=6"', '"/seo-core.js?v=5"', "/offline.html"
 ):
     require(sw, needle, "sw-core.js")
 
@@ -100,7 +100,7 @@ push_config = text("push-config.js")
 require(push_config, "vapidPublicKey", "push-config.js")
 require(push_config, "subscribeEndpoint", "push-config.js")
 
-print("PWA QA checked manifest, screenshots, safe loader bootstrap, cache v106, service worker, Media Session, Web Push, reminders and smart audio replay")
+print("PWA QA checked manifest, screenshots, safe loader bootstrap, cache v107, service worker, Media Session, Web Push, reminders and smart audio replay")
 if errors:
     for error in errors: print(f"ERROR: {error}")
     print(f"PWA QA failed: {len(errors)} error(s)")

@@ -47,7 +47,7 @@
   function showInstallButton() { const btn = document.getElementById("installBtn"); if (btn && !isStandalone() && isMobile) btn.hidden = false; }
   function showInstallSheet(force) {
     if (isStandalone() || !isMobile) return;
-    if (!force && document.querySelector(".sakina-home-install")) { showInstallButton(); return; }
+    if (!force && (document.querySelector(".sakina-home-install") || (document.getElementById("v-radio") && /^(#radio)?$/.test(location.hash)))) { showInstallButton(); return; }
     try { const last = Number(localStorage.getItem("sakina:pwa-install-at") || 0); if (!force && last && Date.now() - last < 14 * 24 * 60 * 60 * 1000) return; localStorage.setItem("sakina:pwa-install-at", String(Date.now())); } catch (e) {}
     showInstallButton();
     if (isIOS) {
