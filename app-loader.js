@@ -97,7 +97,7 @@
   function loadUx() {
     if (document.querySelector('script[data-sakina-ux]')) { loadUiRefresh(); return; }
     var u = document.createElement("script");
-    u.src = "/ux-enhancements.js?v=1";
+    u.src = "/ux-enhancements.js?v=2";
     u.defer = true;
     u.dataset.sakinaUx = "1";
     u.onload = loadUiRefresh;

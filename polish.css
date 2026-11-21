@@ -203,3 +203,18 @@ body #dock .tabs-bottom a:focus-visible,body .discover-card:focus-visible{outlin
  body #hero .radio-station-controls button,body #hero #heroBtn,body #hero .radio-knob,body .discover-card,body .discover-card>span svg,body #dock .tabs-bottom a svg{transition:none}
  body .discover-card:hover,body .discover-card:active,body .discover-card:hover>span svg,body .discover-card:active>span svg,body #dock .tabs-bottom a:active svg,body #hero .radio-station-controls button:active,body #hero #heroBtn:active{transform:none}
 }
+
+/* Keep the controls readable in both themes without changing the radio's finish. */
+body #v-radio .discover-search{margin:12px 0 8px}
+body #v-radio .dedication{margin-block:14px}
+body #v-radio .dedication-frame{gap:2px 8px}
+body #v-radio .dedication-names{margin-block:3px}
+body #dock .tabs-bottom a[aria-current="page"] svg{background:color-mix(in srgb,currentColor 13%,transparent);border-radius:8px;box-shadow:0 0 0 4px color-mix(in srgb,currentColor 13%,transparent)}
+body #dock .tabs-bottom a svg{stroke-linecap:round;stroke-linejoin:round}
+body .progress-row{flex-wrap:wrap}
+body #adhResume[hidden]{display:none}
+body #adhList .dhikr{scroll-margin-block-start:96px}
+@media(prefers-reduced-motion:no-preference){
+ html:not([data-motion="reduce"]) body #v-radio .station-fav .st:active svg{transform:scale(.9)}
+ html:not([data-motion="reduce"]) body #v-radio .station-fav .st svg{transition:transform .16s ease}
+}

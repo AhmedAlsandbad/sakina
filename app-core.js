@@ -541,6 +541,13 @@ let RECITERS = [], SUWAR = {}, RW = [], rwSel = store.get("rw", "حفص عن ع�
 const rwKey = name => name.split(" - ")[0].replace(/^برواية\s+/, "").replace(/\s+/g, " ").replace(/\s*-[^-]*-\s*$/, "").trim();
 const mType = name => (name.split(" - ")[1] || "").trim();
 INIT.quran = async () => {
+  const url = new URL(location.href);
+  const openReading = url.searchParams.get("quran") === "read";
+  if (openReading) {
+    url.searchParams.delete("quran");
+    history.replaceState(history.state, "", url);
+  }
+  if (openReading || store.get("quranMode", "listen") === "read") $("#qRead").click();
   try {
     const [r, s] = await Promise.all([getJSON(API + "reciters?language=ar", "c:reciters", 24), getJSON(API + "suwar?language=ar", "c:suwar", 240)]);
     s.suwar.forEach(x => SUWAR[x.id] = x.name);
@@ -757,7 +764,14 @@ function adhProgress(st) {
   items.forEach(d => { const n = Math.min(st[d.id] || 0, d.c); done += n; total += d.c; if (n >= d.c) full++; });
   $("#adhBar").style.width = (done / total * 100) + "%";
   $("#adhProg").textContent = `${ard(full)} من ${ard(items.length)}`;
+  $("#adhResume").hidden = done === 0 || full === items.length;
 }
+$("#adhResume").onclick = () => {
+  const next = $("#adhList .dhikr:not(.done)");
+  if (!next) return;
+  next.scrollIntoView({ block: "start", behavior: "instant" });
+  next.focus({ preventScroll: true });
+};
 $("#adhList").onclick = e => {
   const b = e.target.closest("[data-dh]"); if (!b) return;
   const d = adhItems().find(x => x.id === b.dataset.dh), st = store.get(adhKey(), {});
@@ -801,8 +815,9 @@ const pageHost = $("#readingVerses");
 const sourceBase = "https://cdn.quran.ws/svg/pages/v1.1.1/hafs-kfqc/";
 const pageCache = new Map();
 const wideReader = matchMedia("(min-width: 1000px)");
-$("#qListen").onclick = () => { track("quran_mode_select", { mode: "listen" }); $("#qAudio").hidden = false; $("#qReading").hidden = true; $("#qListen").setAttribute("aria-pressed", "true"); $("#qRead").setAttribute("aria-pressed", "false"); };
+$("#qListen").onclick = () => { store.set("quranMode", "listen"); track("quran_mode_select", { mode: "listen" }); $("#qAudio").hidden = false; $("#qReading").hidden = true; $("#qListen").setAttribute("aria-pressed", "true"); $("#qRead").setAttribute("aria-pressed", "false"); };
 $("#qRead").onclick = async () => {
+  store.set("quranMode", "read");
   track("quran_mode_select", { mode: "read" });
   $("#qAudio").hidden = true; $("#qReading").hidden = false; $("#qListen").setAttribute("aria-pressed", "false"); $("#qRead").setAttribute("aria-pressed", "true");
   if (!readingSelect.options.length) {

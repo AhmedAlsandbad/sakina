@@ -22,11 +22,11 @@
   function loadRuntime() {
     if (window.__sakinaPwaLoader || document.querySelector('script[data-sakina-runtime-loader]')) return;
     var s = document.createElement("script");
-    s.src = "/app-loader.js?v=2";
+    s.src = "/app-loader.js?v=3";
     s.async = false;
     s.dataset.sakinaRuntimeLoader = "1";
     document.head.appendChild(s);
   }
 
-  appendScript("/app-core.js?v=69", "app-core", loadRuntime);
+  appendScript("/app-core.js?v=70", "app-core", loadRuntime);
 })();

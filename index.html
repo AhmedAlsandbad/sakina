@@ -33,7 +33,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Readex+Pro:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="styles.css?v=59">
-<link rel="stylesheet" href="/polish.css?v=8">
+<link rel="stylesheet" href="/polish.css?v=9">
 <script src="/analytics.js?v=2" defer></script>
 <script>try{var t=localStorage.getItem("sakina:theme"),mode=JSON.parse(localStorage.getItem("sakina:themeMode")||"\"manual\"");if(mode==="time"){var hr=new Date().getHours();document.documentElement.dataset.theme=(hr>=6&&hr<18)?"light":"dark"}else if(t)document.documentElement.dataset.theme=JSON.parse(t);if(JSON.parse(localStorage.getItem("sakina:reduceMotion")||"false"))document.documentElement.dataset.motion="reduce"}catch(e){}</script>
 </head>
@@ -82,6 +82,11 @@
       <button class="link-btn" id="retryBtn" hidden>إعادة المحاولة</button>
     </div>
 
+    <div class="search discover-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="quickRadioSearch" type="search" placeholder="ابحث في الإذاعات أو إذاعات القراء" aria-label="ابحث في الإذاعات أو إذاعات القراء"></div>
+    <div class="chips"><button class="chip" id="searchReciters">ابحث عن قارئ في المصحف</button></div>
+    <div class="sh" id="stationsHeading"><h2>إذاعات القرآن الكريم</h2><p>بث مباشر على مدار الساعة</p></div>
+    <div class="stations" id="stations"></div>
+
     <section class="sadaqa dedication" aria-labelledby="sadaqaTitle">
       <div class="dedication-frame">
         <p class="dedication-eyebrow"><span aria-hidden="true"></span>هذا الموقع<span aria-hidden="true"></span></p>
@@ -119,10 +124,7 @@
       </div>
       <div id="favoriteChoices" class="chips" hidden aria-label="اختيارات المفضلة"><button class="chip" id="favoriteRadios">إذاعاتي المفضلة</button><button class="chip" id="favoriteReciters">قرائي المفضلون</button></div>
     </section>
-    <div class="search discover-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="quickRadioSearch" type="search" placeholder="ابحث في الإذاعات أو إذاعات القراء" aria-label="ابحث في الإذاعات أو إذاعات القراء"></div>
-    <div class="chips"><button class="chip" id="searchReciters">ابحث عن قارئ في المصحف</button></div>
-    <div class="sh" id="stationsHeading"><h2>إذاعات القرآن الكريم</h2><p>بث مباشر على مدار الساعة</p></div>
-    <div class="stations" id="stations"></div>
+
 
     <section class="brand-intro" aria-labelledby="brandIntroTitle">
       <div class="sh"><h2 id="brandIntroTitle">سكينة قرآن</h2><p>القرآن الكريم والاستماع والإذاعات والأذكار في مكان واحد</p></div>
@@ -222,6 +224,7 @@
     </div><div class="progress-row">
       <div class="pbar"><i id="adhBar"></i></div>
       <span class="dim" id="adhProg"></span>
+      <button type="button" class="chip" id="adhResume" hidden>كمّل القراءة</button>
       <button class="link-btn" id="adhReset">البدء من جديد</button>
     </div>
     <div class="fs"><button class="fsUp" aria-label="تكبير الخط">+</button><button class="fsDown" aria-label="تصغير الخط">−</button></div>
@@ -287,11 +290,11 @@
     <button class="sleep" id="sleepBtn" aria-label="مؤقت النوم: اختيار مدة إيقاف التشغيل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 9v4l2.5 1.5M5 3 2.5 5.5M19 3l2.5 2.5M6.5 19.5 5 21M17.5 19.5 19 21"/></svg><span class="sleep-label">مؤقت</span><span id="sleepTxt"></span></button>
   </div>
   <nav class="tabs-bottom" aria-label="الأقسام">
-    <a href="#radio" data-nav="radio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10h16v10H4zM7 10l10-6"/><circle cx="9" cy="15" r="2"/><path d="M14 14h3M14 17h3"/></svg>الإذاعات</a>
-    <a href="#quran" data-nav="quran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 6c-2-1.5-5-2-8-1.5V19c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V4.5C17 4 14 4.5 12 6zM12 6v14.5"/></svg>المصحف</a>
-    <a href="#ruqyah" data-nav="ruqyah"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 14.2 9.2 21 12l-6.8 2.8L12 21l-2.2-6.2L3 12l6.8-2.8z"/></svg>الرقية</a>
-    <a href="#adhkar" data-nav="adhkar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="5" r="2"/><circle cx="6" cy="9" r="2"/><circle cx="18" cy="9" r="2"/><circle cx="7" cy="16" r="2"/><circle cx="17" cy="16" r="2"/><path d="M12 18v3"/></svg>الأذكار</a>
-    <a href="#prayer" data-nav="prayer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 21V11a8 8 0 0 1 16 0v10M9 21v-5a3 3 0 0 1 6 0v5M12 3V1"/></svg>الصلاة</a>
+    <a href="#radio" data-nav="radio"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10h16v10H4zM7 10l10-6"/><circle cx="9" cy="15" r="2"/><path d="M14 14h3M14 17h3"/></svg>الإذاعات</a>
+    <a href="#quran" data-nav="quran"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 6c-2-1.5-5-2-8-1.5V19c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V4.5C17 4 14 4.5 12 6zM12 6v14.5"/></svg>المصحف</a>
+    <a href="#ruqyah" data-nav="ruqyah"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 5 6v5c0 4.4 2.7 7.9 7 10 4.3-2.1 7-5.6 7-10V6z"/><path d="m12 8 1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></svg>الرقية</a>
+    <a href="#adhkar" data-nav="adhkar"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="5" r="2"/><circle cx="6" cy="9" r="2"/><circle cx="18" cy="9" r="2"/><circle cx="7" cy="16" r="2"/><circle cx="17" cy="16" r="2"/><path d="M9 18l3 1 3-1m-3 1v3"/></svg>الأذكار</a>
+    <a href="#prayer" data-nav="prayer"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 21V11a8 8 0 0 1 16 0v10M9 21v-5a3 3 0 0 1 6 0v5M12 3V1"/></svg>الصلاة</a>
   </nav>
 </div>
 
@@ -324,6 +327,6 @@
 <audio id="audio" preload="none" playsinline></audio>
 
 <script src="data.js?v=40" defer></script>
-<script src="app.js?v=69" defer></script>
+<script src="app.js?v=70" defer></script>
 </body>
 </html>
