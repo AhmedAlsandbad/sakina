@@ -6,7 +6,12 @@ header, breadcrumbs (+ BreadcrumbList schema), styled players, an open-in-app ca
 shared footer copied from index.html. Safe to re-run: pages already wrapped are rebuilt from
 their original content.
 
-Usage:  python3 tools/build_pages.py   (run from the repo root)
+Usage:  python3 tools/build_pages.py --force   (run from the repo root)
+
+WARNING (Nov 2026): the published pages have since been edited by hand (BreadcrumbList inside
+the page @graph, extra audio schema, new reciter pages). Re-running this script would add a
+second BreadcrumbList to every page and break scripts/schema_qa.py. It refuses to run without
+--force. Edit pages directly instead, then run the QA scripts in scripts/.
 """
 import json, re, sys
 from pathlib import Path
@@ -14,8 +19,8 @@ from bs4 import BeautifulSoup, NavigableString
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = "https://sakinaquran.net"
-CSS_V = "61"     # styles.css version used by index.html
-SEO_V = "6"
+CSS_V = "62"     # styles.css version used by index.html
+SEO_V = "7"
 GA_V = "2"      # bump when analytics.js changes      # bump when seo.css / seo.js change
 
 SECTION = {
@@ -188,6 +193,8 @@ def build(path: Path):
     return url
 
 def main():
+    if "--force" not in sys.argv:
+        sys.exit("build_pages.py is outdated (see the warning at the top). Edit pages directly; rerun with --force only if you know why.")
     pages = sorted(p for p in ROOT.rglob("*.html") if p != ROOT / "index.html" and "tools" not in p.parts and ".git" not in p.parts
                    and not re.fullmatch(r"google[0-9a-f]+\.html", p.name))  # Search Console verification file must stay as-is
     for p in pages: build(p)

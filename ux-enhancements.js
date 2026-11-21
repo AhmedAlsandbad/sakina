@@ -149,11 +149,15 @@
   function injectReaderTools() {
     const view = $("#v-quran"); if (!view || $("#sakinaReaderTools")) return;
     addStyles();
-    const box = document.createElement("div"); box.id = "sakinaReaderTools"; box.className = "sakina-reader-tools";
+    const box = document.createElement("details"); box.id = "sakinaReaderTools"; box.className = "sakina-reader-tools reader-more";
+    box.innerHTML = '<summary aria-label="خيارات القراءة" title="خيارات القراءة">⋯</summary>';
+    const menu = document.createElement("div"); menu.className = "reader-more-menu"; menu.setAttribute("role", "menu");
     const wake = document.createElement("button"); wake.id = "sakinaWakeBtn"; wake.type = "button"; wake.textContent = "إبقاء الشاشة مفتوحة"; wake.addEventListener("click", () => setWakeWanted(!wakeWanted));
     const share = document.createElement("button"); share.type = "button"; share.textContent = "مشاركة الصفحة"; share.addEventListener("click", shareCurrent);
-    box.append(wake, share);
-    const first = view.firstElementChild; if (first) first.insertAdjacentElement("afterend", box); else view.prepend(box);
+    [wake, share].forEach(b => { b.setAttribute("role", "menuitem"); b.addEventListener("click", () => { box.open = false; }); });
+    menu.append(wake, share); box.append(menu);
+    document.addEventListener("click", e => { if (box.open && !box.contains(e.target)) box.open = false; });
+    const head = view.querySelector(".sh"); if (head) head.appendChild(box); else view.prepend(box);
     wakeWanted = !!read("wakeLock", false); if (wakeWanted) setWakeWanted(true);
   }
 

@@ -718,8 +718,15 @@ body::after{background-size:96px 96px}
 /* Mobile UX pass 2 (Nov 2026) */
 #v-adhkar .adh-disclosure>.sh{margin-top:0}
 #v-quran:has(#qRead[aria-pressed="false"]) #sakinaReaderTools{display:none}
-#sakinaReaderTools{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
-#sakinaReaderTools button{font-size:.82rem;padding:7px 12px;border-radius:999px}
+#v-quran>.sh{position:relative;flex-wrap:nowrap;gap:8px}
+#v-quran>.sh>h2{margin-inline-end:auto}
+#sakinaReaderTools{position:relative;margin:0;flex:none}
+#sakinaReaderTools>summary{list-style:none;display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--rule);border-radius:14px;background:var(--panel);color:var(--ink);font-size:1.3rem;line-height:1;cursor:pointer}
+#sakinaReaderTools>summary::-webkit-details-marker{display:none}
+#sakinaReaderTools[open]>summary{border-color:var(--gold);color:var(--gold)}
+#sakinaReaderTools .reader-more-menu{position:absolute;z-index:20;inset-inline-start:auto;inset-inline-end:0;top:calc(100% + 6px);min-width:210px;display:grid;gap:4px;padding:6px;border:1px solid var(--rule);border-radius:14px;background:var(--panel-2);box-shadow:0 14px 34px #0005}
+#sakinaReaderTools .reader-more-menu button{display:block;width:100%;text-align:start;border:0;border-radius:10px;background:none;color:var(--ink);padding:11px 12px;font:inherit;font-size:.9rem;cursor:pointer}
+#sakinaReaderTools .reader-more-menu button:hover,#sakinaReaderTools .reader-more-menu button.on{background:color-mix(in srgb,var(--gold) 12%,transparent);color:var(--gold)}
 @media(max-width:859px){
   body.player-idle .dock .capsule,body.player-idle .dock-toggle{display:none!important}
   body.player-idle{--dock-h:96px}
