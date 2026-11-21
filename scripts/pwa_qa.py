@@ -89,9 +89,9 @@ if not re.search(r'importScripts\("/sw-core\.js\?v=\d+"\)', sw_boot):
 
 sw = text("sw-core.js")
 for needle in (
-    'const V = "sakina-v108"', 'addEventListener("push"', 'addEventListener("notificationclick"',
+    'const V = "sakina-v109"', 'addEventListener("push"', 'addEventListener("notificationclick"',
     'addEventListener("periodicsync"', "REMINDER_PREFS", "/pwa.js?v=5", "/reminders.js?v=2",
-    '"/app.js?v=74"', '"/app-core.js?v=71"', '"/app-loader.js?v=6"',
+    '"/app.js?v=75"', '"/app-core.js?v=72"', '"/app-loader.js?v=6"',
     '"/seo.js?v=7"', '"/seo-core.js?v=5"', "/offline.html"
 ):
     require(sw, needle, "sw-core.js")
@@ -100,7 +100,7 @@ push_config = text("push-config.js")
 require(push_config, "vapidPublicKey", "push-config.js")
 require(push_config, "subscribeEndpoint", "push-config.js")
 
-print("PWA QA checked manifest, screenshots, safe loader bootstrap, cache v108, service worker, Media Session, Web Push, reminders and smart audio replay")
+print("PWA QA checked manifest, screenshots, safe loader bootstrap, cache v109, service worker, Media Session, Web Push, reminders and smart audio replay")
 if errors:
     for error in errors: print(f"ERROR: {error}")
     print(f"PWA QA failed: {len(errors)} error(s)")

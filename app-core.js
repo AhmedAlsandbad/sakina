@@ -38,7 +38,7 @@ let radioFavOnly = false, recFavOnly = false;
 function isFavorite(kind, id) { return Array.isArray(favs[kind]) && favs[kind].includes(String(id)); }
 function favoriteButton(kind, id, name) {
   const on = isFavorite(kind, id);
-  return `<button class="fav-btn" data-fav-kind="${kind}" data-fav-id="${esc(id)}" aria-pressed="${on}" aria-label="${on ? "إزالة" : "إضافة"} ${esc(name)} ${on ? "من" : "إلى"} المفضلة" title="${on ? "إزالة من المفضلة" : "إضافة للمفضلة"}">${on ? "♥" : "♡"}</button>`;
+  return `<button class="fav-btn" data-fav-kind="${kind}" data-fav-id="${esc(id)}" aria-pressed="${on}" aria-label="${on ? "إزالة" : "إضافة"} ${esc(name)} ${on ? "من" : "إلى"} المفضلة" title="${on ? "إزالة من المفضلة" : "إضافة للمفضلة"}"><svg viewBox="0 0 24 24" width="20" height="20" fill="${on ? "currentColor" : "none"}" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.8 3.6 4.5 7 4.5c2 0 3.4 1.1 5 3 1.6-1.9 3-3 5-3 3.4 0 5.5 3.3 4.3 6.6-1.8 4.8-9.3 9.4-9.3 9.4z"/></svg></button>`;
 }
 function toggleFavorite(kind, id) {
   const items = Array.isArray(favs[kind]) ? favs[kind] : [];
@@ -56,7 +56,7 @@ const IC = {
   pause: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>',
   load: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke-dasharray="30 60"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/></circle></svg>',
   arrow: '<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>',
-  radio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 10h16v10H4zM7 10l10-6"/><circle cx="9" cy="15" r="2"/></svg>'
+  radio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="12" rx="3"/><path d="m7 8 9-4.5"/><circle cx="8.5" cy="14" r="2.5"/><path d="M14 12.5h3.5M14 15.5h3.5"/></svg>'
 };
 
 /* ---------- environment ---------- */
@@ -466,11 +466,11 @@ function renderRadios() {
   $("#radCount").textContent = ard(list.length + favoriteStations.length) + " إذاعة";
   const shown = list.slice(0, radShown);
   const stationRows = favoriteStations.map(s => `<div class="fav-row"><button class="item" data-fav-station="${esc(s.id)}"><span class="t"><b>${esc(s.full)}</b><small>${esc(s.tag)}</small></span><span class="ic">${IC.play}</span></button>${favoriteButton("station", s.id, s.full)}</div>`).join("");
-  $("#radList").innerHTML = (shown.length || stationRows) ? stationRows + shown.map(r => `
+  $("#radList").innerHTML = (shown.length || stationRows) ? `<div class="rows">` + stationRows + shown.map(r => `
     <div class="fav-row"><button class="item" data-key="rad:${r.id}" data-rad="${r.id}" aria-label="تشغيل إذاعة ${esc(r.name)}">
       <span class="medal">${IC.radio.replace('aria-hidden="true"', 'aria-hidden="true" width="18" height="18"')}</span>
       <span class="t"><b>${esc(r.name)}</b><small>إذاعة متواصلة</small></span><span class="ic pi">${IC.play}</span>
-    </button>${favoriteButton("radio", r.id, r.name)}</div>`).join("") : `<div class="empty">${radioFavOnly ? "لا توجد إذاعات مفضلة مطابقة." : "لا توجد إذاعة بهذا الاسم"}</div>`;
+    </button>${favoriteButton("radio", r.id, r.name)}</div>`).join("") + `</div>` : `<div class="empty">${radioFavOnly ? "لا توجد إذاعات مفضلة مطابقة." : "لا توجد إذاعة بهذا الاسم"}</div>`;
   $("#radMore").hidden = list.length <= radShown;
   paint(P.state);
 }
@@ -572,6 +572,8 @@ function renderRw() {
   $("#rwHint").textContent = rwSel === "all" ? "كل القرّاء في روايتي حفص وورش" : `رواية ${rwSel}`;
 }
 $("#rwChips").onclick = e => { const b = e.target.closest("[data-rw]"); if (!b) return; rwSel = b.dataset.rw; track("riwaya_select", { riwaya: rwSel }); store.set("rw", rwSel); recShown = 25; renderRw(); renderRecs(); };
+const monogram = name => (name.replace(/^(ال)/, "").trim()[0] || "");
+const avatarHue = id => [152, 168, 38, 196, 130, 24, 180, 46][Math.abs(+id || 0) % 8];
 function renderRecs() {
   const q = norm($("#recSearch").value);
   let list = RECITERS.filter(r => (!recFavOnly || isFavorite("reciter", r.id)) && (rwSel === "all" || r.moshaf.some(m => rwGroup(m.rw) === rwSel)) && matches(q, r.name));
@@ -585,13 +587,14 @@ function renderRecs() {
     const types = [...new Set(ms.map(m => m.type).filter(Boolean))].join(" · ");
     const rws = rwSel === "all" ? [...new Set(r.moshaf.map(m => m.rw))].length : 0;
     return `<div class="fav-row"><button class="item" data-rec="${r.id}">
-      <span class="medal">${esc(r.name.replace(/^(ال)/, "").trim()[0] || "")}</span>
+      <span class="medal av" style="--h:${avatarHue(r.id)}">${esc(monogram(r.name))}</span>
       <span class="t"><b>${esc(r.name)}</b><small>${esc(types || "تلاوة")}${rws > 1 ? ` · ${ard(rws)} روايات` : ""}</small></span>${IC.arrow}</button>${favoriteButton("reciter", r.id, r.name)}</div>`;
   };
   let html = "";
-  if (fam.length) html += `<div class="group-h">الأشهر</div>` + fam.map(row).join("") + `<div class="group-h">كل القرّاء أبجديًا</div>`;
-  let lastL = "";
-  html += shown.map(r => { let h = ""; if (!q && r.letter !== lastL) { lastL = r.letter; h = `<div class="letter">${esc(r.letter)}</div>`; } return h + row(r); }).join("");
+  if (fam.length) html += `<div class="group-h">الأشهر</div><div class="rec-rail" role="list">` + fam.map(r => `<button class="rail-item" role="listitem" data-rec="${r.id}" style="--h:${avatarHue(r.id)}"><span class="av">${esc(monogram(r.name))}</span><b>${esc(r.name)}</b></button>`).join("") + `</div><div class="group-h">كل القرّاء أبجديًا</div>`;
+  const groups = [];
+  shown.forEach(r => { const key = q ? "" : r.letter; if (!groups.length || groups[groups.length - 1].k !== key) groups.push({ k: key, rows: [] }); groups[groups.length - 1].rows.push(r); });
+  html += groups.map(g => `<section class="rgroup">${g.k ? `<div class="letter">${esc(g.k)}</div>` : ""}<div class="rows">${g.rows.map(row).join("")}</div></section>`).join("");
   $("#recList").innerHTML = (fam.length || shown.length) ? html : `<div class="empty">${recFavOnly ? "لا يوجد قراء مفضلون مطابقون." : "لا يوجد قارئ بهذا الاسم"}${rwSel !== "all" ? ` في رواية ${esc(rwSel)}. <button class="link-btn" data-rw="all">ابحث في كل الروايات</button>` : ""}</div>`;
   $("#recMore").hidden = list.length <= recShown;
 }
@@ -610,7 +613,7 @@ function openReciter(id, moshafId) {
   curMoshaf = pool.find(m => m.id === moshafId) || pool[0];
   $("#qPick").hidden = true; $("#qReciter").hidden = false; store.set("quranOpen", true);
   if (!(history.state && history.state.rec)) history.pushState({ rec: id }, "", "#quran");
-  $("#recAvatar").textContent = r.name.replace(/^(ال)/, "").trim()[0] || "";
+  $("#recAvatar").textContent = monogram(r.name); $("#recAvatar").style.setProperty("--h", avatarHue(r.id));
   $("#recName").textContent = r.name;
   $("#moshafChips").innerHTML = r.moshaf.map(m => `<button class="chip" data-ms="${m.id}" aria-pressed="${m.id === curMoshaf.id}">${esc(m.rw)}${m.type ? " · " + esc(m.type) : ""}<small>${ard(m.list.length)}</small></button>`).join("");
   $("#moshafChips").hidden = r.moshaf.length < 2;
@@ -1098,3 +1101,9 @@ paint("idle");
 idle(() => { loadPrayer(false); });
 })();
 
+
+/* Light haptic tick on Android for app-like taps (no-op elsewhere). */
+document.addEventListener("click", e => {
+  if (!navigator.vibrate || document.documentElement.dataset.motion === "reduce") return;
+  if (e.target.closest(".fav-btn, .pb, #heroBtn, .tabs-bottom a, .rail-item, [data-st]")) { try { navigator.vibrate(8); } catch (err) {} }
+}, { passive: true });
