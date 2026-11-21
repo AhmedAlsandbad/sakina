@@ -75,7 +75,7 @@
     if (document.querySelector('link[data-sakina-ui-refresh]')) return;
     var l = document.createElement("link");
     l.rel = "stylesheet";
-    l.href = "/ui-refresh.css?v=3";
+    l.href = "/ui-refresh.css?v=4";
     l.dataset.sakinaUiRefresh = "1";
     document.head.appendChild(l);
   }

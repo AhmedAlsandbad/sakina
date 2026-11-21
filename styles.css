@@ -714,3 +714,21 @@ body::after{background-size:96px 96px}
 .logo span{display:inline;font-family:'Aref Ruqaa',serif;font-weight:700;font-size:1.6rem;line-height:1.2;color:var(--gold);text-shadow:none}
 .logo img{display:block;width:38px;height:38px;border-radius:11px;background:none;opacity:1;object-fit:contain;box-shadow:0 0 0 1px color-mix(in srgb,var(--gold) 28%,transparent)}
 @media(max-width:600px){.logo span{font-size:1.42rem}.logo img{width:36px;height:36px;border-radius:10px}header.top{background:var(--night)}}
+
+/* Mobile UX pass 2 (Nov 2026) */
+#v-adhkar .adh-disclosure>.sh{margin-top:0}
+#v-quran:has(#qRead[aria-pressed="false"]) #sakinaReaderTools{display:none}
+#sakinaReaderTools{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+#sakinaReaderTools button{font-size:.82rem;padding:7px 12px;border-radius:999px}
+@media(max-width:859px){
+  body.player-idle .dock .capsule,body.player-idle .dock-toggle{display:none!important}
+  body.player-idle{--dock-h:96px}
+  body:has(.dock.compact){--dock-h:128px}
+  .tabs-bottom{background:var(--night)}
+}
+footer .appearance-options{border:0;background:none;margin:0 0 10px;text-align:center}
+footer .appearance-options>summary{list-style:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid var(--rule);border-radius:999px;background:var(--panel);color:var(--ink);cursor:pointer}
+footer .appearance-options>summary::-webkit-details-marker{display:none}
+footer .appearance-options>summary::after{content:"⌄";color:var(--gold)}
+footer .appearance-options[open]>summary::after{content:"⌃"}
+footer .appearance-options[open] .appearance-controls{margin-top:10px;text-align:start;border:1px solid var(--rule);border-radius:14px;background:var(--panel);padding:12px 14px}

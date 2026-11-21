@@ -77,6 +77,7 @@ const P = { cur: null, queue: [], qi: 0, loop: false, want: false, retries: 0, s
 
 function setMeta(it) {
   if (it.key && it.key.startsWith("rad:")) { it.title = (it.title || "").replace(/\*/g, "").replace(/\s+/g, " ").trim(); it.eyebrow = "الإذاعات والقرّاء"; }
+  document.body.classList.remove("player-idle");
   $("#capTitle").textContent = it.title;
   $("#capSub").textContent = it.sub;
   $("#shEyebrow").textContent = it.eyebrow || "";
@@ -1090,6 +1091,7 @@ route();
 const savedLast = store.get("lastItem", null);
 const last = savedLast && savedLast.key === "st:roqiah" ? stationItem(STATIONS.find(s => s.id === "roqiah")) : savedLast;
 if (last) { P.cur = null; setMeta(last); $("#capSub").textContent = "اضغط للمتابعة · " + last.sub; }
+else document.body.classList.add("player-idle");
 if (!last || last.kind !== "live") { const s = STATIONS.find(x => x.id === store.get("lastStation", "cairo")) || STATIONS[0];
   $("#heroEyebrow").textContent = "بث مباشر · " + s.tag; $("#heroTitle").textContent = s.full; $("#heroSub").textContent = s.note; }
 paint("idle");

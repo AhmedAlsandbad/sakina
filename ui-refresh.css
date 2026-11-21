@@ -152,7 +152,7 @@ header.top .wrap{min-height:68px;padding-block:9px;gap:10px}
 .sakina-history-item{border-radius:14px!important;background:var(--panel-2)!important;border-color:var(--rule)!important}
 
 /* Bottom navigation */
-.tabs-bottom{padding:8px 8px max(7px,env(safe-area-inset-bottom));background:color-mix(in srgb,var(--night) 97%,transparent);gap:5px}
+.tabs-bottom{padding:8px 8px max(7px,env(safe-area-inset-bottom));background:var(--night);gap:5px}
 .tabs-bottom a{min-height:58px;border-radius:16px;font-weight:400}
 .tabs-bottom a[aria-current="page"]{background:color-mix(in srgb,var(--gold) 9%,var(--panel));font-weight:500}
 .tabs-bottom svg{width:21px;height:21px}
