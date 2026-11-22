@@ -813,7 +813,7 @@ $("#sleepPlay").onclick = () => {
 };
 $("#adhReset").onclick = () => { store.del(adhKey()); renderAdhkar(); toast("تم تصفير العدّاد"); };
 
-$("#dockToggle").onclick = () => { const compact = $("#dock").classList.toggle("compact"); $("#dockToggle").setAttribute("aria-expanded", String(!compact)); $("#dockToggle").setAttribute("aria-label", compact ? "إظهار المشغل" : "تصغير المشغل"); $("#dockToggle").textContent = compact ? "⌃" : "⌄"; };
+$("#dockToggle").onclick = () => { const compact = $("#dock").classList.toggle("compact"); $("#dockToggle").setAttribute("aria-expanded", String(!compact)); $("#dockToggle").setAttribute("aria-label", compact ? "إظهار المشغل" : "تصغير المشغل"); };
 
 /* Quran reading: independently loaded per surah. */
 let readingRequest = 0, tafsirRequest = 0, currentPage = Math.max(1, Math.min(604, +store.get("mushafPage", 1) || 1));

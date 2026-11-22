@@ -62,7 +62,6 @@ html .tabs-bottom a[aria-current="page"] svg{transform:translateY(-1px)}
 
 /* ---------- motion ---------- */
 @media (prefers-reduced-motion:no-preference){
-  html:not([data-motion="reduce"]) .view:not([hidden]){animation:viewIn .34s var(--ease-out) both}
   html:not([data-motion="reduce"]) #recList .rows>.fav-row:nth-child(-n+12),
   html:not([data-motion="reduce"]) #radList .rows>.fav-row:nth-child(-n+12),
   html:not([data-motion="reduce"]) #recList .rail-item{animation:rowIn .42s var(--ease-out) both}
@@ -81,7 +80,6 @@ html .tabs-bottom a[aria-current="page"] svg{transform:translateY(-1px)}
   html:not([data-motion="reduce"]) .fav-btn[aria-pressed="true"] svg{animation:heartPop .45s var(--spring)}
   html:not([data-motion="reduce"]) .rail-item:active .av{transform:scale(.94)}
 }
-@keyframes viewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes rowIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes heartPop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
 
@@ -157,3 +155,67 @@ html .sakina-home-install{margin:16px 0 0!important}
 html #v-radio .discover{margin-top:14px!important}
 html #hero .radio-station-controls span{white-space:nowrap;font-size:.8rem}
 html #rStatus:empty{display:none}
+
+/* ======================================================================
+   Consistency layer (Nov 2026): one type scale, one radius scale, one
+   spacing rhythm, one icon stroke, one set of motion timings.
+   ====================================================================== */
+:root{
+  --t-xs:.75rem;   /* 12  meta, flags, counts          */
+  --t-sm:.84rem;   /* 13.5 secondary text, chips, labels */
+  --t-md:.94rem;   /* 15  body, list titles, buttons    */
+  --t-lg:1.06rem;  /* 17  card titles                   */
+  --t-xl:1.25rem;  /* 20  small section titles          */
+  --r-badge:12px; --r-ctl:14px; --r-card:20px;
+  --gap-section:22px; --gap-head:12px;
+  --dur-press:.16s; --dur-ui:.24s; --dur-enter:.34s;
+}
+
+/* --- icons: one stroke weight --- */
+html svg[stroke-width="2"]:not(.keep),html svg[stroke-width="1.9"],html svg[stroke-width="1.7"]{stroke-width:1.8}
+html summary .chev,html .dock-toggle .chev{transition:transform var(--dur-ui) var(--ease-out);vertical-align:-3px}
+html details[open]>summary .chev{transform:rotate(180deg)}
+html #dock.compact .dock-toggle .chev{transform:rotate(180deg)}
+html .dock-toggle{display:grid;place-items:center;color:var(--dim)}
+html .dhikr-controls button{display:grid;place-items:center}
+html .friday-mark{display:grid;place-items:center;color:var(--gold)}
+
+/* --- type scale --- */
+html .st .flag,html #heroEyebrow,html .st small,html .t>small,html .period-hint,html #heroStatus,html .count,html .chip>small,html .friday-label,html .hint{font-size:var(--t-xs)!important}
+html .dedication-names small{font-size:.72rem!important}
+html .rail-item>b,html .discover-card>b,html .field>label,html .radio-station-controls>span,html #heroSub,html .dedication-details>summary,html .group-h,html .dedication-sub,html .sh>p,html .chip,html .note,html #fridayHint{font-size:var(--t-sm)!important}
+html .t>b,html .panel .switch,html #dailyDhikr,html .sakina-home-install-copy b,html .sakina-home-install button,html .more,html .seg button,html .chip.primary,html #heroAction{font-size:var(--t-md)!important}
+html .st h3{font-size:var(--t-lg)!important}
+html #fridayTitle,html #sadaqaTitle{font-size:var(--t-xl)!important}
+html .seg button{font-weight:600}
+
+/* --- radius scale --- */
+html .search,html .field select,html .seg,html .icon-btn,html .discover-card>span,html .sakina-home-install-icon,html .sakina-home-install button{border-radius:var(--r-ctl)}
+html .seg button{border-radius:calc(var(--r-ctl) - 4px)}
+html .st,html .panel,html .sadaqa,html .friday-card,html .adh-disclosure,html .discover-card,html .sakina-home-install,html .niche.small,html .time,html .mushaf,html #recList .rows,html #radList .rows,html #rTracks,html #suraList{border-radius:var(--r-card)}
+html .medal:not(.av),html #rTracks .medal{border-radius:var(--r-badge)}
+html #rTracks .medal{border-radius:50%}
+
+/* --- spacing rhythm on phones: equal gaps between sections, tighter under headings --- */
+@media (max-width:859px){
+  html .view:not([hidden]){display:flex;flex-direction:column;gap:var(--gap-section)}
+  html .view>*{margin-block:0!important;min-width:0}
+  html .view>.sh+*,html .view>.sh+.stations{margin-top:calc(var(--gap-head) - var(--gap-section))!important}
+  html .view>.radio-basmala{margin-bottom:calc(10px - var(--gap-section))!important}
+  html .view>.radio-basmala+*{margin-top:0!important}
+  html #v-radio>.search+.rad-filters,html #v-radio>.rad-filters+.list,html #v-radio>.list+.more{margin-top:calc(var(--gap-head) - var(--gap-section))!important}
+  html #v-radio>.sakina-home-install+.discover{margin-top:calc(var(--gap-head) - var(--gap-section))!important}
+  html .sh{margin:0}
+  html .sh h2{line-height:1.25}
+}
+
+/* --- motion timings --- */
+@media (prefers-reduced-motion:no-preference){
+  html:not([data-motion="reduce"]) .seg button{transition:background-color var(--dur-ui) var(--ease-out),color var(--dur-ui) ease,box-shadow var(--dur-ui) ease}
+  html:not([data-motion="reduce"]) .capsule{transition:transform var(--dur-ui) var(--ease-out),opacity var(--dur-ui) ease}
+  html:not([data-motion="reduce"]) body:not(.player-idle) .capsule{animation:capIn var(--dur-enter) var(--ease-out) both}
+  html:not([data-motion="reduce"]) #heroBtn:active,html:not([data-motion="reduce"]) .st .mini:active{transform:scale(.9)}
+  html:not([data-motion="reduce"]) .rad-filters .chip[aria-pressed="true"],html:not([data-motion="reduce"]) #rwChips .chip[aria-pressed="true"]{animation:chipOn var(--dur-ui) var(--spring)}
+}
+@keyframes capIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes chipOn{0%{transform:scale(.92)}100%{transform:scale(1)}}
