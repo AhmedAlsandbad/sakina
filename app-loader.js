@@ -103,7 +103,7 @@
   function loadUiRefresh() {
     if (document.querySelector('script[data-sakina-ui-refresh]')) { loadSmartAudio(); return; }
     var r = document.createElement("script");
-    r.src = "/ui-refresh.js?v=3";
+    r.src = "/ui-refresh.js?v=4";
     r.defer = true;
     r.dataset.sakinaUiRefresh = "1";
     r.onload = loadSmartAudio;

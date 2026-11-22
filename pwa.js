@@ -37,7 +37,7 @@
     addStyles();
     const old = kind === "install" ? installSheet : notifySheet; if (old) closeSheet(old);
     const el = document.createElement("section"); el.className = "sakina-pwa-sheet"; el.setAttribute("role", "dialog"); el.setAttribute("aria-label", title);
-    el.innerHTML = `<div class="sakina-pwa-head"><img class="sakina-pwa-icon" src="/icon.svg?v=2" width="52" height="52" alt=""><div class="sakina-pwa-copy"><h2>${title}</h2><p>${body}</p>${steps ? `<ol class="sakina-pwa-steps">${steps.map(s => `<li>${s}</li>`).join("")}</ol>` : ""}</div><button class="sakina-pwa-close" type="button" aria-label="إغلاق">×</button></div><div class="sakina-pwa-actions"></div>`;
+    el.innerHTML = `<div class="sakina-pwa-head"><img class="sakina-pwa-icon" src="/icon.svg?v=3" width="52" height="52" alt=""><div class="sakina-pwa-copy"><h2>${title}</h2><p>${body}</p>${steps ? `<ol class="sakina-pwa-steps">${steps.map(s => `<li>${s}</li>`).join("")}</ol>` : ""}</div><button class="sakina-pwa-close" type="button" aria-label="إغلاق">×</button></div><div class="sakina-pwa-actions"></div>`;
     el.querySelector(".sakina-pwa-close").addEventListener("click", () => closeSheet(el));
     const box = el.querySelector(".sakina-pwa-actions");
     actions.forEach(a => { const b = document.createElement("button"); b.type = "button"; b.className = "sakina-pwa-btn " + (a.primary ? "primary" : "secondary"); b.textContent = a.label; b.addEventListener("click", a.onClick); box.appendChild(b); });

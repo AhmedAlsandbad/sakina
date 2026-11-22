@@ -10,7 +10,7 @@
   const ICONS = {
     stations:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><rect x="4" y="9" width="16" height="10" rx="3"/><path d="M8 9l8-5"/><circle cx="9" cy="14" r="2"/><path d="M14 13h3M14 16h3"/></svg>',
     favorites:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M20.8 5.8a5.4 5.4 0 0 0-7.6 0L12 7l-1.2-1.2a5.4 5.4 0 1 0-7.6 7.6L12 22l8.8-8.6a5.4 5.4 0 0 0 0-7.6Z"/></svg>',
-    reciters:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg>',
+    reciters:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5"/></svg>',
     surahs:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M12 6c-2-1.5-5-2-8-1.5V19c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V4.5C17 4 14 4.5 12 6Z"/><path d="M12 6v14.5"/></svg>'
   };
 
@@ -18,7 +18,7 @@
     document.querySelectorAll(".discover-card[data-discover]").forEach(card => {
       const host = card.querySelector(":scope > span");
       const svg = ICONS[card.dataset.discover];
-      if (host && svg) host.innerHTML = svg;
+      if (host && svg && !host.querySelector("svg")) host.innerHTML = svg;
     });
   }
 

@@ -1,5 +1,5 @@
 // Sakina Quran service worker: app shell, Web Push and reminder checks.
-const V = "sakina-v109";
+const V = "sakina-v110";
 const PREF_CACHE = "sakina-reminders-v1";
 const PREF_URL = "/__sakina/reminder-settings";
 const STATE_URL = "/__sakina/reminder-state";
@@ -9,28 +9,28 @@ const SHELL = [
   "/offline.html",
   "/styles.css?v=62",
   "/polish.css?v=10",
-  "/app-feel.css?v=1",
+  "/app-feel.css?v=2",
   "/player-ui.css?v=1",
   "/ui-refresh.css?v=4",
   "/data.js?v=40",
-  "/app.js?v=75",
-  "/app-core.js?v=72",
-  "/app-loader.js?v=6",
-  "/seo.js?v=7",
+  "/app.js?v=76",
+  "/app-core.js?v=73",
+  "/app-loader.js?v=7",
+  "/seo.js?v=8",
   "/seo-core.js?v=5",
   "/analytics.js?v=2",
   "/pwa.js?v=5",
   "/reminders.js?v=2",
   "/ux-enhancements.js?v=3",
-  "/ui-refresh.js?v=3",
+  "/ui-refresh.js?v=4",
   "/smart-audio-cache.js?v=1",
   "/push-config.js?v=2",
   "/manifest.webmanifest",
   "/icon.svg",
-  "/icon.svg?v=2",
+  "/icon.svg?v=3",
   "/icon-maskable-512.png",
-  "/favicon.svg",
-  "/apple-touch-icon.png",
+  "/favicon.svg?v=2",
+  "/apple-touch-icon.png?v=2",
   "/badge-96.png",
   "/icon-192.png",
   "/icon-512.png"

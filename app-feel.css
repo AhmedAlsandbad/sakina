@@ -103,3 +103,57 @@ html #suraList .sura{border:0;border-radius:0;background:none;min-height:54px;pa
 html #suraList .sura.on{background:color-mix(in srgb,var(--gold) 10%,transparent)}
 @media (prefers-reduced-motion:no-preference){html:not([data-motion="reduce"]) #rTracks>.item{animation:rowIn .42s var(--ease-out) both}}
 @media(max-width:560px){html #suraList{grid-template-columns:1fr 1fr}html #suraList .sura:nth-child(2n){box-shadow:inset 0 -1px 0 var(--rule)}}
+
+/* ===== Radio screen, pass 3 ===== */
+/* radio list rows: avatar + text + heart; play glyph only on the active row */
+html #radList .fav-row>.item .ic.pi{display:none}
+html #radList .fav-row>.item.on .ic.pi{display:grid;color:var(--gold)}
+html #radList .medal.av{width:42px;height:42px;font-size:1.05rem;border-radius:50%}
+
+/* filters: one scrollable chip row + a sort icon */
+html .rad-filters{display:flex;align-items:center;gap:8px;margin:12px 0 14px}
+html .rad-filters .rad-cats{flex:1;min-width:0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0;padding:2px 0;gap:8px;overscroll-behavior-x:contain}
+html .rad-filters .rad-cats::-webkit-scrollbar{display:none}
+html .rad-filters .chip,html #recFavOnly{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:7px 14px;border-radius:999px;white-space:nowrap;font-size:.86rem;border:1px solid var(--rule);background:var(--panel);color:var(--ink)}
+html .rad-filters .chip[aria-pressed="true"],html #recFavOnly[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--gold-ink)}
+html .rad-filters .fav-filter[aria-pressed="true"] svg,html #recFavOnly[aria-pressed="true"] svg{fill:currentColor}
+html .rad-filters .rad-sort{flex:none;width:40px;height:40px}
+html .rad-filters .rad-sort[aria-pressed="true"]{color:var(--gold);border-color:var(--gold)}
+html #v-radio .radio-controls[hidden],html #v-radio .radio-controls+.hint{display:none!important}
+
+/* quick access: four app-style shortcuts in one row */
+html #v-radio .discover{margin-top:18px}
+html #v-radio .discover-heading{display:none}
+html #v-radio .discover-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+html #v-radio .discover-card{flex-direction:column;min-height:0;padding:12px 4px 10px;gap:7px;border-radius:18px;align-items:center;justify-content:center;text-align:center;background:var(--panel)}
+html #v-radio .discover-card>span{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--gold) 14%,transparent);color:var(--gold)}
+html #v-radio .discover-card>span svg{width:23px;height:23px}
+html #v-radio .discover-card b{font-size:.8rem}
+
+/* compact install banner */
+html .sakina-home-install{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;gap:12px;padding:12px 14px!important;border-radius:18px}
+html .sakina-home-install-icon{width:40px!important;height:40px!important;border-radius:12px!important}
+html .sakina-home-install-icon svg{width:21px;height:21px}
+html .sakina-home-install-copy small{display:none}
+html .sakina-home-install-copy b{font-size:.9rem}
+html .sakina-home-install button{width:auto!important;min-height:38px;padding:7px 14px!important;border-radius:12px;font-size:.86rem;flex:none}
+
+@media (max-width:859px){
+  /* one search is enough on a phone: the list search below */
+  html #v-radio .discover-search,html #v-radio .discover-search+.chips{display:none}
+  /* SEO intro text goes to the end of the screen */
+  html #v-radio:not([hidden]){display:flex;flex-direction:column}
+  html #v-radio>*{min-width:0}
+  html #v-radio>.brand-intro{order:90}
+  html #v-radio>.brand-intro~*{order:0}
+}
+
+/* ===== Ruqyah tracks ===== */
+html #rTracks .medal{width:38px;height:38px;border-radius:50%;border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);background:color-mix(in srgb,var(--gold) 10%,transparent);color:var(--gold);font:600 .95rem/1 var(--f-body)}
+html #rTracks .ic.pi{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--gold) 14%,transparent);color:var(--gold)}
+html #rTracks .ic.pi svg{width:16px;height:16px}
+html #rTracks .item.on .ic.pi{background:var(--gold);color:var(--gold-ink)}
+html .sakina-home-install{margin:16px 0 0!important}
+html #v-radio .discover{margin-top:14px!important}
+html #hero .radio-station-controls span{white-space:nowrap;font-size:.8rem}
+html #rStatus:empty{display:none}

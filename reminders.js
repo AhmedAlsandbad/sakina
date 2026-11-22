@@ -183,7 +183,7 @@
     el.innerHTML = `
       <div class="sakina-reminder-card">
         <div class="sakina-reminder-head">
-          <img src="/icon.svg?v=2" width="48" height="48" alt="">
+          <img src="/icon.svg?v=3" width="48" height="48" alt="">
           <div class="sakina-reminder-title"><h2>تنبيهات الصلاة والأذكار</h2><p>اختر ما تريد أن يذكّرك به سكينة على هذا الجهاز.</p></div>
           <button type="button" class="sakina-reminder-close" aria-label="إغلاق">×</button>
         </div>
