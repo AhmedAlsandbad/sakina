@@ -401,6 +401,22 @@ function route() {
   track("view_section", { section: v });
 }
 window.addEventListener("hashchange", route);
+/* SEO nav: header/footer links use real page URLs (/radio/, /quran/, …) so
+   Google can follow them, but a plain left-click stays inside the app (no
+   reload, the player keeps playing). Modifier keys, middle-click and
+   right-click still open the real page; links inside .brand-intro keep
+   their own handler. */
+const SECTION_URLS = { "/": "radio", "/radio/": "radio", "/quran/": "quran", "/ruqyah/": "ruqyah", "/adhkar/": "adhkar", "/prayer-times/": "prayer" };
+document.addEventListener("click", e => {
+  if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  const link = e.target.closest("a"); if (!link) return;
+  const view = SECTION_URLS[link.getAttribute("href")]; if (!view) return;
+  if (link.closest(".brand-intro")) return;
+  e.preventDefault();
+  const hash = "#" + view;
+  if (location.hash === hash) { window.scrollTo(0, 0); return; }
+  location.hash = hash;
+});
 window.addEventListener("load", () => { if (location.hash === "#radio" && window.scrollY > 0 && window.scrollY < 160) requestAnimationFrame(() => window.scrollTo(0, 0)); }, { once: true });
 window.addEventListener("popstate", e => {
   const st = e.state || {};
@@ -1094,7 +1110,10 @@ if ("serviceWorker" in navigator && location.protocol === "https:") { let hadCon
 $(".skip-link").addEventListener("click", e => { e.preventDefault(); const main = $("#main"); main.setAttribute("tabindex", "-1"); main.focus(); main.scrollIntoView({ block: "start" }); });
 
 /* boot */
-if (!location.hash) { const v = store.get("view", "radio"); history.replaceState(null, "", "#" + v); }
+/* Don't force "#radio" into a clean URL: radio is the default view, so a
+   fresh visit to https://sakinaquran.net/ stays clean. Only restore a
+   non-default section the user left open. */
+if (!location.hash) { const v = store.get("view", "radio"); if (v && v !== "radio") history.replaceState(null, "", "#" + v); }
 route();
 const savedLast = store.get("lastItem", null);
 const last = savedLast && savedLast.key === "st:roqiah" ? stationItem(STATIONS.find(s => s.id === "roqiah")) : savedLast;
