@@ -28,5 +28,5 @@
     document.head.appendChild(s);
   }
 
-  appendScript("/app-core.js?v=75", "app-core", loadRuntime);
+  appendScript("/app-core.js?v=76", "app-core", loadRuntime);
 })();
