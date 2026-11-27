@@ -539,9 +539,11 @@ $("#radList").onclick = e => { const f = e.target.closest("[data-fav-kind]"); if
    QURAN
    ========================================================= */
 /* best-known reciters shown first, in this order (matched on name words) */
-const FAMOUS = [["عبدالباسط"], ["الحصري"], ["المنشاوي"], ["مصطفي", "اسماعيل"], ["البنا"], ["الطبلاوي"], ["العفاسي"], ["المعيقلي"], ["السديس"], ["الشريم"],
-  ["سعد", "الغامدي"], ["ياسر", "الدوسري"], ["العجمي"], ["فارس", "عباد"], ["القطامي"], ["الشاطري"], ["علي", "الحذيفي"], ["محمد", "ايوب"], ["خالد", "الجليل"], ["محمد", "جبريل"], ["البلوشي"], ["ادريس", "ابكر"], ["اسلام", "صبحي"], ["علي", "جابر"], ["محمد", "اللحيدان"], ["بندر", "بليله"], ["عبدالله", "الجهني"]]
+const FAMOUS = [["عبدالباسط"], ["الحصري"], ["المنشاوي"], ["مصطفي", "اسماعيل"], ["محمد", "رفعت"], ["البنا"], ["الطبلاوي"], ["العفاسي"], ["المعيقلي"], ["السديس"], ["الشريم"],
+  ["سعد", "الغامدي"], ["ياسر", "الدوسري"], ["العجمي"], ["فارس", "عباد"], ["القطامي"], ["الشاطري"], ["علي", "الحذيفي"], ["محمد", "ايوب"], ["خالد", "الجليل"], ["محمد", "جبريل"], ["البلوشي"], ["ادريس", "ابكر"], ["اسلام", "صبحي"], ["علي", "جابر"], ["محمد", "اللحيدان"], ["بندر", "بليله"], ["عبدالله", "الجهني"], ["احمد", "نعينع"], ["صلاح", "البدير"], ["عمر", "القزابري"], ["ياسين", "الجزائري"]]
   .map(a => a.map(w => w.replace(/[أإآ]/g, "ا").replace(/ى/g, "ي")));
+/* tidy a few source names (mp3quran) for display and search */
+const NAME_FIX = { "القارئ ياسين": "ياسين الجزائري", "شيخ أبو بكر الشاطري": "أبو بكر الشاطري", "بندر بليله": "بندر بليلة" };
 const rwGroup = rw => rw.startsWith("حفص عن عاصم") ? "حفص عن عاصم" : rw.startsWith("ورش عن نافع") ? "ورش عن نافع" : "";
 let RECITERS = [], SUWAR = {}, RW = [], rwSel = store.get("rw", "حفص عن عاصم"), recShown = 25, curRec = null, curMoshaf = null;
 const rwKey = name => name.split(" - ")[0].replace(/^برواية\s+/, "").replace(/\s+/g, " ").replace(/\s*-[^-]*-\s*$/, "").trim();
@@ -560,7 +562,7 @@ INIT.quran = async () => {
     RECITERS = r.reciters.map(x => ({ id: x.id, name: x.name.trim(), n: norm(x.name),
       moshaf: x.moshaf.map(m => ({ id: m.id, rw: rwKey(m.name), type: mType(m.name), server: m.server, list: m.surah_list.split(",").map(Number) })).filter(m => rwGroup(m.rw)) }))
       .filter(x => x.moshaf.length).sort((a, b) => sortKey(a.name).localeCompare(sortKey(b.name), "ar"));
-    RECITERS.forEach(r => { r.name = r.name.replace(/\s+/g, " "); const t = tight(r.name); r.fam = FAMOUS.findIndex(f => f.every(w => norm(r.name).split(" ").includes(norm(w)))); r.letter = sortKey(r.name)[0] || ""; });
+    RECITERS.forEach(r => { r.name = (NAME_FIX[r.name.replace(/\s+/g, " ").trim()] || r.name).replace(/\s+/g, " "); const t = tight(r.name); r.fam = FAMOUS.findIndex(f => f.every(w => norm(r.name).split(" ").includes(norm(w)))); r.letter = sortKey(r.name)[0] || ""; });
     const cnt = {}; RECITERS.forEach(x => new Set(x.moshaf.map(m => rwGroup(m.rw))).forEach(k => cnt[k] = (cnt[k] || 0) + 1));
     RW = Object.entries(cnt).sort((a, b) => b[1] - a[1]);
     if (rwSel !== "all" && !cnt[rwSel]) rwSel = "حفص عن عاصم";
@@ -583,7 +585,7 @@ function renderRecs() {
   $("#recCount").textContent = ard(list.length) + " قارئ";
   let fam = [];
   if (q) list.sort((a, b) => (tight(b.name).startsWith(q.replace(/\s+/g, "")) - tight(a.name).startsWith(q.replace(/\s+/g, ""))) || ((a.fam < 0 ? 99 : a.fam) - (b.fam < 0 ? 99 : b.fam)));
-  else { fam = list.filter(r => r.fam >= 0).sort((a, b) => a.fam - b.fam).slice(0, 6); const featured = new Set(fam.map(r => r.id)); list = list.filter(r => !featured.has(r.id)); }
+  else { fam = list.filter(r => r.fam >= 0).sort((a, b) => a.fam - b.fam).slice(0, 12); const featured = new Set(fam.map(r => r.id)); list = list.filter(r => !featured.has(r.id)); }
   const shown = list.slice(0, recShown);
   const row = r => {
     const ms = rwSel === "all" ? r.moshaf : r.moshaf.filter(m => rwGroup(m.rw) === rwSel);

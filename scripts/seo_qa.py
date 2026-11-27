@@ -120,6 +120,12 @@ def main() -> int:
             continue
         if p.parent == ROOT and VERIFICATION_FILE_RE.match(p.name):
             continue
+        # Retired URLs kept as noindex redirect stubs (meta refresh + canonical to the new page).
+        stub = p.read_text(encoding="utf-8", errors="replace")
+        if 'http-equiv="refresh"' in stub and "noindex" in stub:
+            if ("/" + p.relative_to(ROOT).as_posix()).replace("index.html", "") in (ROOT / "sitemap.xml").read_text(encoding="utf-8"):
+                print(f"ERROR: redirect stub {p} is still listed in sitemap.xml"); raise SystemExit(1)
+            continue
         pages.append(p)
 
     for path in sorted(pages):

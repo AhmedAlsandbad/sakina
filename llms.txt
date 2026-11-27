@@ -20,7 +20,6 @@ Alternate brand names: سكينة, Sakina Quran, SakinaQuran
 
 ## Featured radio pages
 
-- [إذاعة القرآن من مكة](https://sakinaquran.net/radio/makkah/)
 - [إذاعة القرآن الكريم من القاهرة](https://sakinaquran.net/radio/cairo/)
 - [إذاعة الشارقة للقرآن الكريم](https://sakinaquran.net/radio/sharjah/)
 - [إذاعة القرآن الكريم السعودية](https://sakinaquran.net/radio/riyadh/)
